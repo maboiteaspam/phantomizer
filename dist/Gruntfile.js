@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 
 
     // phantomizer webserver
-    grunt.loadNpmTasks('phantomizer');
+    grunt.loadNpmTasks('phantomizer-grunt');
 
     // specific optimizer tasks
     grunt.loadNpmTasks('phantomizer-html-builder');
