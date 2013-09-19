@@ -25,13 +25,13 @@
         ,"connect": "2.7.x"
         ,"lodash": "0.9.x"
         ,"optimist": "0.4.x"
-        ,"phantomizer-websupport": "http://github.com/maboiteaspam/phantomizer-websupport.git"
-        ,"phantomizer-libutil": "http://github.com/maboiteaspam/phantomizer-libutil.git"
-        ,"phantomizer-grunt": "http://github.com/maboiteaspam/phantomizer-grunt.git"
-        ,"phantomizer-styledocco": "http://github.com/maboiteaspam/phantomizer-styledocco.git"
-        ,"phantomizer-docco": "http://github.com/maboiteaspam/phantomizer-docco.git"
-        ,"phantomizer-html-builder": "http://github.com/maboiteaspam/phantomizer-html-builder.git"
-        ,"phantomizer-export-build": "http://github.com/maboiteaspam/phantomizer-export-build.git"
+        ,"phantomizer-websupport": "maboiteaspam/phantomizer-websupport"
+        ,"phantomizer-libutil": "maboiteaspam/phantomizer-libutil"
+        ,"phantomizer-grunt": "maboiteaspam/phantomizer-grunt"
+        ,"phantomizer-styledocco": "maboiteaspam/phantomizer-styledocco"
+        ,"phantomizer-docco": "maboiteaspam/phantomizer-docco"
+        ,"phantomizer-html-builder": "maboiteaspam/phantomizer-html-builder"
+        ,"phantomizer-export-build": "maboiteaspam/phantomizer-export-build"
     },
     "devDependencies": {
     }
