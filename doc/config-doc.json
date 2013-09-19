@@ -65,7 +65,7 @@
         "options": {
             "in_request": null
             ,"out_path": "<%= out_dir %>/"
-            ,"meta_path": "<%= meta_dir %>/"
+            ,"meta_dir": "<%= meta_dir %>/"
             ,"paths":"<%= web_paths %>"
         }
     }
