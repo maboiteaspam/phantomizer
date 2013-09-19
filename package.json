@@ -1,0 +1,38 @@
+{
+    "name": "phantomizer",
+    "version": "0.1.0",
+    "private": true,
+    "preferGlobal": true,
+    "description": "Embedded web development environment, helps to build better HTML ui",
+    "keywords": "",
+    "bugs": {
+        "url" : "http://github.com/maboiteaspam/phantomizer/issues",
+        "email" : "none@host.com"
+    },
+    "license" : "mit",
+    "directories.lib": "lib/",
+    "directories.example": "example/",
+    "repository" :{
+        "type" : "git",
+        "url" : "http://github.com/maboiteaspam/phantomizer.git"
+    },
+    "main": "lib/phantomizer",
+    "bin" :{
+        "phantomizer" : "./bin/phantomizer.js"
+    },
+    "dependencies": {
+        "grunt": "0.4.x"
+        ,"connect": "2.7.x"
+        ,"lodash": "0.9.x"
+        ,"optimist": "0.4.x"
+        ,"phantomizer-websupport": "http://github.com/maboiteaspam/phantomizer-websupport.git"
+        ,"phantomizer-libutil": "http://github.com/maboiteaspam/phantomizer-libutil.git"
+        ,"phantomizer-grunt": "http://github.com/maboiteaspam/phantomizer-grunt.git"
+        ,"phantomizer-styledocco": "http://github.com/maboiteaspam/phantomizer-styledocco.git"
+        ,"phantomizer-docco": "http://github.com/maboiteaspam/phantomizer-docco.git"
+        ,"phantomizer-html-builder": "http://github.com/maboiteaspam/phantomizer-html-builder.git"
+        ,"phantomizer-export-build": "http://github.com/maboiteaspam/phantomizer-export-build.git"
+    },
+    "devDependencies": {
+    }
+}
