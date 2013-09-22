@@ -21,6 +21,10 @@ var argv = optimist.usage('Phantomizer command line')
         .string('init')
         .default('init', false)
 
+        .describe('confess', 'Measure loading times of an url')
+        .string('confess')
+        .default('confess', false)
+
         .describe('test', 'Test a project')
         .string('test')
         .default('test', false)
@@ -54,6 +58,7 @@ var argv = optimist.usage('Phantomizer command line')
             return argv.server!=false ||
                 argv.init!=false ||
                 argv.test!=false ||
+                argv.confess!=false ||
                 argv.export!=false ||
                 argv.document!=false ||
                 argv.clean!=false ||
@@ -70,6 +75,7 @@ var init = argv.init || "";
 var test = argv.test || "";
 var export_ = argv.export || "";
 var document_ = argv.document || "";
+var confess = argv.confess || "";
 var clean = argv.clean || "";
 var target = argv.target || false;
 var verbose = argv.verbose || false;
@@ -106,6 +112,27 @@ if( server != "" ){
         webserver.stop();
     });
 
+}
+
+if( confess != "" ){
+
+    var project = confess;
+
+    if( project == "" ){
+        console.log("Please input the project name");
+        process.exit(code=0)
+    }
+
+    target = target==false?"":":"+target;
+    if( target == "" ){
+        console.log("Please input the target name");
+        process.exit(code=0)
+    }
+
+    get_config(project+'/config.json');
+    grunt.tasks(['phantomizer-confess'+target], {}, function(){
+        console.log("Measure done !");
+    });
 }
 
 if( test != "" ){

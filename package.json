@@ -30,6 +30,7 @@
         ,"phantomizer-grunt": "maboiteaspam/phantomizer-grunt"
         ,"phantomizer-styledocco": "maboiteaspam/phantomizer-styledocco"
         ,"phantomizer-docco": "maboiteaspam/phantomizer-docco"
+        ,"phantomizer-confess": "maboiteaspam/phantomizer-confess"
         ,"phantomizer-html-builder": "maboiteaspam/phantomizer-html-builder"
         ,"phantomizer-export-build": "maboiteaspam/phantomizer-export-build"
     },
