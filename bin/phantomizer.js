@@ -124,7 +124,6 @@ if( test != "" ){
     }
 
     get_config(project+'/config.json');
-    target = target==false?"":":"+target;
     grunt.tasks(['phantomizer-qunit-runner'+target], {}, function(){
         console.log("Test done !");
     });
