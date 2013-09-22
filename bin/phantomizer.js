@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 // load some modules
-var fs = require("fs")
-var path = require("path")
-var optimist = require("optimist")
-var grunt = require("grunt")
-var ph_libutil = require("phantomizer-libutil")
+var fs = require("fs");
+var path = require("path");
+var optimist = require("optimist");
+var grunt = require("grunt");
+var ph_libutil = require("phantomizer-libutil");
 
 var file_utils = ph_libutil.file_utils;
 
@@ -37,6 +37,10 @@ var argv = optimist.usage('Phantomizer command line')
         .string('clean')
         .default('clean', false)
 
+        .describe('target', 'Grunt task\'s target to execute')
+        .string('target')
+        .default('target', false)
+
         // needs moe info ? Use -verbose
         .describe('verbose', 'more Verbose')
         .boolean('verbose')
@@ -61,14 +65,15 @@ var argv = optimist.usage('Phantomizer command line')
     ;
 
 // let check we have some data to work on
-var server = argv.server || ""
-var init = argv.init || ""
-var test = argv.test || ""
-var export_ = argv.export || ""
-var document_ = argv.document || ""
-var clean = argv.clean || ""
-var verbose = argv.verbose || false
-var version = argv.version || false
+var server = argv.server || "";
+var init = argv.init || "";
+var test = argv.test || "";
+var export_ = argv.export || "";
+var document_ = argv.document || "";
+var clean = argv.clean || "";
+var target = argv.target || false;
+var verbose = argv.verbose || false;
+var version = argv.version || false;
 
 console.log("Welcome to phantomizer..")
 
@@ -112,13 +117,17 @@ if( test != "" ){
         process.exit(code=0)
     }
 
-    var config = get_config(project+'/config.json');
+    target = target==false?"":":"+target;
+    if( target == "" ){
+        console.log("Please input the target name");
+        process.exit(code=0)
+    }
 
-    grunt.tasks(['phantomizer-qunit-runner'], {}, function(){
-
+    get_config(project+'/config.json');
+    target = target==false?"":":"+target;
+    grunt.tasks(['phantomizer-qunit-runner'+target], {}, function(){
+        console.log("Test done !");
     });
-
-    console.log("Test done !");
 }
 
 if( export_ != "" ){
@@ -130,14 +139,20 @@ if( export_ != "" ){
         process.exit(code=0)
     }
 
-    var config = get_config(project+'/config.json');
+    target = target==false?"":":"+target;
+    if( target == "" ){
+        console.log("Please input the target name");
+        process.exit(code=0)
+    }
+
+    get_config(project+'/config.json');
     var t = [
         'phantomizer-build',
-        'phantomizer-export-build'
+        'phantomizer-export-build'+target
     ];
-    grunt.tasks(t, {}, function(){});
-
-    console.log("Export done !");
+    grunt.tasks(t, {}, function(){
+        console.log("Export done !");
+    });
 }
 
 if( document_ != "" ){
@@ -241,71 +256,23 @@ if( init != "" ){
 
 
 function get_config( file ){
+    var working_dir = process.cwd();
+    var config = grunt.file.readJSON( file );
 
-    function norm_path( path ){
-        var os = require('os')
-        if( os.type() == "Windows_NT"){
-            path = path.replace("/","\\")
-            path = path.replace("/","\\")
-            path = path.replace("\\\\","\\")
-            path = path.replace("\\\\","\\")
-        }else{
-            path = path.replace("\\","/")
-            path = path.replace("\\","/")
-            path = path.replace("//","/")
-            path = path.replace("//","/")
-        }
-        return path
+    if( ! config["vendors_dir"] ){
+        config["vendors_dir"] = require("phantomizer-websupport").www_vendors_path;
     }
-    function make_absolute_path(base_dir, file){
-        var os = require('os')
-        file = norm_path( file )
+    config.wd = working_dir;
+    config.project_dir = path.resolve(config.project_dir)+"/";
+    config.src_dir = path.resolve(config.src_dir)+"/";
+    config.wbm_dir = path.resolve(config.wbm_dir)+"/";
+    config.vendors_dir = path.resolve(config.vendors_dir)+"/";
+    config.out_dir = path.resolve(config.out_dir)+"/";
+    config.meta_dir = path.resolve(config.meta_dir)+"/";
+    config.export_dir = path.resolve(config.export_dir)+"/";
+    config.documentation_dir = path.resolve(config.documentation_dir)+"/";
 
-        if( os.type() == "Linux" && file.substring(0,1) != "/" ){
-            file = base_dir+"/"+file
-        }else if( os.type() == "Windows_NT" && file.match("^[a-zA-Z]:","ig") == null ){
-            file = base_dir+"/"+file
-        }
-
-        if( ! fs.existsSync(file) ){
-            console.log("directory must exists")
-            console.log(file)
-            process.exit(0)
-        }
-
-        return norm_path( file )
-    }
-
-    var working_dir = process.cwd()
-    var original_config = grunt.file.readJSON( file );
-    var user_config = original_config.grunt;
-
-    if( ! original_config["vendors_dir"] ){
-        original_config["vendors_dir"] = require("phantomizer-websupport").www_vendors_path;
-    }
-
-    var v = {
-        wd:working_dir
-        ,src_dir:make_absolute_path(working_dir, original_config["src_dir"])
-        ,wbm_dir:make_absolute_path(working_dir, original_config["wbm_dir"])
-        ,vendors_dir:make_absolute_path(working_dir, original_config["vendors_dir"])
-        ,out_dir:make_absolute_path(working_dir, original_config["out_dir"])
-        ,meta_dir:make_absolute_path(working_dir, original_config["meta_dir"])
-        ,export_dir:make_absolute_path(working_dir, original_config["export_dir"])
-        ,documentation_dir:make_absolute_path(working_dir, original_config["documentation_dir"])
-        ,project_dir:make_absolute_path(working_dir, original_config["project_dir"])
-    }
-
-    user_config["src_dir"] = v.src_dir;
-    user_config["wbm_dir"] = v.wbm_dir;
-    user_config["vendors_dir"] = v.vendors_dir;
-    user_config["out_dir"] = v.out_dir;
-    user_config["meta_dir"] = v.meta_dir;
-    user_config["export_dir"] = v.export_dir;
-    user_config["documentation_dir"] = v.documentation_dir;
-    user_config["project_dir"] = v.project_dir;
-
-    grunt.config.init(user_config);
+    grunt.config.init(config);
     return grunt.config.get();
 }
 

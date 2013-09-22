@@ -1,229 +1,275 @@
 {
-    "src_dir":"main_path/project/www-core/"
-    ,"project_dir":"main_path/project/"
-    ,"wbm_dir":"main_path/project/www-wbm/"
 
-    ,"out_dir":"main_path/run/build/"
-    ,"meta_dir":"main_path/run/meta/"
-    ,"export_dir":"main_path/export/"
-    ,"documentation_dir":"main_path/documentation/"
+    "src_dir":"main_path/project/www-core/",
+    "wbm_dir":"main_path/project/www-wbm/",
 
-    ,"grunt":{
+    "out_dir":"main_path/run/build/",
+    "meta_dir":"main_path/run/meta/",
+    "export_dir":"main_path/export/",
+    "documentation_dir":"main_path/documentation/",
+    "project_dir":"main_path/project/",
 
-    "pkg": null
+    "pkg": null,
 
-    ,"web_domain":"localhost"
-    ,"web_port":8080
-    ,"web_ssl_port":8081
-    ,"phantom_web_port":8090
-    ,"phantom_web_ssl_port":8091
-    ,"test_web_port":8092
-    ,"test_web_ssl_port":8094
-    ,"web_paths":[
-        "<%= src_dir %>"
-        ,"<%= wbm_dir %>"
-        ,"<%= vendors_dir %>"
-    ]
-    ,"build_run_paths":[
-        "<%= src_dir %>"
-        ,"<%= wbm_dir %>"
-        ,"<%= vendors_dir %>"
-        ,"<%= out_dir %>"
-    ]
-    ,"scripts":{
-        "strip":[]
-        ,"requirejs":{
-            "src": ["require-2.1.8.min.js"]
-            ,"baseUrl": "/js/"
-        }
-        ,"append":{
+    "web_domain":"localhost",
+    "web_port":8080,
+    "web_ssl_port":8081,
+    "phantom_web_port":8090,
+    "phantom_web_ssl_port":8091,
+    "test_web_port":8092,
+    "test_web_ssl_port":8094,
+    "web_paths":[
+        "<%= src_dir %>",
+        "<%= wbm_dir %>",
+        "<%= vendors_dir %>"
+    ],
+    "build_run_paths":[
+        "<%= src_dir %>",
+        "<%= wbm_dir %>",
+        "<%= vendors_dir %>",
+        "<%= out_dir %>"
+    ],
+    "scripts":{
+        "strip":[],
+        "requirejs":{
+            "src": ["require-2.1.8.min.js"],
+            "baseUrl": "/js/"
+        },
+        "append":{
             "/js/some_target_url.js":[
-                "/js/some_source_url.js"
-                ,"/js/some_source_url_1.js"
+                "/js/some_source_url.js",
+                "/js/some_source_url_1.js"
             ]
-        }
-        ,"prepend":{
+        },
+        "prepend":{
             "/js/some_target_url2.js":[
-                "/js/some_source_url2.js"
-                ,"/js/some_source_url_3.js"
+                "/js/some_source_url2.js",
+                "/js/some_source_url_3.js"
             ]
         }
-    }
-    ,"css":{
-        "strip":[]
-        ,"append":{
-        }
-        ,"prepend":{
+    },
+    "css":{
+        "strip":[],
+        "append":{
+        },
+        "prepend":{
             "/css/some_target_url2.js":[
-                "/css/some_source_url2.js"
-                ,"/css/some_source_url_3.js"
+                "/css/some_source_url2.js",
+                "/css/some_source_url_3.js"
             ]
         }
-    }
+    },
 
-    ,"phantomizer-html-jitbuild": {
-        "options": {
-            "in_request": null
-            ,"out_path": "<%= out_dir %>/"
-            ,"meta_dir": "<%= meta_dir %>/"
-            ,"paths":"<%= web_paths %>"
+
+    "routing":[
+        {
+            "template":"/some-browsed-page.html",
+            "tests":[
+                "some-test-name"
+            ],
+            "scripts":{
+                "append":{
+                    "/js/some_target_url.js":[
+                        "/js/some_source_url.js",
+                        "/js/some_source_url_1.js"
+                    ]
+                },
+                "prepend":{
+                    "/js/some_target_url2.js":[
+                        "/js/some_source_url2.js",
+                        "/js/some_source_url_3.js"
+                    ]
+                }
+            },
+            "css":{
+                "strip":[],
+                "append":{
+                },
+                "prepend":{
+                    "/css/some_target_url2.js":[
+                        "/css/some_source_url2.js",
+                        "/css/some_source_url_3.js"
+                    ]
+                }
+            }
+        },
+        {
+            "template":"/some-browsed-page2.html",
+            "tests":[
+                "some-test-name"
+            ],
+            "log":true
         }
-    }
+    ],
 
 
 
 
-    ,"phantomizer-strykejs-builder": {
+
+
+    "phantomizer-html-jitbuild": {
         "options": {
-            "port":"<%= phantom_web_port %>"
-            ,"ssl_port":"<%= phantom_web_ssl_port %>"
-            ,"paths":"<%= build_run_paths %>"
-            ,"out_dir":"<%= out_dir %>"
-            ,"meta_dir":"<%= meta_dir %>"
-            ,"log":false
-            ,"scripts":"<%= scripts %>"
-            ,"css":"<%= css %>"
+            "in_request": null,
+            "out_path": "<%= out_dir %>/",
+            "meta_dir": "<%= meta_dir %>/",
+            "paths":"<%= web_paths %>"
         }
-        ,"/some-browed-page.html":{
+    },
+
+
+
+
+    "phantomizer-strykejs-builder": {
+        "options": {
+            "port":"<%= phantom_web_port %>",
+            "ssl_port":"<%= phantom_web_ssl_port %>",
+            "paths":"<%= build_run_paths %>",
+            "out_dir":"<%= out_dir %>",
+            "meta_dir":"<%= meta_dir %>",
+            "log":false,
+            "scripts":"<%= scripts %>",
+            "css":"<%= css %>"
+        },
+        "/some-browed-page.html":{
             "options":{
                 "log":true
             }
         }
-    }
-    ,"phantomizer-html-assets": {
+    },
+    "phantomizer-html-assets": {
         "options": {
-            "requirejs_src":"<%= scripts.requirejs.src %>"
-            ,"requirejs_baseUrl":"<%= scripts.requirejs.baseUrl %>"
-            ,"paths":"<%= build_run_paths %>"
-            ,"manifest": false
-        }
-        ,"stryke-build":{
+            "requirejs_src":"<%= scripts.requirejs.src %>",
+            "requirejs_baseUrl":"<%= scripts.requirejs.baseUrl %>",
+            "paths":"<%= build_run_paths %>",
+            "manifest": false
+        },
+        "stryke-build":{
             "options":{
-                "file_suffix":"-b"
-                ,"requirejs_src":null
+                "file_suffix":"-b",
+                "requirejs_src":null
+            }
+        },
+        "stryke-assets-build":{
+            "options":{
+                "file_suffix":"-ba",
+                "requirejs": true,
+                "image_merge": true
+            }
+        },
+        "stryke-assets-min-build":{
+            "options":{
+                "file_suffix":"-mba",
+                "requirejs": true,
+                "htmlcompressor": true,
+                "imgcompressor": true,
+                "image_merge": true,
+                "uglify_js": true
             }
         }
-        ,"stryke-assets-build":{
-            "options":{
-                "file_suffix":"-ba"
-                ,"requirejs": true
-                ,"image_merge": true
-            }
-        }
-        ,"stryke-assets-min-build":{
-            "options":{
-                "file_suffix":"-mba"
-                ,"requirejs": true
-                ,"htmlcompressor": true
-                ,"imgcompressor": true
-                ,"image_merge": true
-                ,"uglify_js": true
-            }
-        }
-    }
+    },
 
-    ,"phantomizer-htmlcompressor":{
+    "phantomizer-htmlcompressor":{
         "options": {
             "preserved_html_comments": "(?si)<!-- #preserve_(js|css) .+? #endpreserve -->"
-        }
-        ,"stryke-assets-min-build":{
+        },
+        "stryke-assets-min-build":{
             "options":{
-                "compress-js":true
-                ,"compress-css":true
+                "compress-js":true,
+                "compress-css":true
             }
         }
-    }
-    ,"phantomizer-uglifyjs":{
+    },
+    "phantomizer-uglifyjs":{
         "options":{
-            "banner": ""
-            ,"beautify": false
-            ,"report": false
+            "banner": "",
+            "beautify": false,
+            "report": false
         }
-    }
-    ,"phantomizer-imgopt":{
+    },
+    "phantomizer-imgopt":{
         "options":{
-            "optimizationLevel": 0
-            ,"progressive":true
-        }
-        ,"stryke-assets-min-build":{
+            "optimizationLevel": 0,
+            "progressive":true
+        },
+        "stryke-assets-min-build":{
             "options":{
                 "optimizationLevel": 1
             }
         }
-    }
-    ,"phantomizer-requirejs":{
+    },
+    "phantomizer-requirejs":{
         "options":{
-            "out_dir":"<%= out_dir %>"
-            ,"meta_dir":"<%= meta_dir %>"
-            ,"baseUrl": "<%= src_dir %>js"
-            ,"paths": {
-                "almond": "<%= vendors_dir %>js/almond-0.2.5"
-                ,"vendors": "<%= vendors_dir %>/js/vendors"
-                ,"my_js_dir": "<%= vendors_dir %>/js/my_js_dir"
+            "out_dir":"<%= out_dir %>",
+            "meta_dir":"<%= meta_dir %>",
+            "baseUrl": "<%= src_dir %>js",
+            "paths": {
+                "almond": "<%= vendors_dir %>js/almond-0.2.5",
+                "vendors": "<%= vendors_dir %>/js/vendors",
+                "my_js_dir": "<%= vendors_dir %>/js/my_js_dir"
             },
             "excludeShallow": [
-                "knockout"
-                ,"knockout-2.2.1"
-                ,"knockout-2.2.1"
-            ]
-            ,"optimize": "none"
-            ,"wrap": true
-            ,"name": "almond"
-            ,"src_paths": "<%= build_run_paths %>"
-        }
-        ,"stryke-assets-min-build":{
+                "knockout",
+                "knockout-2.2.1",
+                "knockout-2.2.1"
+            ],
+            "optimize": "none",
+            "wrap": true,
+            "name": "almond",
+            "src_paths": "<%= build_run_paths %>"
+        },
+        "stryke-assets-min-build":{
             "options":{
                 "optimize": "uglify"
             }
         }
-    }
-    ,"phantomizer-requirecss":{
+    },
+    "phantomizer-requirecss":{
         "options":{
-            "optimizeCss": "standard.keepComments.keepLines"
-            ,"src_paths": "<%= build_run_paths %>"
-            ,"meta_dir":"<%= meta_dir %>"
-        }
-        ,"stryke-assets-min-build":{
+            "optimizeCss": "standard.keepComments.keepLines",
+            "src_paths": "<%= build_run_paths %>",
+            "meta_dir":"<%= meta_dir %>"
+        },
+        "stryke-assets-min-build":{
             "options":{
                 "optimizeCss": "standard"
             }
         }
-    }
+    },
 
 
-    ,"phantomizer-gm-merge": {
+    "phantomizer-gm-merge": {
         "options": {
-            "out_dir":"<%= out_dir %>"
-            ,"meta_dir":"<%= meta_dir %>"
-            ,"paths": "<%= build_run_paths %>"
-            ,"in_files": {
-                "images/some_target_picture.png":["images/icons/some_src_picture.png","images/icons/some_src_picture2.png"]
-                ,"images/some_target_picture@2x.png":["images/icons/some_src_picture@2x.png","images/icons/some_src_picture2@2x.png"]
+            "out_dir":"<%= out_dir %>",
+            "meta_dir":"<%= meta_dir %>",
+            "paths": "<%= build_run_paths %>",
+            "in_files": {
+                "images/some_target_picture.png":["images/icons/some_src_picture.png","images/icons/some_src_picture2.png"],
+                "images/some_target_picture@2x.png":["images/icons/some_src_picture@2x.png","images/icons/some_src_picture2@2x.png"]
             }
+        },
+        "stryke-build": {
+        },
+        "stryke-assets-build": {
+        },
+        "stryke-assets-min-build": {
         }
-        ,"stryke-build": {
-        }
-        ,"stryke-assets-build": {
-        }
-        ,"stryke-assets-min-build": {
-        }
-    }
-    ,"phantomizer-manifest-html": {
+    },
+    "phantomizer-manifest-html": {
         "options": {
-            "manifest_reloader":"<%= vendors_dir %>/js/manifest.reloader.js"
-            ,"network":[
+            "manifest_reloader":"<%= vendors_dir %>/js/manifest.reloader.js",
+            "network":[
                 "*"
-            ]
-            ,"meta_dir":"<%= meta_dir %>"
-            ,"paths": "<%= build_run_paths %>"
+            ],
+            "meta_dir":"<%= meta_dir %>",
+            "paths": "<%= build_run_paths %>"
+        },
+        "stryke-build": {
+        },
+        "stryke-assets-build": {
+        },
+        "stryke-assets-min-build": {
         }
-        ,"stryke-build": {
-        }
-        ,"stryke-assets-build": {
-        }
-        ,"stryke-assets-min-build": {
-        }
-    }
+    },
 
 
 
@@ -233,70 +279,85 @@
 
 
 
-    ,"phantomizer-qunit-runner": {
+    "phantomizer-qunit-runner": {
         "options": {
-            "port":"<%= test_web_port %>"
-            ,"ssl_port":"<%= test_web_ssl_port %>"
-            ,"paths":"<%= web_paths %>"
-            ,"base_url":"http://<%= web_domain %>:<%= phantom_web_port %>/"
-            ,"requirejs_src":"<%= scripts.requirejs.src %>"
-            ,"requirejs_baseUrl":"<%= scripts.requirejs.baseUrl %>"
-            ,"urls": {
+            "port":"<%= test_web_port %>",
+            "ssl_port":"<%= test_web_ssl_port %>",
+            "paths":"<%= web_paths %>",
+            "inject_assets":true,
+            "base_url":"http://<%= web_domain %>:<%= phantom_web_port %>/",
+            "requirejs_src":"<%= scripts.requirejs.src %>",
+            "requirejs_baseUrl":"<%= scripts.requirejs.baseUrl %>",
+            "urls": {
                 "/some-browsed-page.html":[
                     "some-test-name"
-                ]
-                ,"/some-browsed-page2.html":[
+                ],
+                "/some-browsed-page2.html":[
                     "some-test-name",
                     "some-test-name2"
                 ]
             }
         }
-    }
+    },
 
-    ,"phantomizer-export-build": {
+    "phantomizer-export-build": {
         "options": {
-            "export_dir":"<%= export_dir %>"
-            ,"paths":[
+            "export_dir":"<%= export_dir %>",
+            "paths":[
                 "<%= wbm_dir %>",
                 "<%= src_dir %>",
                 "<%= vendors_dir %>",
-                "<%= out_dir %>"]
-            ,"rm_dir":[
+                "<%= out_dir %>"
+            ],
+            "copy_patterns":[
+                "**/*.html",
+                "**/*.htm",
+                "**/*.js",
+                "**/*.css",
+                "**/*.gif",
+                "**/*.jpg",
+                "**/*.jpeg",
+                "**/*.png",
+                "**/*.pdf",
+                "**/*.xml",
+                "**/*.json",
+                "**/*.jsonp"
+            ],
+            "rm_dir":[
                 "<%= export_dir %>/js/tests/"
-            ]
-            ,"rm_files":[
+            ],
+            "rm_files":[
                 "<%= export_dir %>/README.md"
             ]
         }
-    }
-    ,"phantomizer-build": {
+    },
+    "phantomizer-build": {
         "options": {
-            "build_target":"stryke-assets-min-build"
-            ,"urls": [
-                "/some-browsed-page.html"
-                ,"/some-browsed-page2.html"
-            ]
-            ,"clean_dir":[
-                "<%= out_dir %>"
-                ,"<%= meta_dir %>"
-                ,"<%= export_dir %>"
-                ,"<%= documentation_dir %>"
+            "build_target":"stryke-assets-min-build",
+            "urls": [
+                "/some-browsed-page.html",
+                "/some-browsed-page2.html"
+            ],
+            "clean_dir":[
+                "<%= out_dir %>",
+                "<%= meta_dir %>",
+                "<%= export_dir %>",
+                "<%= documentation_dir %>"
             ]
         }
-    }
-    ,"phantomizer-docco": {
+    },
+    "phantomizer-docco": {
         "options": {
-            "src_pattern":["<%= src_dir %>","<%= wbm_dir %>"]
-            ,"out_dir":"<%= documentation_dir %>/js/"
+            "src_pattern":["<%= src_dir %>","<%= wbm_dir %>"],
+            "out_dir":"<%= documentation_dir %>/js/"
         }
-    }
-    ,"phantomizer-styledocco": {
+    },
+    "phantomizer-styledocco": {
         "options": {
-            "basePath":"<%= project_dir %>"
-            ,"src_pattern":["<%= src_dir %>**/*.css","<%= wbm_dir %>**/*.css"]
-            ,"out_dir":"<%= documentation_dir %>/css/"
+            "basePath":"<%= project_dir %>",
+            "src_pattern":["<%= src_dir %>**/*.css","<%= wbm_dir %>**/*.css"],
+            "out_dir":"<%= documentation_dir %>/css/"
         }
     }
 
-}
 }
