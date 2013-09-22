@@ -110,6 +110,7 @@ if( server != "" ){
 // quit on enter touch pressed
     readline_toquit(function(){
         webserver.stop();
+        process.exit(code=1)
     });
 
 }
