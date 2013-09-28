@@ -81,23 +81,18 @@ var target = argv.target || false;
 var verbose = argv.verbose || false;
 var version = argv.version || false;
 
-console.log("Welcome to phantomizer..")
+console.log("Welcome to phantomizer..");
 
 if( version ){
-    console.log("phantomizer 0.1")
-    process.exit(0)
+    console.log("phantomizer 0.1");
+    process.exit(0);
 }
 
 
 // Did you want to start webserver
 if( server != "" ){
 
-    var project = server;
-
-    if( project == "" ){
-        console.log("Please input the project name");
-        process.exit(code=0)
-    }
+    var project = get_project(argv, "server");
 
     var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
     var webserver = require(lib + '/webserver.js').webserver;
@@ -117,65 +112,35 @@ if( server != "" ){
 
 if( confess != "" ){
 
-    var project = confess;
+    var project = get_project(argv, "confess");
+    var config = get_config(project+'/config.json');
+    var target = get_target(argv, config.default_target);
 
-    if( project == "" ){
-        console.log("Please input the project name");
-        process.exit(code=0)
-    }
-
-    target = target==false?"":":"+target;
-    if( target == "" ){
-        console.log("Please input the target name");
-        process.exit(code=0)
-    }
-
-    get_config(project+'/config.json');
-    grunt.tasks(['phantomizer-confess'+target], {}, function(){
+    grunt.tasks(['phantomizer-confess:'+target], {}, function(){
         console.log("Measure done !");
     });
 }
 
 if( test != "" ){
 
-    var project = test;
+    var project = get_project(argv, "test");
+    var config = get_config(project+'/config.json');
+    var target = get_target(argv, config.default_target);
 
-    if( project == "" ){
-        console.log("Please input the project name");
-        process.exit(code=0)
-    }
-
-    target = target==false?"":":"+target;
-    if( target == "" ){
-        console.log("Please input the target name");
-        process.exit(code=0)
-    }
-
-    get_config(project+'/config.json');
-    grunt.tasks(['phantomizer-qunit-runner'+target], {}, function(){
+    grunt.tasks(['phantomizer-qunit-runner:'+target], {}, function(){
         console.log("Test done !");
     });
 }
 
 if( export_ != "" ){
 
-    var project = export_;
+    var project = get_project(argv, "export");
+    var config = get_config(project+'/config.json');
+    var target = get_target(argv, config.default_target);
 
-    if( project == "" ){
-        console.log("Please input the project name");
-        process.exit(code=0)
-    }
-
-    target = target==false?"":":"+target;
-    if( target == "" ){
-        console.log("Please input the target name");
-        process.exit(code=0)
-    }
-
-    get_config(project+'/config.json');
     var t = [
         'phantomizer-build',
-        'phantomizer-export-build'+target
+        'phantomizer-export-build:'+target
     ];
     grunt.tasks(t, {}, function(){
         console.log("Export done !");
@@ -184,12 +149,7 @@ if( export_ != "" ){
 
 if( document_ != "" ){
 
-    var project = document_;
-
-    if( project == "" ){
-        console.log("Please input the project name");
-        process.exit(code=0)
-    }
+    var project = get_project(argv, "document");
 
     var config = get_config(project+'/config.json');
     var t = [
@@ -204,12 +164,7 @@ if( document_ != "" ){
 
 if( clean != "" ){
 
-    var project = clean;
-
-    if( project == "" ){
-        console.log("Please input the project name");
-        process.exit(code=0)
-    }
+    var project = get_project(argv, "clean");
 
     var config = get_config(project+'/config.json');
 
@@ -231,12 +186,7 @@ if( clean != "" ){
 
 if( init != "" ){
 
-    var project = init;
-
-    if( project == "" ){
-        console.log("Please input the project name");
-        process.exit(code=0)
-    }
+    var project = get_project(argv, "init");
 
     var make_dir = function(p){
         if( fs.existsSync(p) == false ){
@@ -281,6 +231,28 @@ if( init != "" ){
     console.log("Init done !");
 }
 
+function get_project(argv, cmd){
+    if( argv[cmd] === true || argv[cmd] == "" ){
+        console.log("Please input the project name such,");
+        console.log("phantomizer --"+cmd+" <project>");
+        process.exit(code=0)
+    }
+    return argv[cmd];
+}
+
+function get_target(argv, default_target){
+    if( argv["target"] === true || argv["target"] == "" ){
+        if( default_target ){
+            return default_target;
+        }else{
+            console.log("Please input the project name such,");
+            console.log("phantomizer --<switch> <project> --target <target>");
+            process.exit(code=0)
+
+        }
+    }
+    return argv["target"];
+}
 
 function get_config( file ){
     var working_dir = process.cwd();
