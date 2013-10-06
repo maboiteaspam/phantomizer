@@ -95,19 +95,32 @@ if( server != "" ){
     var project = get_project(argv, "server");
 
     var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
-    var webserver = require(lib + '/webserver.js').webserver;
+    var webserver_factory = require(lib + '/webserver.js').webserver;
 
     var config = get_config(project+'/config.json');
-    webserver = new webserver(process.cwd(), config);
 
-    webserver.start(config.web_port,config.web_ssl_port);
+    var router_factory = ph_libutil.router;
+    var optimizer_factory = ph_libutil.optimizer;
+    var meta_factory = ph_libutil.meta;
+
+    var meta_manager = new meta_factory(process.cwd(), config.meta_dir)
+    var optimizer = new optimizer_factory(meta_manager, config)
+    var router = new router_factory(config.routing)
+
+    var webserver =null;
+    router.load(function(){
+        webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
+        webserver.start(config.web_port,config.web_ssl_port);
+
+    })
 
 // quit on enter touch pressed
     readline_toquit(function(){
-        webserver.stop();
+        if( webserver != null ){
+            webserver.stop();
+        }
         process.exit(code=1)
     });
-
 }
 
 if( confess != "" ){
@@ -139,7 +152,7 @@ if( export_ != "" ){
     var target = get_target(argv, config.default_target);
 
     var t = [
-        'phantomizer-build',
+        'phantomizer-build2:'+target,
         'phantomizer-export-build:'+target
     ];
     grunt.tasks(t, {}, function(){
