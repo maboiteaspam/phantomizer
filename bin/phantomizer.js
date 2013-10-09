@@ -152,8 +152,7 @@ if( export_ != "" ){
     var target = get_target(argv, config.default_target);
 
     var t = [
-        'phantomizer-build2:'+target,
-        'phantomizer-export-build:'+target
+        'phantomizer-build2:'+target
     ];
     grunt.tasks(t, {}, function(){
         console.log("Export done !");
