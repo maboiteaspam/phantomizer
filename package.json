@@ -1,39 +1,38 @@
 {
     "name": "phantomizer",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "private": true,
     "preferGlobal": true,
     "description": "Embedded web development environment, helps to build better HTML ui",
     "keywords": "",
     "bugs": {
-        "url" : "http://github.com/maboiteaspam/phantomizer/issues",
-        "email" : "none@host.com"
+        "url": "http://github.com/maboiteaspam/phantomizer/issues",
+        "email": "none@host.com"
     },
-    "license" : "mit",
+    "license": "mit",
     "directories.lib": "lib/",
     "directories.example": "example/",
-    "repository" :{
-        "type" : "git",
-        "url" : "http://github.com/maboiteaspam/phantomizer.git"
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/maboiteaspam/phantomizer.git"
     },
     "main": "lib/phantomizer",
-    "bin" :{
-        "phantomizer" : "./bin/phantomizer.js"
+    "bin": {
+        "phantomizer": "./bin/phantomizer.js"
     },
     "dependencies": {
-        "grunt": "0.4.x"
-        ,"connect": "2.x.x"
-        ,"lodash": "0.9.x"
-        ,"optimist": "0.4.x"
-        ,"phantomizer-websupport": "maboiteaspam/phantomizer-websupport"
-        ,"phantomizer-libutil": "maboiteaspam/phantomizer-libutil"
-        ,"phantomizer-grunt": "maboiteaspam/phantomizer-grunt"
-        ,"phantomizer-styledocco": "maboiteaspam/phantomizer-styledocco"
-        ,"phantomizer-docco": "maboiteaspam/phantomizer-docco"
-        ,"phantomizer-confess": "maboiteaspam/phantomizer-confess"
-        ,"phantomizer-html-builder": "maboiteaspam/phantomizer-html-builder"
-        ,"phantomizer-export-build": "maboiteaspam/phantomizer-export-build"
+        "grunt": "0.4.x",
+        "connect": "2.x.x",
+        "lodash": "0.9.x",
+        "optimist": "0.4.x",
+        "phantomizer-websupport": "maboiteaspam/phantomizer-websupport",
+        "phantomizer-libutil": "maboiteaspam/phantomizer-libutil",
+        "phantomizer-grunt": "maboiteaspam/phantomizer-grunt",
+        "phantomizer-styledocco": "maboiteaspam/phantomizer-styledocco",
+        "phantomizer-docco": "maboiteaspam/phantomizer-docco",
+        "phantomizer-confess": "maboiteaspam/phantomizer-confess",
+        "phantomizer-html-builder": "maboiteaspam/phantomizer-html-builder",
+        "phantomizer-export-build": "maboiteaspam/phantomizer-export-build"
     },
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }
