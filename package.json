@@ -32,7 +32,8 @@
         "phantomizer-docco": "maboiteaspam/phantomizer-docco",
         "phantomizer-confess": "maboiteaspam/phantomizer-confess",
         "phantomizer-html-builder": "maboiteaspam/phantomizer-html-builder",
-        "phantomizer-export-build": "maboiteaspam/phantomizer-export-build"
+        "phantomizer-export-build": "maboiteaspam/phantomizer-export-build",
+        "phantomizer-html-dirlisting": "maboiteaspam/phantomizer-html-dirlisting"
     },
     "devDependencies": {}
 }
