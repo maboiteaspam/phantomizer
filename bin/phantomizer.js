@@ -111,7 +111,6 @@ if( server != "" ){
     router.load(function(){
         webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
         webserver.start(config.web_port,config.web_ssl_port);
-
     })
 
 // quit on enter touch pressed
@@ -152,11 +151,10 @@ if( export_ != "" ){
     var target = get_target(argv, config.default_target);
 
     var t = [
-        'phantomizer-build2:'+target
+        'phantomizer-build2:'+target,
+        'export-done'
     ];
-    grunt.tasks(t, {}, function(){
-        console.log("Export done !");
-    });
+    grunt.tasks(t, {});
 }
 
 if( document_ != "" ){
@@ -273,11 +271,16 @@ function get_config( file ){
     if( ! config["vendors_dir"] ){
         config["vendors_dir"] = require("phantomizer-websupport").www_vendors_path;
     }
+    if( ! config["dirlisting_dir"] ){
+        config["dirlisting_dir"] = require("phantomizer-html-dirlisting").html_dirlisting.resouces_path;
+    }
+
     config.wd = working_dir;
     config.project_dir = path.resolve(config.project_dir)+"/";
     config.src_dir = path.resolve(config.src_dir)+"/";
     config.wbm_dir = path.resolve(config.wbm_dir)+"/";
     config.vendors_dir = path.resolve(config.vendors_dir)+"/";
+    config.dirlisting_dir = path.resolve(config.dirlisting_dir)+"/";
     config.out_dir = path.resolve(config.out_dir)+"/";
     config.meta_dir = path.resolve(config.meta_dir)+"/";
     config.export_dir = path.resolve(config.export_dir)+"/";
