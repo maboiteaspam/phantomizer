@@ -3,7 +3,7 @@
     "version": "0.1.19",
     "private": true,
     "preferGlobal": true,
-    "description": "Embedded web development environment, helps to build better HTML ui test",
+    "description": "Embedded web development environment, helps to build better HTML ui",
     "keywords": "",
     "bugs": {
         "url": "http://github.com/maboiteaspam/phantomizer/issues",
