@@ -25,15 +25,15 @@
         "connect": "2.x.x",
         "lodash": "0.9.x",
         "optimist": "0.4.x",
-        "phantomizer-websupport": "maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-websupport#e4e5809",
-        "phantomizer-libutil": "maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-libutil#010b357",
-        "phantomizer-grunt": "maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-grunt#ca41915",
-        "phantomizer-styledocco": "maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-styledocco#704ddd5",
-        "phantomizer-docco": "maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-docco#33a164c",
-        "phantomizer-confess": "maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-confess#4518cad",
-        "phantomizer-html-builder": "maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-html-builder#7d4a852",
-        "phantomizer-export-build": "maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-export-build#4fec1f9",
-        "phantomizer-html-dirlisting": "maboiteaspam/maboiteaspam/maboiteaspam/phantomizer-html-dirlisting#d640b33"
+        "phantomizer-websupport": "maboiteaspam/phantomizer-websupport#e4e5809",
+        "phantomizer-libutil": "maboiteaspam/phantomizer-libutil#010b357",
+        "phantomizer-grunt": "maboiteaspam/phantomizer-grunt#ca41915",
+        "phantomizer-styledocco": "maboiteaspam/phantomizer-styledocco#704ddd5",
+        "phantomizer-docco": "maboiteaspam/phantomizer-docco#33a164c",
+        "phantomizer-confess": "maboiteaspam/phantomizer-confess#52871cc",
+        "phantomizer-html-builder": "maboiteaspam/phantomizer-html-builder#7d4a852",
+        "phantomizer-export-build": "maboiteaspam/phantomizer-export-build#4fec1f9",
+        "phantomizer-html-dirlisting": "maboiteaspam/phantomizer-html-dirlisting#d640b33"
     },
     "devDependencies": {}
 }
