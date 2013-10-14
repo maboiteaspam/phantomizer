@@ -31,8 +31,7 @@
         "phantomizer-docco": "git://github.com/maboiteaspam/phantomizer-docco.git",
         "phantomizer-confess": "git://github.com/maboiteaspam/phantomizer-confess.git",
         "phantomizer-html-builder": "git://github.com/maboiteaspam/phantomizer-html-builder.git",
-        "phantomizer-export-build": "git://github.com/maboiteaspam/phantomizer-export-build.git",
-        "phantomizer-html-dirlisting": "git://github.com/maboiteaspam/phantomizer-html-dirlisting.git"
+        "phantomizer-export-build": "git://github.com/maboiteaspam/phantomizer-export-build.git"
     },
     "devDependencies": {}
 }
