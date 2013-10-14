@@ -16,7 +16,6 @@
         "type": "git",
         "url": "http://github.com/maboiteaspam/phantomizer.git"
     },
-    "main": "lib/phantomizer",
     "bin": {
         "phantomizer": "./bin/phantomizer.js"
     },

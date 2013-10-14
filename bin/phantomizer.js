@@ -95,7 +95,7 @@ if( server != "" ){
     var project = get_project(argv, "server");
 
     var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
-    var webserver_factory = require(lib + '/webserver.js').webserver;
+    var webserver_factory = ph_libutil.webserver;
 
     var config = get_config(project+'/config.json');
 
