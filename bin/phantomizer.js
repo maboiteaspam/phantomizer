@@ -345,7 +345,7 @@ function get_config( file ){
         "optimizeCss": "standard"
     });
 
-// pass important path to requirecss task
+// pass important path to manifest task
     init_task_options(config,"phantomizer-manifest",{
         meta_dir:config.meta_dir,
         project_dir: config.project_dir,
@@ -361,6 +361,32 @@ function get_config( file ){
         network:["*"]
     });
 
+// pass important path to html-assets task
+    init_task_options(config,"phantomizer-html-assets",{
+        meta_dir:config.meta_dir,
+        out_path:config.out_dir,
+        requirejs_src:config.scripts.requirejs.src || null,
+        requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
+        "manifest": true,
+        paths:[config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir]
+    });
+    init_target_options(config,"phantomizer-html-assets","stryke-build",{
+        "file_suffix":"-b",
+        "requirejs_src":null
+    });
+    init_target_options(config,"phantomizer-html-assets","stryke-assets-build",{
+        "file_suffix":"-ba",
+        "requirejs": true,
+        "image_merge": true
+    });
+    init_target_options(config,"phantomizer-html-assets","stryke-assets-min-build",{
+        "file_suffix":"-mba",
+        "requirejs": true,
+        "imgcompressor": true,
+        "image_merge": true,
+        "uglify_js": true
+    });
+
     grunt.config.init(config);
     return grunt.config.get();
 }
@@ -369,12 +395,12 @@ function get_config( file ){
 function init_task_options(config,task_name,options){
     if(!config[task_name]) config[task_name] = {options:{}};
     if(!config[task_name].options) config[task_name].options = {};
-    underscore.extend(config[task_name].options,options);
+    underscore.defaults(config[task_name].options, options);
 }
 function init_target_options(config,task_name,target_name,options){
     if(!config[task_name][target_name]) config[task_name][target_name] = {options:{}};
     if(!config[task_name][target_name].options) config[task_name][target_name].options = {};
-    underscore.extend(config[task_name][target_name].options,options);
+    underscore.defaults(config[task_name][target_name].options,options);
 }
 
 function readline_toquit( end_handler ){
