@@ -345,6 +345,22 @@ function get_config( file ){
         "optimizeCss": "standard"
     });
 
+// pass important path to requirecss task
+    init_task_options(config,"phantomizer-manifest",{
+        meta_dir:config.meta_dir,
+        project_dir: config.project_dir,
+        manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
+        src_paths:[config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        network:["*"]
+    });
+    init_task_options(config,"phantomizer-manifest-html",{
+        meta_dir:config.meta_dir,
+        project_dir: config.project_dir,
+        manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
+        src_paths:[config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        network:["*"]
+    });
+
     grunt.config.init(config);
     return grunt.config.get();
 }
