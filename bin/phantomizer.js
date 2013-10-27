@@ -164,7 +164,7 @@ if( document_ != "" ){
 
     var project = get_project(argv, "document");
 
-    var config = get_config(project+'/config.json');
+    get_config(project+'/config.json');
     var t = [
         'phantomizer-docco',
         'phantomizer-styledocco'
@@ -309,15 +309,23 @@ function get_config( file ){
         "out_dir":"<%= documentation_dir %>/css/"
     });
 
+// pass important path to confess task
+    init_task_options(config,"phantomizer-confess",{
+        meta_dir:config.meta_dir,
+        web_server_paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
+        port:config.web_port,
+        ssl_port:config.web_ssl_port,
+        host:'http://'+config.web_domain
+    });
+
     grunt.config.init(config);
     return grunt.config.get();
 }
 
 
 function init_task_options(config,task_name,options){
-    if(!config[task_name]){
-        config[task_name] = {options:{}};
-    }
+    if(!config[task_name]) config[task_name] = {options:{}};
+    if(!config[task_name].options) config[task_name].options = {};
     underscore.extend(config[task_name].options,options);
 }
 
