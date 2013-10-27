@@ -1,6 +1,6 @@
 {
     "name": "phantomizer",
-    "version": "0.1.23",
+    "version": "0.1.24",
     "private": true,
     "preferGlobal": true,
     "description": "Embedded web development environment, helps to build better HTML ui",
@@ -22,6 +22,7 @@
     "dependencies": {
         "grunt": "0.4.x",
         "optimist": "0.4.x",
+        "underscore": "1.5.x",
         "phantomizer-websupport": "git://github.com/maboiteaspam/phantomizer-websupport.git",
         "phantomizer-libutil": "git://github.com/maboiteaspam/phantomizer-libutil.git",
         "phantomizer-html-dirlisting": "git://github.com/maboiteaspam/phantomizer-html-dirlisting.git"
