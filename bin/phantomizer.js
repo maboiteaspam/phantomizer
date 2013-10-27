@@ -6,6 +6,7 @@ var path = require("path");
 var optimist = require("optimist");
 var grunt = require("grunt");
 var ph_libutil = require("phantomizer-libutil");
+var underscore = require("underscore");
 
 var file_utils = ph_libutil.file_utils;
 
@@ -154,6 +155,14 @@ if( export_ != "" ){
         'phantomizer-build2:'+target,
         'export-done'
     ];
+    /*
+     var t = [
+     'phantomizer-build2:'+target,
+     'phantomizer-export-build:'+target,
+     // 'phantomizer-export-slim:'+target,
+     'export-done'
+     ];
+    */
     grunt.tasks(t, {});
 }
 
@@ -286,17 +295,44 @@ function get_config( file ){
     config.export_dir = path.resolve(config.export_dir)+"/";
     config.documentation_dir = path.resolve(config.documentation_dir)+"/";
 
+// pass important path to docco task
+    init_task_options(config,"phantomizer-docco",{
+        'src_dir':config.src_dir,
+        'wbm_dir':config.wbm_dir,
+        'documentation_dir':config.documentation_dir,
+        src_pattern:["<%= src_dir %>/js/","<%= wbm_dir %>/js/"],
+        out_dir:'<%= documentation_dir %>/js/',
+        layout:'linear'
+    });
+
+// pass important path to styledocco task
+    init_task_options(config,"phantomizer-styledocco",{
+        'src_dir':config.src_dir,
+        'wbm_dir':config.wbm_dir,
+        'documentation_dir':config.documentation_dir,
+        "basePath":"<%= project_dir %>",
+        "src_pattern":["<%= src_dir %>**/*.css","<%= wbm_dir %>**/*.css"],
+        "out_dir":"<%= documentation_dir %>/css/"
+    });
+
     grunt.config.init(config);
     return grunt.config.get();
 }
 
+
+function init_task_options(config,task_name,options){
+    if(!config[task_name]){
+        config[task_name] = {options:{}};
+    }
+    underscore.extend(config[task_name].options,options);
+}
 
 function readline_toquit( end_handler ){
 
     var readline = require('readline')
     var rl = readline.createInterface(process.stdin, process.stdout);
 
-    rl.question('Press enter to leave...', function(answer) {
+    rl.question('Press enter to leave...\n', function(answer) {
         console.log('See you soon !');
         if( end_handler != null ){
             end_handler()
