@@ -8,14 +8,14 @@ to provide an unified and easy to use tasks.
 # Installation
 
 # Usage
-
+```bash
 phantomizer --init <project_dir>
 
 phantomizer --test <project_dir>
 
 phantomizer --document <project_dir>
 
-phantomizer --export <project_dir> [export_target]
+phantomizer --export <project_dir> [export_target]```
 
 # Embedded, thanks to all of them
 

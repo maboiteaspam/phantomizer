@@ -153,16 +153,10 @@ if( export_ != "" ){
 
     var t = [
         'phantomizer-build2:'+target,
+        'phantomizer-export-build:'+target,
+        // 'phantomizer-export-slim:'+target,
         'export-done'
     ];
-    /*
-     var t = [
-     'phantomizer-build2:'+target,
-     'phantomizer-export-build:'+target,
-     // 'phantomizer-export-slim:'+target,
-     'export-done'
-     ];
-    */
     grunt.tasks(t, {});
 }
 
