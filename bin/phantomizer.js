@@ -318,6 +318,33 @@ function get_config( file ){
         host:'http://'+config.web_domain
     });
 
+// pass important path to requirejs task
+    init_task_options(config,"phantomizer-requirejs",{
+        src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        project_dir: config.project_dir,
+        meta_dir: config.meta_dir,
+        "baseUrl": config.src_dir+"js",
+        "optimize": "none",
+        "wrap": true,
+        "name": "almond",
+        "almond_path": config.vendors_dir+"/js/almond-0.2.5",
+        "vendors_path": config.vendors_dir+"/js/vendors"
+    });
+    init_target_options(config,"phantomizer-requirejs","stryke-assets-min-build",{
+        "optimize": "uglify"
+    });
+
+// pass important path to requirecss task
+    init_task_options(config,"phantomizer-requirecss",{
+        src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        project_dir: config.project_dir,
+        meta_dir: config.meta_dir,
+        "optimizeCss": "standard.keepComments.keepLines"
+    });
+    init_target_options(config,"phantomizer-requirecss","stryke-assets-min-build",{
+        "optimizeCss": "standard"
+    });
+
     grunt.config.init(config);
     return grunt.config.get();
 }
@@ -327,6 +354,11 @@ function init_task_options(config,task_name,options){
     if(!config[task_name]) config[task_name] = {options:{}};
     if(!config[task_name].options) config[task_name].options = {};
     underscore.extend(config[task_name].options,options);
+}
+function init_target_options(config,task_name,target_name,options){
+    if(!config[task_name][target_name]) config[task_name][target_name] = {options:{}};
+    if(!config[task_name][target_name].options) config[task_name][target_name].options = {};
+    underscore.extend(config[task_name][target_name].options,options);
 }
 
 function readline_toquit( end_handler ){
