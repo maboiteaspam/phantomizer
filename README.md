@@ -20,7 +20,7 @@ phantomizer --export <project_dir> [export_target]
 
 # Embedded, thanks to all of them
 
-    - https://github.com/jacobrask/styledocco
+    https://github.com/jacobrask/styledocco
     https://github.com/jacobrask/docco
     https://github.com/jamesgpearce/confess
     https://github.com/jrburke/requirejs
