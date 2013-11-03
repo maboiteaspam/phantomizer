@@ -222,7 +222,9 @@ if( init != "" ){
     make_dir(project+"/project/www-vendors");
 
     var dist = path.join(path.dirname(fs.realpathSync(__filename)), '../dist');
-    file_utils.copyFile(dist+'/Gruntfile.js', 'Gruntfile.js');
+    if( fs.existsSync('Gruntfile.js') == false ){
+        file_utils.copyFile(dist+'/Gruntfile.js', 'Gruntfile.js');
+    }
     var project_config_file = project+'/config.json';
     if( fs.existsSync(project_config_file) == false ){
         file_utils.copyFile(dist+'/config.json', project_config_file);
@@ -236,6 +238,12 @@ if( init != "" ){
         c.export_dir = project+"/export/";
         c.documentation_dir = project+"/documentation/";
         file_utils.writeJSON(project_config_file, c);
+    }
+    var pckg_config_file = 'package.json';
+    if( fs.existsSync(pckg_config_file) == false ){
+        file_utils.copyFile(dist+'/package.json', pckg_config_file);
+        var c = file_utils.readJSON(pckg_config_file);
+        file_utils.writeJSON(pckg_config_file, c);
     }
     if( fs.existsSync(project+"/project/www-core/index.html") == false ){
         fs.writeFileSync(project+"/project/www-core/index.html", "Index file")
