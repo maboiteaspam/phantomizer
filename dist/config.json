@@ -35,21 +35,6 @@
         "append":{},
         "prepend":{}
     },
-    "phantomizer-html-assets": {
-        "options": {
-            "img_variance":{
-                "\\.(png|jpeg|jpg)$":"@2x.$1"
-            }
-        }
-    },
-    "phantomizer-gm-merge": {
-        "options": {
-            "in_files": {
-                "images/sprite.png":["images/icons/encre.png","images/icons/face.png"],
-                "images/sprite@2x.png":["images/icons/encre@2x.png","images/icons/face@2x.png"]
-            }
-        }
-    },
     "phantomizer-confess": {
         "test":{
             "options": {
