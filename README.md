@@ -13,7 +13,7 @@ It includes several ready to use / configure task oriented toward web developmen
 - test with qunit
 - documentation with docco and doccostyle
 - export project task
-- mobile device preview
+- mobile device emulation preview
 - bandwidth and network latency perturbators
 - qrcode helper
 - confess support
