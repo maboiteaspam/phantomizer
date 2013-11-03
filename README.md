@@ -2,8 +2,19 @@
 
 > Provides an environment to develop, run and build Phantomizer projects
 
-phantomizer is a set of embedded tool all together
-to provide an unified and easy to use tasks.
+phantomizer embeds popular tools all together
+to provide an unified and easy to use html development environment.
+
+It includes several ready to use / configure task oriented toward web development requirements,
+- minification with requirejs, uglifyjs, htmlcompressor
+- image optimization
+- image spriting
+- html manifest support
+- test with qunit
+- documentation with docco and doccostyle
+- export project task
+- mobile device preview
+- bandwidth and network latency perturbators
 
 # Installation
 
@@ -33,7 +44,9 @@ phantomizer --export <project_dir> [export_target]
     https://github.com/gruntjs/grunt-contrib-qunit
     ect... more to come later.
 
+# Why ?
 
+Because html rocks, but our tools fails.
 
 ## Release History
 
