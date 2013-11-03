@@ -271,31 +271,62 @@ function get_config( file ){
     var working_dir = process.cwd();
     var config = grunt.file.readJSON( file );
 
-    if( ! config["vendors_dir"] ){
-        config["vendors_dir"] = require("phantomizer-websupport").www_vendors_path;
+    if( ! config.vendors_dir ){
+        config.vendors_dir = require("phantomizer-websupport").www_vendors_path;
     }
-    if( ! config["dirlisting_dir"] ){
-        config["dirlisting_dir"] = require("phantomizer-html-dirlisting").html_dirlisting.resouces_path;
+    if( ! config.dirlisting_dir ){
+        config.dirlisting_dir = require("phantomizer-html-dirlisting").html_dirlisting.resouces_path;
     }
 
-    config.wd = working_dir;
-    config.project_dir = path.resolve(config.project_dir)+"/";
-    config.src_dir = path.resolve(config.src_dir)+"/";
-    config.wbm_dir = path.resolve(config.wbm_dir)+"/";
-    config.vendors_dir = path.resolve(config.vendors_dir)+"/";
-    config.dirlisting_dir = path.resolve(config.dirlisting_dir)+"/";
-    config.out_dir = path.resolve(config.out_dir)+"/";
-    config.meta_dir = path.resolve(config.meta_dir)+"/";
-    config.export_dir = path.resolve(config.export_dir)+"/";
-    config.documentation_dir = path.resolve(config.documentation_dir)+"/";
+    config.wd                   = working_dir;
+    config.project_dir          = path.resolve(config.project_dir)+"/";
+
+    config.out_dir              = path.resolve(config.out_dir)+"/";
+    config.meta_dir             = path.resolve(config.meta_dir)+"/";
+    config.export_dir           = path.resolve(config.export_dir)+"/";
+    config.documentation_dir    = path.resolve(config.documentation_dir)+"/";
+
+    config.src_dir              = path.resolve(config.src_dir)+"/";
+    config.wbm_dir              = path.resolve(config.wbm_dir)+"/";
+    config.vendors_dir          = path.resolve(config.vendors_dir)+"/";
+    config.dirlisting_dir       = path.resolve(config.dirlisting_dir)+"/";
+
+    config.web_paths            = config.web_paths || [
+        config.src_dir,
+        config.wbm_dir,
+        config.vendors_dir,
+        config.dirlisting_dir
+    ];
+
+    config.web_paths_no_dir     = [
+        config.src_dir,
+        config.wbm_dir,
+        config.vendors_dir
+    ];
+    for( var n in config.web_paths ) config.web_paths[n] = path.resolve(config.web_paths[n])+"/";
+    config.build_run_paths      = [];
+    for( var n in config.web_paths ) config.build_run_paths.push(config.web_paths[n]);
+    config.build_run_paths.push(config.out_dir);
+
+    config.verbose              = !!config.verbose;
+    config.debug                = !!config.debug;
+    config.log                  = !!config.log;
+    config.default_target       = config.default_target?config.default_target:"dev";
+    config.web_domain           = config.web_domain?config.web_domain:"localhost";
+    config.web_port             = config.web_port?config.web_port:8080;
+    config.web_ssl_port         = config.web_ssl_port?config.web_ssl_port:8081;
+    config.test_web_port        = config.test_web_port?config.test_web_port:8090;
+    config.test_web_ssl_port    = config.test_web_ssl_port?config.test_web_ssl_port:8091;
+    config.phantom_web_port     = config.phantom_web_port?config.phantom_web_port:8090;
+    config.phantom_web_ssl_port = config.phantom_web_ssl_port?config.phantom_web_ssl_port:8091;
 
 // pass important path to docco task
     init_task_options(config,"phantomizer-docco",{
         'src_dir':config.src_dir,
         'wbm_dir':config.wbm_dir,
         'documentation_dir':config.documentation_dir,
-        src_pattern:["<%= src_dir %>/js/","<%= wbm_dir %>/js/"],
-        out_dir:'<%= documentation_dir %>/js/',
+        src_pattern:[config.src_dir+"/js/",config.wbm_dir+"/js/"],
+        out_dir:config.documentation_dir+'/js/',
         layout:'linear'
     });
 
@@ -304,17 +335,17 @@ function get_config( file ){
         'src_dir':config.src_dir,
         'wbm_dir':config.wbm_dir,
         'documentation_dir':config.documentation_dir,
-        "basePath":"<%= project_dir %>",
-        "src_pattern":["<%= src_dir %>**/*.css","<%= wbm_dir %>**/*.css"],
-        "out_dir":"<%= documentation_dir %>/css/"
+        "basePath":config.project_dir,
+        "src_pattern":[config.src_dir+"**/*.css",config.wbm_dir+"**/*.css"],
+        "out_dir":config.documentation_dir+"/css/"
     });
 
 // pass important path to confess task
     init_task_options(config,"phantomizer-confess",{
         meta_dir:config.meta_dir,
         web_server_paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
-        port:config.web_port,
-        ssl_port:config.web_ssl_port,
+        port:config.test_web_port,
+        ssl_port:config.test_web_ssl_port,
         host:'http://'+config.web_domain
     });
 
@@ -327,6 +358,10 @@ function get_config( file ){
         "optimize": "none",
         "wrap": true,
         "name": "almond",
+        "paths": {
+            "almond": config.vendors_dir+"/js/almond-0.2.5",
+            "vendors": config.vendors_dir+"/js/vendors"
+        },
         "almond_path": config.vendors_dir+"/js/almond-0.2.5",
         "vendors_path": config.vendors_dir+"/js/vendors"
     });
@@ -336,7 +371,7 @@ function get_config( file ){
 
 // pass important path to requirecss task
     init_task_options(config,"phantomizer-requirecss",{
-        src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        src_paths: config.build_run_paths,
         project_dir: config.project_dir,
         meta_dir: config.meta_dir,
         "optimizeCss": "standard.keepComments.keepLines"
@@ -350,14 +385,14 @@ function get_config( file ){
         meta_dir:config.meta_dir,
         project_dir: config.project_dir,
         manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
-        src_paths:[config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        src_paths:config.build_run_paths,
         network:["*"]
     });
     init_task_options(config,"phantomizer-manifest-html",{
         meta_dir:config.meta_dir,
         project_dir: config.project_dir,
         manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
-        src_paths:[config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        src_paths:config.build_run_paths,
         network:["*"]
     });
 
@@ -367,8 +402,8 @@ function get_config( file ){
         out_path:config.out_dir,
         requirejs_src:config.scripts.requirejs.src || null,
         requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
-        "manifest": true,
-        paths:[config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir]
+        "manifest": false,
+        paths:config.build_run_paths
     });
     init_target_options(config,"phantomizer-html-assets","stryke-build",{
         "file_suffix":"-b",
@@ -386,6 +421,256 @@ function get_config( file ){
         "image_merge": true,
         "uglify_js": true
     });
+
+// pass important path to htmlcompressor task
+    init_task_options(config,"phantomizer-htmlcompressor",{
+        meta_dir:config.meta_dir,
+        "preserved_html_comments": "(?si)<!-- #preserve_(js|css) .+? #endpreserve -->"
+    });
+    init_target_options(config,"phantomizer-htmlcompressor","stryke-assets-min-build",{
+        "compress-js":true,
+        "compress-css":true
+    });
+
+    init_task_options(config,"phantomizer-dir-htmlcompressor",{
+        meta_dir:config.meta_dir,
+        "preserved_html_comments": "(?si)<!-- #preserve_(js|css) .+? #endpreserve -->"
+    });
+    init_target_options(config,"phantomizer-dir-htmlcompressor","stryke-assets-min-build",{
+        "compress-js":true,
+        "compress-css":true
+    });
+
+// pass important path to uglify task
+    init_task_options(config,"phantomizer-uglifyjs",{
+        meta_dir:config.meta_dir
+    });
+
+// pass important path to phantomizer-websupport task
+    init_task_options(config,"phantomizer-dir-inject-html-extras",{
+        "requirejs":config.scripts.requirejs || null
+    });
+
+// pass important path to phantomizer-strykejs
+    init_task_options(config,"phantomizer-strykejs-builder",{
+        port:config.phantom_web_port,
+        ssl_port:config.phantom_web_ssl_port,
+        paths:config.build_run_paths,
+        meta_dir:config.meta_dir,
+        scripts:config.scripts,
+        css:config.css
+    });
+    init_task_options(config,"phantomizer-strykejs-builder2",{
+        meta_dir:config.meta_dir,
+        port:config.phantom_web_port,
+        ssl_port:config.phantom_web_ssl_port,
+        urls_file:'',
+        paths:config.build_run_paths,
+        scripts:config.scripts,
+        css:config.css
+    });
+
+// pass important path to phantomizer-html-builder
+    init_task_options(config,"phantomizer-html-builder",{
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:config.web_paths_no_dir,
+        htmlcompressor:false,
+        build_assets:false
+    });
+    init_target_options(config,"phantomizer-html-builder","stryke-assets-build",{
+        "build_assets": true
+    });
+    init_target_options(config,"phantomizer-html-builder","stryke-assets-min-build",{
+        "build_assets": true,
+        "htmlcompressor": true
+    });
+
+    init_task_options(config,"phantomizer-html-jitbuild",{
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
+        htmlcompressor:false,
+        build_assets:false
+    });
+    init_target_options(config,"phantomizer-html-jitbuild","stryke-assets-build",{
+        "build_assets": true
+    });
+    init_target_options(config,"phantomizer-html-jitbuild","stryke-assets-min-build",{
+        "build_assets": true,
+        "htmlcompressor": true
+    });
+
+    init_task_options(config,"phantomizer-html-builder2",{
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:config.web_paths_no_dir,
+        html_manifest:false,
+        inject_extras:false,
+        htmlcompressor:false,
+        build_assets:false
+    });
+    init_target_options(config,"phantomizer-html-builder2","stryke-assets-build",{
+        "build_assets": true
+    });
+    init_target_options(config,"phantomizer-html-builder2","stryke-assets-min-build",{
+        "build_assets": true,
+        "html_manifest": true,
+        "htmlcompressor": true
+    });
+
+// pass important path to phantomizer-imgopt
+    init_task_options(config,"phantomizer-imgopt",{
+        optimizationLevel: 0,
+        "progressive":false,
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:config.build_run_paths
+    });
+    init_target_options(config,"phantomizer-imgopt","stryke-assets-min-build",{
+        "optimizationLevel": 1,
+        "progressive":true
+    });
+
+// pass important path to phantomizer-qunit-runner
+    init_task_options(config,"phantomizer-qunit-runner",{
+        "port":config.test_web_port,
+        "ssl_port":config.test_web_ssl_port,
+        "paths":config.web_paths,
+        "inject_assets":true,
+        "base_url":"http://"+config.web_domain+":"+config.test_web_port+"/",
+        "test_scripts_base_url":"/js/tests/",
+        "requirejs_src": config.scripts.requirejs.src,
+        "requirejs_baseUrl": config.scripts.requirejs.baseUrl
+    });
+    init_target_options(config,"phantomizer-qunit-runner","dev",{});
+    init_target_options(config,"phantomizer-qunit-runner","staging",{
+        "paths":[
+            "<%= export_dir %>/staging/"
+        ],
+        "inject_assets":false
+    });
+    init_target_options(config,"phantomizer-qunit-runner","contribution",{
+        "paths":[
+            "<%= export_dir %>/contribution/"
+        ],
+        "inject_assets":false
+    });
+    init_target_options(config,"phantomizer-qunit-runner","production",{
+        "paths":[
+            "<%= export_dir %>/production/"
+        ],
+        "inject_assets":false
+    });
+
+// pass important path to phantomizer-gm
+    init_task_options(config,"phantomizer-gm-merge",{
+        out_dir:config.out_dir,
+        meta_dir:config.meta_dir,
+        "paths": config.build_run_paths
+    });
+
+// pass important path to phantomizer-export-build
+    init_task_options(config,"phantomizer-export-build",{
+        "export_dir":config.export_dir,
+        "paths":config.build_run_paths,
+        "copy_patterns":[
+            "**/*.appcache",
+            "**/*.html",
+            "**/*.htm",
+            "**/*.js",
+            "**/*.css",
+            "**/*.gif",
+            "**/*.jpg",
+            "**/*.jpeg",
+            "**/*.png",
+            "**/*.pdf",
+            "**/*.xml",
+            "**/*.json",
+            "**/*.jsonp",
+            "**/*.map"
+        ]
+    });
+    init_target_options(config,"phantomizer-export-build","dev",{
+        "export_dir":config.export_dir+"/dev/www/"
+    });
+    init_target_options(config,"phantomizer-export-build","staging",{
+        "export_dir":config.export_dir+"/staging/www/",
+        "rm_files":[
+            config.export_dir+"/staging/www/README.md"
+        ]
+    });
+    init_target_options(config,"phantomizer-export-build","contribution",{
+        "export_dir":config.export_dir+"/contribution/www/",
+        "rm_files":[
+            config.export_dir+"/contribution/www/README.md"
+        ]
+    });
+    init_target_options(config,"phantomizer-export-build","production",{
+        "export_dir":config.export_dir+"/production/www/",
+        "rm_files":[
+            config.export_dir+"/production/www/README.md"
+        ],
+        "rm_dir":[
+            config.export_dir+"/production/www/js/tests/"
+        ]
+    });
+
+    init_task_options(config,"phantomizer-build",{
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir,
+            config.documentation_dir
+        ],
+        build_target:"stryke-assets-min-build"
+    });
+
+    init_task_options(config,"phantomizer-build2",{
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir,
+            config.documentation_dir
+        ],
+        build_target:"stryke-assets-min-build",
+        urls_file:"run/urls.json",
+        inject_extras:false
+    });
+    init_target_options(config,"phantomizer-build2","dev",{
+        "export_dir":config.export_dir+"/dev/",
+        inject_extras:true
+    });
+    init_target_options(config,"phantomizer-build2","staging",{
+        "export_dir":config.export_dir+"/staging/"
+    });
+    init_target_options(config,"phantomizer-build2","contribution",{
+        "export_dir":config.export_dir+"/contribution/"
+    });
+    init_target_options(config,"phantomizer-build2","production",{
+        "export_dir":config.export_dir+"/production/"
+    });
+
+// pass important path to phantomizer-export-build
+    init_task_options(config,"phantomizer-export-slim",{
+        "export_dir":config.export_dir,
+        "paths":config.build_run_paths,
+        "copy_patterns":[
+        ]
+    });
+    init_target_options(config,"phantomizer-export-slim","dev",{
+        "export_dir":config.export_dir+"/dev/"
+    });
+    init_target_options(config,"phantomizer-export-slim","staging",{
+        "export_dir":config.export_dir+"/staging/"
+    });
+    init_target_options(config,"phantomizer-export-slim","contribution",{
+        "export_dir":config.export_dir+"/contribution/"
+    });
+    init_target_options(config,"phantomizer-export-slim","production",{
+        "export_dir":config.export_dir+"/production/"
+    });
+
 
     grunt.config.init(config);
     return grunt.config.get();
