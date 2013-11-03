@@ -5,9 +5,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
 
 
+    // phantomizer webserver
     grunt.loadNpmTasks('phantomizer-grunt');
 
     // specific optimizer tasks
+    grunt.loadNpmTasks('phantomizer-manifest');
     grunt.loadNpmTasks('phantomizer-html-builder');
     grunt.loadNpmTasks('phantomizer-html-assets');
     grunt.loadNpmTasks('phantomizer-requirejs');
@@ -27,7 +29,10 @@ module.exports = function(grunt) {
 
     // project export tasks
     grunt.loadNpmTasks('phantomizer-export-build');
+    grunt.loadNpmTasks('phantomizer-slim');
 
-    // grunt.loadNpmTasks('phantomizer-confess');
+    grunt.loadNpmTasks('phantomizer-confess');
+
+    grunt.loadNpmTasks('phantomizer-websupport');
 
 };
