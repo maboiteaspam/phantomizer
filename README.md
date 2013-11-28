@@ -21,19 +21,21 @@ It includes several ready to use / configure task oriented toward web developmen
 
 # General assumption
 This project assume you want to make web application, and so provides tools to do it.
-It assumes that your websites has relatively small list of urls to build.
-Indeed that aims to provide support to provide both websites (multi pages / SEO) and webapp (one page).
-At that time it builds 500 urls in 2 mins under ubuntu 13 with an intel core i7.
+It aims to provide support to create both websites (multi pages / SEO) and webapp (one page).
+It assumes that your websites has relatively small list of urls to build in case of a website.
+As an example, at that time it builds 500 urls in ~2 mins under ubuntu 13 with an intel core i7.
+This project assume that you want to build and create a one package application, it does not intend to work as a proxy for FEO.
 
 # Client side mandatory
 It is mandatory to use phantomizer client side library to successfully build.
 At least, it has never been tested and developed without that library included on client side.
-That library helps you to take advantage of the differents build stage, you are invited to really use it in all case.
+That library helps you to take advantage of the different build stage available, you are strongly invited to use it in your development based on that tool.
 
 # Compatibility
 As of nodeJS, that tool aims to be available on all majors OS.
-It has actually been tested under linux / macos / windows xp-vista
+It has actually been actively used under linux / macos / windows xp-vista
 Mac OS setup has to be re tested and verified, some difficulties appeared because of sudo requirement to install binaries globally.
+
 
 # Installation
 ```bash
