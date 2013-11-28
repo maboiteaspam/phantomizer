@@ -320,13 +320,20 @@ function get_config( file ){
     config.debug                = !!config.debug;
     config.log                  = !!config.log;
     config.default_target       = config.default_target?config.default_target:"dev";
+
+// the local domain name
     config.web_domain           = config.web_domain?config.web_domain:"localhost";
+// the local web port
     config.web_port             = config.web_port?config.web_port:8080;
     config.web_ssl_port         = config.web_ssl_port?config.web_ssl_port:8081;
+// the local web port for phantom testing
     config.test_web_port        = config.test_web_port?config.test_web_port:8090;
     config.test_web_ssl_port    = config.test_web_ssl_port?config.test_web_ssl_port:8091;
+// the local web port for phantom build
     config.phantom_web_port     = config.phantom_web_port?config.phantom_web_port:8090;
     config.phantom_web_ssl_port = config.phantom_web_ssl_port?config.phantom_web_ssl_port:8091;
+
+
 
 // pass important path to docco task
     init_task_options(config,"phantomizer-docco",{
