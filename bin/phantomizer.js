@@ -42,9 +42,9 @@ var argv = optimist.usage('Phantomizer command line')
         .string('clean')
         .default('clean', false)
 
-        .describe('target', 'Grunt task\'s target to execute')
-        .string('target')
-        .default('target', false)
+        .describe('environment', 'Environment to run')
+        .string('environment')
+        .default('environment', false)
 
         // needs moe info ? Use -verbose
         .describe('verbose', 'more Verbose')
@@ -78,7 +78,7 @@ var export_ = argv.export || "";
 var document_ = argv.document || "";
 var confess = argv.confess || "";
 var clean = argv.clean || "";
-var target = argv.target || false;
+var environment = argv.environment || false;
 var verbose = argv.verbose || false;
 var version = argv.version || false;
 
@@ -94,24 +94,28 @@ if( version ){
 if( server != "" ){
 
     var project = get_project(argv, "server");
+    environment = get_environment(argv);
 
     var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
     var webserver_factory = ph_libutil.webserver;
 
-    var config = get_config(project+'/config.json');
+    var config = get_config(project+'/config.json', environment);
 
     var router_factory = ph_libutil.router;
     var optimizer_factory = ph_libutil.optimizer;
     var meta_factory = ph_libutil.meta;
 
-    var meta_manager = new meta_factory(process.cwd(), config.meta_dir)
-    var optimizer = new optimizer_factory(meta_manager, config)
-    var router = new router_factory(config.routing)
+    var meta_manager = new meta_factory(process.cwd(), config.meta_dir);
+    var optimizer = new optimizer_factory(meta_manager, config);
+    var router = new router_factory(config.routing);
 
     var webserver =null;
     router.load(function(){
         webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
-        webserver.start(config.web_port,config.web_ssl_port);
+        var h = "http://"+config.web_domain+(config.web_port?":"+config.web_port:"");
+        var hs = "https://"+config.web_domain+(config.web_domain?":"+config.web_ssl_port:"");
+        console.log("Webserver started on "+h+" "+(hs?hs:""));
+        webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
     })
 
 // quit on enter touch pressed
@@ -125,36 +129,36 @@ if( server != "" ){
 
 if( confess != "" ){
 
-    var project = get_project(argv, "confess");
-    var config = get_config(project+'/config.json');
-    var target = get_target(argv, config.default_target);
+    var project     = get_project(argv, "confess");
+    var environment = get_environment(argv);
+    var config      = get_config(project+'/config.json',environment);
 
-    grunt.tasks(['phantomizer-confess:'+target], {}, function(){
+    grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
         console.log("Measure done !");
     });
 }
 
 if( test != "" ){
 
-    var project = get_project(argv, "test");
-    var config = get_config(project+'/config.json');
-    var target = get_target(argv, config.default_target);
+    var project     = get_project(argv, "test");
+    var environment = get_environment(argv);
+    var confdig      = get_config(project+'/config.json',environment);
 
-    grunt.tasks(['phantomizer-qunit-runner:'+target], {}, function(){
+    grunt.tasks(['phantomizer-qunit-runner:'+environment], {}, function(){
         console.log("Test done !");
     });
 }
 
 if( export_ != "" ){
 
-    var project = get_project(argv, "export");
-    var config = get_config(project+'/config.json');
-    var target = get_target(argv, config.default_target);
+    var project     = get_project(argv, "export");
+    var environment = get_environment(argv);
+    var config      = get_config(project+'/config.json',environment);
 
     var t = [
-        'phantomizer-build2:'+target,
-        'phantomizer-export-build:'+target,
-        // 'phantomizer-export-slim:'+target,
+        'phantomizer-build2:'+environment,
+        'phantomizer-export-build:'+environment,
+        // 'phantomizer-export-slim:'+environment,
         'export-done'
     ];
     grunt.tasks(t, {});
@@ -162,14 +166,17 @@ if( export_ != "" ){
 
 if( document_ != "" ){
 
-    var project = get_project(argv, "document");
+    project = get_project(argv, "document");
 
     get_config(project+'/config.json');
     var t = [
         'phantomizer-docco',
         'phantomizer-styledocco'
     ];
-    grunt.tasks(t, {}, function(){
+    grunt.tasks([
+        'phantomizer-docco',
+        'phantomizer-styledocco'
+    ], {}, function(){
         console.log("Documentation done !");
     });
 
@@ -177,9 +184,9 @@ if( document_ != "" ){
 
 if( clean != "" ){
 
-    var project = get_project(argv, "clean");
-
-    var config = get_config(project+'/config.json');
+    var project     = get_project(argv, "clean");
+    var environment = get_environment(argv);
+    var config      = get_config(project+'/config.json',environment);
 
     var clean_dir = function(p){
         file_utils.deleteFolderRecursive(p);
@@ -261,21 +268,17 @@ function get_project(argv, cmd){
     return argv[cmd];
 }
 
-function get_target(argv, default_target){
-    if( argv["target"] === true || argv["target"] == "" ){
-        if( default_target ){
-            return default_target;
-        }else{
-            console.log("Please input the project name such,");
-            console.log("phantomizer --<switch> <project> --target <target>");
-            process.exit(code=0)
-
-        }
+function get_environment(argv){
+    if( argv["environment"] === true || argv["environment"] == "" ){
+        console.log("Automatically selected environment dev");
+        console.log("you can input the environment using,");
+        console.log("phantomizer --<switch> <project> --environment <environment>");
+        return "dev";
     }
-    return argv["target"];
+    return argv["environment"];
 }
 
-function get_config( file ){
+function get_config( file,enviroment ){
     var working_dir = process.cwd();
     var config = grunt.file.readJSON( file );
 
@@ -296,16 +299,88 @@ function get_config( file ){
         build_run_paths:null,
         verbose:false,
         debug:false,
-        log:false,
-        default_target:"dev",
+        log:false
+        /*
+        ,
         web_domain:"localhost",
         web_port:8080,
         web_ssl_port:8081,
         test_web_port:8090,
         test_web_ssl_port:8091,
         phantom_web_port:8090,
-        phantom_web_ssl_port:8091
+        phantom_web_ssl_port:8091*/,
+        environment:{}
     });
+
+    underscore.defaults(config.environment,{
+        production:{},
+        contribution:{},
+        staging:{},
+        dev:{}
+    });
+
+    underscore.defaults(config.environment.production,{
+        datasource_base_url:"http://localhost/",
+        web_domain:"localhost",
+        web_port:8050,
+        web_ssl_port:8051,
+        test_web_port:8052,
+        test_web_ssl_port:8053,
+        phantom_web_port:8054,
+        phantom_web_ssl_port:8055
+    });
+
+    underscore.defaults(config.environment.contribution,{
+        datasource_base_url:"http://localhost/",
+        web_domain:"localhost",
+        web_port:8060,
+        web_ssl_port:8061,
+        test_web_port:8062,
+        test_web_ssl_port:8063,
+        phantom_web_port:8064,
+        phantom_web_ssl_port:8065
+    });
+
+    underscore.defaults(config.environment.staging,{
+        datasource_base_url:"http://localhost/",
+        web_domain:"localhost",
+        web_port:8070,
+        web_ssl_port:8071,
+        test_web_port:8072,
+        test_web_ssl_port:8073,
+        phantom_web_port:8074,
+        phantom_web_ssl_port:8075
+    });
+
+    underscore.defaults(config.environment.dev,{
+        datasource_base_url:"http://localhost/",
+        web_domain:"localhost",
+        web_port:8080,
+        web_ssl_port:8081,
+        test_web_port:8092,
+        test_web_ssl_port:8083,
+        phantom_web_port:8084,
+        phantom_web_ssl_port:8085
+    });
+
+
+    config.datasource_base_url = config.environment[enviroment].datasource_base_url;
+    config.web_domain = config.environment[enviroment].web_domain;
+    config.web_port = config.environment[enviroment].web_port;
+    config.web_ssl_port = config.environment[enviroment].web_ssl_port;
+    config.test_web_port = config.environment[enviroment].test_web_ssl_port;
+    config.phantom_web_port = config.environment[enviroment].phantom_web_port;
+    config.phantom_web_ssl_port = config.environment[enviroment].phantom_web_ssl_port;
+
+    for( var n in config.routing){
+        if( config.routing[n].urls_datasource ){
+            if( ! config.routing[n].urls_datasource.match(/^http/)){
+                config.routing[n].urls_datasource = config.datasource_base_url+""+config.routing[n].urls_datasource+"";
+            }
+        }
+    }
+
+
 
     config.project_dir          = path.resolve(config.project_dir)+"/";
 
@@ -365,9 +440,9 @@ function get_config( file ){
     init_task_options(config,"phantomizer-confess",{
         meta_dir:config.meta_dir,
         web_server_paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
+        host:config.web_domain,
         port:config.test_web_port,
-        ssl_port:config.test_web_ssl_port,
-        host:'http://'+config.web_domain
+        ssl_port:config.test_web_ssl_port
     });
 
 // pass important path to requirejs task
@@ -568,19 +643,19 @@ function get_config( file ){
     init_target_options(config,"phantomizer-qunit-runner","dev",{});
     init_target_options(config,"phantomizer-qunit-runner","staging",{
         "paths":[
-            "<%= export_dir %>/staging/"
+            "<%= export_dir %>/staging/www/"
         ],
         "inject_assets":false
     });
     init_target_options(config,"phantomizer-qunit-runner","contribution",{
         "paths":[
-            "<%= export_dir %>/contribution/"
+            "<%= export_dir %>/contribution/www/"
         ],
         "inject_assets":false
     });
     init_target_options(config,"phantomizer-qunit-runner","production",{
         "paths":[
-            "<%= export_dir %>/production/"
+            "<%= export_dir %>/production/www/"
         ],
         "inject_assets":false
     });
@@ -662,17 +737,13 @@ function get_config( file ){
         inject_extras:false
     });
     init_target_options(config,"phantomizer-build2","dev",{
-        "export_dir":config.export_dir+"/dev/",
         inject_extras:true
     });
     init_target_options(config,"phantomizer-build2","staging",{
-        "export_dir":config.export_dir+"/staging/"
     });
     init_target_options(config,"phantomizer-build2","contribution",{
-        "export_dir":config.export_dir+"/contribution/"
     });
     init_target_options(config,"phantomizer-build2","production",{
-        "export_dir":config.export_dir+"/production/"
     });
 
 // pass important path to phantomizer-export-build
