@@ -279,16 +279,37 @@ function get_config( file ){
     var working_dir = process.cwd();
     var config = grunt.file.readJSON( file );
 
-    if( ! config.vendors_dir ){
-        config.vendors_dir = require("phantomizer-websupport").www_vendors_path;
-    }
-    if( ! config.dirlisting_dir ){
-        config.dirlisting_dir = require("phantomizer-html-dirlisting").html_dirlisting.resouces_path;
-    }
+    underscore.defaults(config,{
+        vendors_dir:require("phantomizer-websupport").www_vendors_path,
+        dirlisting_dir:require("phantomizer-html-dirlisting").html_dirlisting.resouces_path,
+        wd:working_dir,
+        project_dir:"",
+        run_dir:"",
+        out_dir:"",
+        meta_dir:"",
+        export_dir:"",
+        documentation_dir:"",
+        src_dir:"",
+        wbm_dir:"",
+        web_paths:null,
+        web_paths_no_dir:null,
+        build_run_paths:null,
+        verbose:false,
+        debug:false,
+        log:false,
+        default_target:"dev",
+        web_domain:"localhost",
+        web_port:8080,
+        web_ssl_port:8081,
+        test_web_port:8090,
+        test_web_ssl_port:8091,
+        phantom_web_port:8090,
+        phantom_web_ssl_port:8091
+    });
 
-    config.wd                   = working_dir;
     config.project_dir          = path.resolve(config.project_dir)+"/";
 
+    config.run_dir              = path.resolve(config.run_dir)+"/";
     config.out_dir              = path.resolve(config.out_dir)+"/";
     config.meta_dir             = path.resolve(config.meta_dir)+"/";
     config.export_dir           = path.resolve(config.export_dir)+"/";
@@ -319,14 +340,6 @@ function get_config( file ){
     config.verbose              = !!config.verbose;
     config.debug                = !!config.debug;
     config.log                  = !!config.log;
-    config.default_target       = config.default_target?config.default_target:"dev";
-    config.web_domain           = config.web_domain?config.web_domain:"localhost";
-    config.web_port             = config.web_port?config.web_port:8080;
-    config.web_ssl_port         = config.web_ssl_port?config.web_ssl_port:8081;
-    config.test_web_port        = config.test_web_port?config.test_web_port:8090;
-    config.test_web_ssl_port    = config.test_web_ssl_port?config.test_web_ssl_port:8091;
-    config.phantom_web_port     = config.phantom_web_port?config.phantom_web_port:8090;
-    config.phantom_web_ssl_port = config.phantom_web_ssl_port?config.phantom_web_ssl_port:8091;
 
 // pass important path to docco task
     init_task_options(config,"phantomizer-docco",{
@@ -469,6 +482,7 @@ function get_config( file ){
         css:config.css
     });
     init_task_options(config,"phantomizer-strykejs-builder2",{
+        run_dir:config.run_dir,
         meta_dir:config.meta_dir,
         port:config.phantom_web_port,
         ssl_port:config.phantom_web_ssl_port,
@@ -584,6 +598,8 @@ function get_config( file ){
         "paths":config.build_run_paths,
         "copy_patterns":[
             "**/*.appcache",
+            "**/*.manifest",
+            "**/*.txt",
             "**/*.html",
             "**/*.htm",
             "**/*.js",
