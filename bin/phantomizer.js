@@ -253,8 +253,10 @@ if( init != "" ){
         file_utils.writeJSON(pckg_config_file, c, true);
     }
     if( fs.existsSync(project+"/project/www-core/index.html") == false ){
-        fs.mkdirSync(project+"/project/www-core/js/");
         file_utils.copyFile(dist+'/www-core/index.html', project+"/project/www-core/index.html");
+    }
+    if( fs.existsSync(project+"/project/www-core/js/index.js") == false ){
+        fs.mkdirSync(project+"/project/www-core/js/");
         file_utils.copyFile(dist+'/www-core/js/index.js', project+"/project/www-core/js/index.js");
     }
 
