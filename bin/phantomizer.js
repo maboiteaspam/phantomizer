@@ -244,13 +244,13 @@ if( init != "" ){
         c.meta_dir = project+"/run/meta/";
         c.export_dir = project+"/export/";
         c.documentation_dir = project+"/documentation/";
-        file_utils.writeJSON(project_config_file, c, null, 4);
+        file_utils.writeJSON(project_config_file, c, true);
     }
     var pckg_config_file = 'package.json';
     if( fs.existsSync(pckg_config_file) == false ){
         file_utils.copyFile(dist+'/package.json', pckg_config_file);
         var c = file_utils.readJSON(pckg_config_file);
-        file_utils.writeJSON(pckg_config_file, c, null, 4);
+        file_utils.writeJSON(pckg_config_file, c, true);
     }
     if( fs.existsSync(project+"/project/www-core/index.html") == false ){
         fs.writeFileSync(project+"/project/www-core/index.html", "Index file")
