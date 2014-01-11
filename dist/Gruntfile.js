@@ -29,7 +29,6 @@ module.exports = function(grunt) {
 
     // project export tasks
     grunt.loadNpmTasks('phantomizer-export-build');
-    grunt.loadNpmTasks('phantomizer-slim');
 
     grunt.loadNpmTasks('phantomizer-confess');
 
