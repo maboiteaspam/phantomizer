@@ -22,7 +22,8 @@
         "strip":[],
         "requirejs":{
             "src": ["require-2.1.8.min.js"],
-            "baseUrl": "/js/"
+            "baseUrl": "/js/",
+            "paths":{}
         },
         "append":{},
         "prepend":{
