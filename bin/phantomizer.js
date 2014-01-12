@@ -285,8 +285,8 @@ function get_environment(argv){
 function get_config( file,enviroment ){
     var working_dir = process.cwd();
     var config = grunt.file.readJSON( file );
-
-    underscore.defaults(config,{
+// init general structure
+    config = underscore.defaults(config,{
         vendors_dir:require("phantomizer-websupport").www_vendors_path,
         dirlisting_dir:require("phantomizer-html-dirlisting").html_dirlisting.resouces_path,
         wd:working_dir,
@@ -315,15 +315,15 @@ function get_config( file,enviroment ){
         phantom_web_ssl_port:8091*/,
         environment:{}
     });
-
-    underscore.defaults(config.environment,{
+// init environments
+    config.environment = underscore.defaults(config.environment,{
         production:{},
         contribution:{},
         staging:{},
         dev:{}
     });
 
-    underscore.defaults(config.environment.production,{
+    config.environment.production = underscore.defaults(config.environment.production,{
         datasource_base_url:"http://localhost/",
         web_domain:"localhost",
         web_port:8050,
@@ -334,7 +334,7 @@ function get_config( file,enviroment ){
         phantom_web_ssl_port:8055
     });
 
-    underscore.defaults(config.environment.contribution,{
+    config.environment.contribution = underscore.defaults(config.environment.contribution,{
         datasource_base_url:"http://localhost/",
         web_domain:"localhost",
         web_port:8060,
@@ -345,7 +345,7 @@ function get_config( file,enviroment ){
         phantom_web_ssl_port:8065
     });
 
-    underscore.defaults(config.environment.staging,{
+    config.environment.staging = underscore.defaults(config.environment.staging,{
         datasource_base_url:"http://localhost/",
         web_domain:"localhost",
         web_port:8070,
@@ -356,7 +356,7 @@ function get_config( file,enviroment ){
         phantom_web_ssl_port:8075
     });
 
-    underscore.defaults(config.environment.dev,{
+    config.environment.dev = underscore.defaults(config.environment.dev,{
         datasource_base_url:"http://localhost/",
         web_domain:"localhost",
         web_port:8080,
@@ -367,14 +367,16 @@ function get_config( file,enviroment ){
         phantom_web_ssl_port:8085
     });
 
-
-    config.datasource_base_url = config.environment[enviroment].datasource_base_url;
-    config.web_domain = config.environment[enviroment].web_domain;
-    config.web_port = config.environment[enviroment].web_port;
-    config.web_ssl_port = config.environment[enviroment].web_ssl_port;
-    config.test_web_port = config.environment[enviroment].test_web_ssl_port;
-    config.phantom_web_port = config.environment[enviroment].phantom_web_port;
-    config.phantom_web_ssl_port = config.environment[enviroment].phantom_web_ssl_port;
+// init webserver
+    if( enviroment ){
+        config.datasource_base_url = config.environment[enviroment].datasource_base_url;
+        config.web_domain = config.environment[enviroment].web_domain;
+        config.web_port = config.environment[enviroment].web_port;
+        config.web_ssl_port = config.environment[enviroment].web_ssl_port;
+        config.test_web_port = config.environment[enviroment].test_web_ssl_port;
+        config.phantom_web_port = config.environment[enviroment].phantom_web_port;
+        config.phantom_web_ssl_port = config.environment[enviroment].phantom_web_ssl_port;
+    }
 
     for( var n in config.routing){
         if( config.routing[n].urls_datasource ){
@@ -385,40 +387,113 @@ function get_config( file,enviroment ){
     }
 
 
-
+// init directories
     config.project_dir          = path.resolve(config.project_dir)+"/";
-
+// the paths to build
     config.run_dir              = path.resolve(config.run_dir)+"/";
-    config.out_dir              = path.resolve(config.out_dir)+"/";
     config.meta_dir             = path.resolve(config.meta_dir)+"/";
+    config.out_dir              = path.resolve(config.out_dir)+"/";
+// the paths to export
     config.export_dir           = path.resolve(config.export_dir)+"/";
     config.documentation_dir    = path.resolve(config.documentation_dir)+"/";
-
+// the path containing user app
     config.src_dir              = path.resolve(config.src_dir)+"/";
     config.wbm_dir              = path.resolve(config.wbm_dir)+"/";
     config.vendors_dir          = path.resolve(config.vendors_dir)+"/";
+// the path containing assets for dirlisting
     config.dirlisting_dir       = path.resolve(config.dirlisting_dir)+"/";
-
+// the paths to be served thru developer webserver
     config.web_paths            = config.web_paths || [
         config.src_dir,
         config.wbm_dir,
         config.vendors_dir,
         config.dirlisting_dir
     ];
-
+// the paths to be served thru builder webserver
     config.web_paths_no_dir     = [
         config.src_dir,
         config.wbm_dir,
         config.vendors_dir
     ];
+// the paths to be served to optimizer
     for( var n in config.web_paths ) config.web_paths[n] = path.resolve(config.web_paths[n])+"/";
     config.build_run_paths      = [];
     for( var n in config.web_paths ) config.build_run_paths.push(config.web_paths[n]);
     config.build_run_paths.push(config.out_dir);
-
+// logging
     config.verbose              = !!config.verbose;
     config.debug                = !!config.debug;
     config.log                  = !!config.log;
+// scripts manipulation
+    if(!config.scripts)
+        config.scripts = {}
+    config.scripts = underscore.defaults(config.scripts,{
+        strips:[
+            /*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js"],
+             */
+        ],
+        requirejs:{},
+        prepend:{
+            /*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
+                "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+             ]
+             */
+        },
+        append:{
+            /*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
+                 "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+             ]
+             */
+        }
+    })
+    config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{
+        "src": [
+        /*
+         "require-2.1.8.min.js",
+         "require-2.1.9.min.js",
+        */
+        ],
+        "baseUrl": "/js/",
+        "paths":{
+            /*
+             "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
+             "vendors": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
+             "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
+            */
+        }
+    })
+    config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{
+        "almond": config.scripts.requirejs.baseUrl+"almond-0.2.5",
+        "vendors": config.scripts.requirejs.baseUrl+"vendors/",
+        "wbm": config.scripts.requirejs.baseUrl+"wbm/"
+    })
+// css manipulation
+    if(!config.css)
+        config.css = {}
+    config.css = underscore.defaults(config.css,{
+        strips:[
+            /*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css"],
+             */
+        ],
+        prepend:{
+            /*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css"
+             ]
+             */
+        },
+        append:{
+            /*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css"
+             ]
+             */
+        }
+    })
 
 // pass important path to docco task
     init_task_options(config,"phantomizer-docco",{
@@ -429,6 +504,7 @@ function get_config( file,enviroment ){
         out_dir:config.documentation_dir+'/js/',
         layout:'linear'
     });
+
 
 // pass important path to styledocco task
     init_task_options(config,"phantomizer-styledocco",{
@@ -454,16 +530,14 @@ function get_config( file,enviroment ){
         src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
         project_dir: config.project_dir,
         meta_dir: config.meta_dir,
-        "baseUrl": config.src_dir+"js",
+        "baseUrl": config.src_dir+""+config.scripts.requirejs.baseUrl,
         "optimize": "none",
         "wrap": true,
         "name": "almond",
-        "paths": {
-            "almond": config.vendors_dir+"/js/almond-0.2.5",
-            "vendors": config.vendors_dir+"/js/vendors"
-        },
-        "almond_path": config.vendors_dir+"/js/almond-0.2.5",
-        "vendors_path": config.vendors_dir+"/js/vendors"
+        "paths": config.scripts.requirejs.paths,
+        "almond_path": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
+        "vendors_path": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
+        "wbm_path": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
     });
     init_target_options(config,"phantomizer-requirejs","stryke-assets-min-build",{
         "optimize": "uglify"
