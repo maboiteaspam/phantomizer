@@ -576,6 +576,7 @@ function get_config( file,enviroment ){
         out_path:config.out_dir,
         requirejs_src:config.scripts.requirejs.src || null,
         requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
+        requirejs_paths:config.scripts.requirejs.paths || {},
         "manifest": false,
         paths:config.build_run_paths
     });
