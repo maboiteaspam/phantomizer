@@ -691,7 +691,7 @@ function get_config( file,enviroment ){
     });
     init_target_options(config,"phantomizer-html-builder2","stryke-assets-min-build",{
         "build_assets": true,
-        "html_manifest": true,
+        "html_manifest": false,
         "htmlcompressor": true
     });
 
@@ -826,13 +826,36 @@ function get_config( file,enviroment ){
         inject_extras:false
     });
     init_target_options(config,"phantomizer-build2","dev",{
-        inject_extras:true
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir+"/dev/",
+            config.documentation_dir
+        ]
     });
     init_target_options(config,"phantomizer-build2","staging",{
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir+"/staging/",
+            config.documentation_dir
+        ]
     });
     init_target_options(config,"phantomizer-build2","contribution",{
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir+"/contribution/",
+            config.documentation_dir
+        ]
     });
     init_target_options(config,"phantomizer-build2","production",{
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir+"/production/",
+            config.documentation_dir
+        ]
     });
 
 // pass important path to phantomizer-export-build
