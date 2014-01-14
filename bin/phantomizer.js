@@ -46,8 +46,17 @@ var argv = optimist.usage('Phantomizer command line')
         .string('environment')
         .default('environment', false)
 
-        // needs moe info ? Use -verbose
+        .describe('default_webdomain', 'Override default web domain')
+        .string('default_webdomain')
+        .default('default_webdomain', false)
+
+        // needs more info ? Use -verbose
         .describe('verbose', 'more Verbose')
+        .boolean('verbose')
+        .default('verbose', false)
+
+        // needs to dbug ? Use -debug
+        .describe('verbose', 'debug : even more verbose')
         .boolean('verbose')
         .default('verbose', false)
 
@@ -56,6 +65,7 @@ var argv = optimist.usage('Phantomizer command line')
         .default('version', false)
 
         .check(function(argv){
+            // requires to input one of those switch
             return argv.server!=false ||
                 argv.init!=false ||
                 argv.test!=false ||
@@ -79,13 +89,17 @@ var document_ = argv.document || "";
 var confess = argv.confess || "";
 var clean = argv.clean || "";
 var environment = argv.environment || false;
+var default_webdomain = argv.default_webdomain || false;
 var verbose = argv.verbose || false;
 var version = argv.version || false;
+var debug = argv.debug || false;
 
 console.log("Welcome to phantomizer..");
 
 if( version ){
-    console.log("phantomizer 0.1");
+    var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
+    pkg = JSON.parse(pkg);
+    console.log("phantomizer " + pkg.version);
     process.exit(0);
 }
 
@@ -96,7 +110,6 @@ if( server != "" ){
     var project = get_project(argv, "server");
     environment = get_environment(argv);
 
-    var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
     var webserver_factory = ph_libutil.webserver;
 
     var config = get_config(project+'/config.json', environment);
@@ -131,7 +144,6 @@ if( confess != "" ){
 
     var project     = get_project(argv, "confess");
     var environment = get_environment(argv);
-    var config      = get_config(project+'/config.json',environment);
 
     grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
         console.log("Measure done !");
@@ -142,7 +154,6 @@ if( test != "" ){
 
     var project     = get_project(argv, "test");
     var environment = get_environment(argv);
-    var confdig      = get_config(project+'/config.json',environment);
 
     grunt.tasks(['phantomizer-qunit-runner:'+environment], {}, function(){
         console.log("Test done !");
@@ -153,7 +164,6 @@ if( export_ != "" ){
 
     var project     = get_project(argv, "export");
     var environment = get_environment(argv);
-    var config      = get_config(project+'/config.json',environment);
 
     var t = [
         'phantomizer-build2:'+environment,
@@ -290,6 +300,7 @@ function get_config( file,enviroment ){
         vendors_dir:require("phantomizer-websupport").www_vendors_path,
         dirlisting_dir:require("phantomizer-html-dirlisting").html_dirlisting.resouces_path,
         wd:working_dir,
+// user directory
         project_dir:"",
         run_dir:"",
         out_dir:"",
@@ -301,18 +312,11 @@ function get_config( file,enviroment ){
         web_paths:null,
         web_paths_no_dir:null,
         build_run_paths:null,
-        verbose:false,
-        debug:false,
-        log:false
-        /*
-        ,
-        web_domain:"localhost",
-        web_port:8080,
-        web_ssl_port:8081,
-        test_web_port:8090,
-        test_web_ssl_port:8091,
-        phantom_web_port:8090,
-        phantom_web_ssl_port:8091*/,
+// logging
+        verbose: !!verbose,
+        debug: !!debug,
+        log: !!verbose,
+        default_webdomain: default_webdomain || "localhost",
         environment:{}
     });
 // init environments
@@ -325,7 +329,7 @@ function get_config( file,enviroment ){
 
     config.environment.production = underscore.defaults(config.environment.production,{
         datasource_base_url:"http://localhost/",
-        web_domain:"localhost",
+        web_domain:"<%= default_webdomain %>",
         web_port:8050,
         web_ssl_port:8051,
         test_web_port:8052,
@@ -336,7 +340,7 @@ function get_config( file,enviroment ){
 
     config.environment.contribution = underscore.defaults(config.environment.contribution,{
         datasource_base_url:"http://localhost/",
-        web_domain:"localhost",
+        web_domain:"<%= default_webdomain %>",
         web_port:8060,
         web_ssl_port:8061,
         test_web_port:8062,
@@ -347,7 +351,7 @@ function get_config( file,enviroment ){
 
     config.environment.staging = underscore.defaults(config.environment.staging,{
         datasource_base_url:"http://localhost/",
-        web_domain:"localhost",
+        web_domain:"<%= default_webdomain %>",
         web_port:8070,
         web_ssl_port:8071,
         test_web_port:8072,
@@ -358,7 +362,7 @@ function get_config( file,enviroment ){
 
     config.environment.dev = underscore.defaults(config.environment.dev,{
         datasource_base_url:"http://localhost/",
-        web_domain:"localhost",
+        web_domain:"<%= default_webdomain %>",
         web_port:8080,
         web_ssl_port:8081,
         test_web_port:8092,
@@ -420,10 +424,6 @@ function get_config( file,enviroment ){
     config.build_run_paths      = [];
     for( var n in config.web_paths ) config.build_run_paths.push(config.web_paths[n]);
     config.build_run_paths.push(config.out_dir);
-// logging
-    config.verbose              = !!config.verbose;
-    config.debug                = !!config.debug;
-    config.log                  = !!config.log;
 // scripts manipulation
     if(!config.scripts)
         config.scripts = {}
