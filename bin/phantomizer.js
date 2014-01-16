@@ -94,12 +94,12 @@ var verbose = argv.verbose || false;
 var version = argv.version || false;
 var debug = argv.debug || false;
 
-console.log("Welcome to phantomizer..");
+grunt.log.subhead("Welcome to phantomizer !")
 
 if( version ){
     var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
     pkg = JSON.parse(pkg);
-    console.log("phantomizer " + pkg.version);
+    grunt.log.ok("phantomizer " + pkg.version)
     process.exit(0);
 }
 
@@ -127,7 +127,7 @@ if( server != "" ){
         webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
         var h = "http://"+config.web_domain+(config.web_port?":"+config.web_port:"");
         var hs = "https://"+config.web_domain+(config.web_domain?":"+config.web_ssl_port:"");
-        console.log("Webserver started on "+h+" "+(hs?hs:""));
+        grunt.log.ok("Webserver started on "+h+" "+(hs?hs:""))
         webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
     })
 
@@ -144,9 +144,10 @@ if( confess != "" ){
 
     var project     = get_project(argv, "confess");
     var environment = get_environment(argv);
+    init_config(project+'/config.json', environment);
 
     grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
-        console.log("Measure done !");
+        grunt.log.ok("Measure done !");
     });
 }
 
@@ -154,9 +155,10 @@ if( test != "" ){
 
     var project     = get_project(argv, "test");
     var environment = get_environment(argv);
+    init_config(project+'/config.json', environment);
 
     grunt.tasks(['phantomizer-qunit-runner:'+environment], {}, function(){
-        console.log("Test done !");
+        grunt.log.ok("Test done !");
     });
 }
 
@@ -164,6 +166,7 @@ if( export_ != "" ){
 
     var project     = get_project(argv, "export");
     var environment = get_environment(argv);
+    init_config(project+'/config.json', environment);
 
     var t = [
         'phantomizer-build2:'+environment,
@@ -171,14 +174,16 @@ if( export_ != "" ){
         // 'phantomizer-export-slim:'+environment,
         'export-done'
     ];
-    grunt.tasks(t, {});
+    grunt.tasks(t, {}, function(){
+        grunt.log.ok("Export done !");
+    });
 }
 
 if( document_ != "" ){
 
     project = get_project(argv, "document");
+    init_config(project+'/config.json', environment);
 
-    get_config(project+'/config.json');
     var t = [
         'phantomizer-docco',
         'phantomizer-styledocco'
@@ -187,7 +192,7 @@ if( document_ != "" ){
         'phantomizer-docco',
         'phantomizer-styledocco'
     ], {}, function(){
-        console.log("Documentation done !");
+        grunt.log.ok("Documentation done !");
     });
 
 }
@@ -202,7 +207,7 @@ if( clean != "" ){
         file_utils.deleteFolderRecursive(p);
         fs.mkdirSync(p);
         if( verbose ){
-            console.log("Cleaned \n\t"+p);
+            grunt.log.ok("Cleaned \n\t"+p);
         }
     };
 
@@ -211,7 +216,7 @@ if( clean != "" ){
     clean_dir(config.out_dir);
     clean_dir(config.meta_dir);
 
-    console.log("Clean done !");
+    grunt.log.ok("Clean done !");
 }
 
 if( init != "" ){
@@ -222,7 +227,7 @@ if( init != "" ){
         if( fs.existsSync(p) == false ){
             fs.mkdirSync(p);
             if( verbose ){
-                console.log("Created "+p);
+                grunt.log.ok("Created "+p);
             }
         }
     };
@@ -270,7 +275,7 @@ if( init != "" ){
         file_utils.copyFile(dist+'/www-core/js/index.js', project+"/project/www-core/js/index.js");
     }
 
-    console.log("Init done !");
+    grunt.log.ok("Init done !");
 }
 
 function get_project(argv, cmd){
@@ -292,7 +297,16 @@ function get_environment(argv){
     return argv["environment"];
 }
 
+
+
 function get_config( file,enviroment ){
+    if( !known_configs[file+""+enviroment] ){
+        known_configs[file+""+enviroment] = init_config(file,enviroment);
+    }
+    return known_configs[file+""+enviroment];
+}
+var known_configs = {};
+function init_config(file,enviroment){
     var working_dir = process.cwd();
     var config = grunt.file.readJSON( file );
 // init general structure
@@ -437,24 +451,24 @@ function get_config( file,enviroment ){
         prepend:{
             /*
              "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
-                "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js"
              ]
              */
         },
         append:{
             /*
              "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
-                 "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js"
              ]
              */
         }
     })
     config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{
         "src": [
-        /*
-         "require-2.1.8.min.js",
-         "require-2.1.9.min.js",
-        */
+            /*
+             "require-2.1.8.min.js",
+             "require-2.1.9.min.js",
+             */
         ],
         "baseUrl": "/js/",
         "paths":{
@@ -462,7 +476,7 @@ function get_config( file,enviroment ){
              "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
              "vendors": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
              "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
-            */
+             */
         }
     })
     config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{
@@ -883,7 +897,6 @@ function get_config( file,enviroment ){
     return grunt.config.get();
 }
 
-
 function init_task_options(config,task_name,options){
     if(!config[task_name]) config[task_name] = {options:{}};
     if(!config[task_name].options) config[task_name].options = {};
@@ -901,7 +914,7 @@ function readline_toquit( end_handler ){
     var rl = readline.createInterface(process.stdin, process.stdout);
 
     rl.question('Press enter to leave...\n', function(answer) {
-        console.log('See you soon !');
+        grunt.log.subhead('See you soon !');
         if( end_handler != null ){
             end_handler()
         }
