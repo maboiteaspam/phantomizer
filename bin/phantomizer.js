@@ -112,6 +112,7 @@ if( server != "" ){
 
     var webserver_factory = ph_libutil.webserver;
 
+    // configuration initialization, including grunt config, required call prior ro grunt usage
     var config = get_config(project+'/config.json', environment);
 
     var router_factory = ph_libutil.router;
@@ -144,6 +145,7 @@ if( confess != "" ){
 
     var project     = get_project(argv, "confess");
     var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
 
     grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
@@ -155,6 +157,7 @@ if( test != "" ){
 
     var project     = get_project(argv, "test");
     var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
 
     grunt.tasks(['phantomizer-qunit-runner:'+environment], {}, function(){
@@ -166,6 +169,7 @@ if( export_ != "" ){
 
     var project     = get_project(argv, "export");
     var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
 
     var t = [
@@ -182,6 +186,7 @@ if( export_ != "" ){
 if( document_ != "" ){
 
     project = get_project(argv, "document");
+    // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
 
     var t = [
@@ -201,6 +206,7 @@ if( clean != "" ){
 
     var project     = get_project(argv, "clean");
     var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
     var config      = get_config(project+'/config.json',environment);
 
     var clean_dir = function(p){
@@ -298,7 +304,13 @@ function get_environment(argv){
 }
 
 
-
+/**
+ * initialize grunt configuration
+ * using shorter user config file
+ * @param file
+ * @param enviroment
+ * @returns {*}
+ */
 function get_config( file,enviroment ){
     if( !known_configs[file+""+enviroment] ){
         known_configs[file+""+enviroment] = init_config(file,enviroment);
