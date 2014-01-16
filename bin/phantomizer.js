@@ -64,6 +64,18 @@ var argv = optimist.usage('Phantomizer command line')
         .boolean('version')
         .default('version', false)
 
+        .describe('list_tasks', 'List availabe tasks')
+        .string('list_tasks')
+        .default('list_tasks', false)
+
+        .describe('describe_task', 'Display a task configuration')
+        .string('describe_task')
+        .default('describe_task', false)
+
+        .describe('task', 'The task to manipulate')
+        .string('task')
+        .default('task', false)
+
         .check(function(argv){
             // requires to input one of those switch
             return argv.server!=false ||
@@ -74,12 +86,15 @@ var argv = optimist.usage('Phantomizer command line')
                 argv.document!=false ||
                 argv.clean!=false ||
                 argv.version!=false ||
+                argv.describe_task!=false ||
+                argv.list_tasks!=false ||
                 false;
         })
 
         .argv
     ;
 
+var known_configs = {};
 // let check we have some data to work on
 var server = argv.server || "";
 var init = argv.init || "";
@@ -88,6 +103,9 @@ var export_ = argv.export || "";
 var document_ = argv.document || "";
 var confess = argv.confess || "";
 var clean = argv.clean || "";
+var describe_task = argv.describe_task || "";
+var task_name = argv.task || "";
+var list_tasks = argv.list_tasks || false;
 var environment = argv.environment || false;
 var default_webdomain = argv.default_webdomain || false;
 var verbose = argv.verbose || false;
@@ -225,6 +243,36 @@ if( clean != "" ){
     grunt.log.ok("Clean done !");
 }
 
+if( list_tasks != "" ){
+
+    var project     = get_project(argv, "list_tasks");
+
+    var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
+    var config      = get_config(project+'/config.json', environment);
+
+    grunt.log.ok("reading configuration file "+project+'/config.json');
+    for( var n in config ){
+        if( n.match(/^phantomizer-/) ) grunt.log.ok(n);
+    }
+}
+
+if( describe_task != "" ){
+
+    var project     = get_project(argv, "describe_task");
+
+    var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
+    var config      = get_config(project+'/config.json', environment);
+
+    if( config[task_name] ){
+        grunt.log.ok( task_name+"=" );
+        grunt.log.writeln( JSON.stringify(config[task_name],null,4) );
+    }else{
+        grunt.log.warn("No such task '"+task_name+"' found for the project '"+project+"'");
+    }
+}
+
 if( init != "" ){
 
     var project = get_project(argv, "init");
@@ -312,12 +360,12 @@ function get_environment(argv){
  * @returns {*}
  */
 function get_config( file,enviroment ){
-    if( !known_configs[file+""+enviroment] ){
-        known_configs[file+""+enviroment] = init_config(file,enviroment);
+    var k = file+""+enviroment;
+    if( !known_configs[k] ){
+        known_configs[k] = init_config(file,enviroment);
     }
-    return known_configs[file+""+enviroment];
+    return known_configs[k];
 }
-var known_configs = {};
 function init_config(file,enviroment){
     var working_dir = process.cwd();
     var config = grunt.file.readJSON( file );
