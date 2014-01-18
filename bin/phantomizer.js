@@ -159,6 +159,7 @@ if( server != "" ){
     });
 }
 
+// hmm, this needs improvements to let us select a target, or better an url from command line
 if( confess != "" ){
 
     var project     = get_project(argv, "confess");
