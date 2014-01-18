@@ -28,6 +28,7 @@
     "phantomizer-html-dirlisting": "git://github.com/maboiteaspam/phantomizer-html-dirlisting.git"
   },
   "devDependencies": {
-    "grunt-docco": "jashkenas/docco"
+    "docco": "jashkenas/docco",
+    "grunt-docco": "DavidSouther/grunt-docco"
   }
 }
