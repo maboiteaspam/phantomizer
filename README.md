@@ -1,11 +1,15 @@
 # phantomizer v0.1.x
 
-> Provides an environment to develop, run and build Phantomizer projects
+> Provides the command line to use a phantomizer project
 
 phantomizer embeds popular tools all together
 to provide an unified and easy to use html development environment.
 
-It includes several ready to use / configure task oriented toward web development requirements,
+It includes an embedded web browser to support live reloaded development, network perturbation generator, device previewer for mobile, a dashboard to let you do all of that.
+
+It provides several ready to go automated process about build, test, export.
+
+It includes several ready to use / configure GruntJS task oriented toward web development needs,
 - minification with requirejs, uglifyjs, htmlcompressor
 - image optimization
 - image spriting
@@ -18,6 +22,10 @@ It includes several ready to use / configure task oriented toward web developmen
 - confess support
 - qrcode helper
 - preselected list of client side javascript libraries to consume
+
+This tool simply tries to provide a simple way to build the newer kind of HTML UI we expect nowadays.
+It relies on various well-known libraries to-do-the-job and pilot them thru the configuration file and the application you ll provide it.
+
 
 # General assumption
 This project assume you want to make web application, and so provides tools to do it.
@@ -39,16 +47,29 @@ Mac OS setup has to be re tested and verified, some difficulties appeared becaus
 
 # Installation
 ```bash
-npm cache clean
-npm uninstall -g grunt-cli
-npm install -g grunt-cli
-npm uninstall -g maboiteaspam/phantomizer
-npm install -g maboiteaspam/phantomizer
-
-phantomizer --init my_project
-
-npm install
+npm install maboiteaspam/phantomizer
 ```
+
+You will be able to run this
+```bash
+nodes_modules/.bin/phantomizer --version
+```
+
+# Glocal CLI access
+```bash
+npm install maboiteaspam/phantomizer -g
+```
+
+You will be able to run this
+```bash
+phantomizer --version
+```
+
+```bash
+phantomizer --init my_project
+```
+
+the project is then located under ./my_project/
 
 # Usage
 ```bash
@@ -64,7 +85,9 @@ phantomizer --document <project_dir>
 
 phantomizer --clean <project_dir>
 
-phantomizer --confess <grunt target>
+phantomizer --list_tasks <project_dir> [ --environment <environment> ]
+
+phantomizer --describe_task <project_dir> --task <task_name> [ --environment <environment> ]
 ```
 
 # Start
@@ -81,28 +104,35 @@ my_project/documentation contains your documented scripts and css
 my_project/export contains the exported projet files ready to deploy
 
 
-# Embedded, thanks to all of them
+# The great libraries you ll find in there
 
+HTML engine
     phantomjs
 
     https://github.com/senchalabs/connect
 
+Assets support
     https://github.com/jacobrask/styledocco
     https://github.com/jacobrask/docco
-    https://github.com/jamesgpearce/confess
     https://github.com/jrburke/requirejs
     https://github.com/mishoo/UglifyJS
     https://github.com/crowjonah/grunt-imgmin
     https://github.com/gruntjs/grunt
+
+Testing
     https://github.com/jquery/qunit
     https://github.com/gruntjs/grunt-contrib-qunit
 
-    https://github.com/jquery/jquery
-    knockout
+Analyzing
+    https://github.com/jamesgpearce/confess
     holmes
     jshint
     csslint
     csslint
+
+Client side
+    https://github.com/jquery/jquery
+    knockout
 
 # Why ?
 
