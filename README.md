@@ -26,6 +26,13 @@ It includes several ready to use / configure GruntJS task oriented toward web de
 This tool simply tries to provide a simple way to build the newer kind of HTML UI we expect nowadays.
 It relies on various well-known libraries to-do-the-job and pilot them thru the configuration file and the application you ll provide it.
 
+# Website
+
+    http://maboiteaspam.github.io/phantomizer/
+
+# Generated documentation
+
+    http://maboiteaspam.github.io/phantomizer/documentation/phantomizer.html
 
 # General assumption
 This project assume you want to make web application, and so provides tools to do it.

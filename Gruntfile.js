@@ -1,5 +1,9 @@
 module.exports = function(grunt) {
 
+
+    var wrench = require('wrench'),
+        util = require('util');
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -13,9 +17,20 @@ module.exports = function(grunt) {
                     output: 'documentation/'
                 }
             }
+        },
+        'gh-pages': {
+            options: {
+                base: '.',
+                add: true
+            },
+            src: ['documentation/**']
         }
     });
     grunt.loadNpmTasks('grunt-docco');
-    grunt.registerTask('default', ['docco']);
+    grunt.loadNpmTasks('grunt-gh-pages');
+    grunt.registerTask('cleanup-grunt-temp', [],function(){
+        wrench.rmdirSyncRecursive(__dirname + '/.grunt', !true);
+    });
+    grunt.registerTask('default', ['docco','gh-pages', 'cleanup-grunt-temp']);
 
 };
