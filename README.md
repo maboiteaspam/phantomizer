@@ -97,33 +97,30 @@ phantomizer --init my_project
 phantomizer --server my_project
 ```
 
-Then you can go in my_project/www-core/ to write your web pages.
-Notice the my_project/config.json file that lets you adjust the configuration.
-my_project/run is the storage folder for phantomizer to build your project
-my_project/documentation contains your documented scripts and css
-my_project/export contains the exported projet files ready to deploy
+The new directory my_project is now available.
+
+Using the file my_project/config.json, you can add new routes and adjust settings to your preferences.
+
+Add the new application files in the directory my_project/www-core/.
+
+my_project/run is the storage folder used by phantomizer to build your project.
+
+my_project/documentation contains the documented version of your scripts and css.
+
+my_project/export contains the exported project files, ready to deploy.
 
 
-# The great libraries you ll find in there
-
-HTML engine
+# The libraries you will find in there
     phantomjs
-
     https://github.com/senchalabs/connect
-
-Assets support
     https://github.com/jacobrask/styledocco
     https://github.com/jacobrask/docco
     https://github.com/jrburke/requirejs
     https://github.com/mishoo/UglifyJS
     https://github.com/crowjonah/grunt-imgmin
     https://github.com/gruntjs/grunt
-
-Testing
     https://github.com/jquery/qunit
     https://github.com/gruntjs/grunt-contrib-qunit
-
-Analyzing
     https://github.com/jamesgpearce/confess
     holmes
     jshint
