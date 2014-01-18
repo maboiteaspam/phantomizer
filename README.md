@@ -65,12 +65,6 @@ You will be able to run this
 phantomizer --version
 ```
 
-```bash
-phantomizer --init my_project
-```
-
-the project is then located under ./my_project/
-
 # Usage
 ```bash
 phantomizer --init <project_dir>
