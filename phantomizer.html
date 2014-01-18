@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>phantomizer.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>phantomizer.js</h1>
+        
+
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre>#!<span class="hljs-regexp">/usr/</span>bin/env node</pre></div>
+        
+      
+        
+        <p>load some modules</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
+<span class="hljs-keyword">var</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">"path"</span>);
+<span class="hljs-keyword">var</span> optimist = <span class="hljs-built_in">require</span>(<span class="hljs-string">"optimist"</span>);
+<span class="hljs-keyword">var</span> grunt = <span class="hljs-built_in">require</span>(<span class="hljs-string">"grunt"</span>);
+<span class="hljs-keyword">var</span> ph_libutil = <span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-libutil"</span>);
+<span class="hljs-keyword">var</span> underscore = <span class="hljs-built_in">require</span>(<span class="hljs-string">"underscore"</span>);
+
+<span class="hljs-keyword">var</span> file_utils = ph_libutil.file_utils;</pre></div>
+        
+      
+        
+        <p>parse command line arguments</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> argv = optimist.usage(<span class="hljs-string">'Phantomizer command line'</span>)</pre></div>
+        
+      
+        
+        <p>do we start a webserver ?</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'server'</span>, <span class="hljs-string">'Start a ready to use built-in web server'</span>)
+        .string(<span class="hljs-string">'server'</span>)
+        .default(<span class="hljs-string">'server'</span>, <span class="hljs-literal">false</span>)</pre></div>
+        
+      
+        
+        <p>needs to init your project ?</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'init'</span>, <span class="hljs-string">'Init a project'</span>)
+        .string(<span class="hljs-string">'init'</span>)
+        .default(<span class="hljs-string">'init'</span>, <span class="hljs-literal">false</span>)
+
+        .describe(<span class="hljs-string">'confess'</span>, <span class="hljs-string">'Measure loading times of an url'</span>)
+        .string(<span class="hljs-string">'confess'</span>)
+        .default(<span class="hljs-string">'confess'</span>, <span class="hljs-literal">false</span>)
+
+        .describe(<span class="hljs-string">'test'</span>, <span class="hljs-string">'Test a project'</span>)
+        .string(<span class="hljs-string">'test'</span>)
+        .default(<span class="hljs-string">'test'</span>, <span class="hljs-literal">false</span>)
+
+        .describe(<span class="hljs-string">'export'</span>, <span class="hljs-string">'Export a project'</span>)
+        .string(<span class="hljs-string">'export'</span>)
+        .default(<span class="hljs-string">'export'</span>, <span class="hljs-literal">false</span>)
+
+        .describe(<span class="hljs-string">'document'</span>, <span class="hljs-string">'Document a project'</span>)
+        .string(<span class="hljs-string">'document'</span>)
+        .default(<span class="hljs-string">'document'</span>, <span class="hljs-literal">false</span>)
+
+        .describe(<span class="hljs-string">'clean'</span>, <span class="hljs-string">'Cleanup generated project files'</span>)
+        .string(<span class="hljs-string">'clean'</span>)
+        .default(<span class="hljs-string">'clean'</span>, <span class="hljs-literal">false</span>)
+
+        .describe(<span class="hljs-string">'environment'</span>, <span class="hljs-string">'Environment to run'</span>)
+        .string(<span class="hljs-string">'environment'</span>)
+        .default(<span class="hljs-string">'environment'</span>, <span class="hljs-literal">false</span>)</pre></div>
+        
+      
+        
+        <p>needs moe info ? Use -verbose</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'verbose'</span>, <span class="hljs-string">'more Verbose'</span>)
+        .boolean(<span class="hljs-string">'verbose'</span>)
+        .default(<span class="hljs-string">'verbose'</span>, <span class="hljs-literal">false</span>)
+
+        .describe(<span class="hljs-string">'version'</span>, <span class="hljs-string">'Display version'</span>)
+        .boolean(<span class="hljs-string">'version'</span>)
+        .default(<span class="hljs-string">'version'</span>, <span class="hljs-literal">false</span>)
+
+        .check(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(argv)</span>{</span>
+            <span class="hljs-keyword">return</span> argv.server!=<span class="hljs-literal">false</span> ||
+                argv.init!=<span class="hljs-literal">false</span> ||
+                argv.test!=<span class="hljs-literal">false</span> ||
+                argv.confess!=<span class="hljs-literal">false</span> ||
+                argv.export!=<span class="hljs-literal">false</span> ||
+                argv.document!=<span class="hljs-literal">false</span> ||
+                argv.clean!=<span class="hljs-literal">false</span> ||
+                argv.version!=<span class="hljs-literal">false</span> ||
+                <span class="hljs-literal">false</span>;
+        })
+
+        .argv
+    ;</pre></div>
+        
+      
+        
+        <p>let check we have some data to work on</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> server = argv.server || <span class="hljs-string">""</span>;
+<span class="hljs-keyword">var</span> init = argv.init || <span class="hljs-string">""</span>;
+<span class="hljs-keyword">var</span> test = argv.test || <span class="hljs-string">""</span>;
+<span class="hljs-keyword">var</span> export_ = argv.export || <span class="hljs-string">""</span>;
+<span class="hljs-keyword">var</span> document_ = argv.document || <span class="hljs-string">""</span>;
+<span class="hljs-keyword">var</span> confess = argv.confess || <span class="hljs-string">""</span>;
+<span class="hljs-keyword">var</span> clean = argv.clean || <span class="hljs-string">""</span>;
+<span class="hljs-keyword">var</span> environment = argv.environment || <span class="hljs-literal">false</span>;
+<span class="hljs-keyword">var</span> verbose = argv.verbose || <span class="hljs-literal">false</span>;
+<span class="hljs-keyword">var</span> version = argv.version || <span class="hljs-literal">false</span>;
+
+console.log(<span class="hljs-string">"Welcome to phantomizer.."</span>);
+
+<span class="hljs-keyword">if</span>( version ){
+    console.log(<span class="hljs-string">"phantomizer 0.1"</span>);
+    process.exit(<span class="hljs-number">0</span>);
+}</pre></div>
+        
+      
+        
+        <p>Did you want to start webserver</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( server != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project = get_project(argv, <span class="hljs-string">"server"</span>);
+    environment = get_environment(argv);
+
+    <span class="hljs-keyword">var</span> lib = path.join(path.dirname(fs.realpathSync(__filename)), <span class="hljs-string">'../lib'</span>);
+    <span class="hljs-keyword">var</span> webserver_factory = ph_libutil.webserver;
+
+    <span class="hljs-keyword">var</span> config = get_config(project+<span class="hljs-string">'/config.json'</span>, environment);
+
+    <span class="hljs-keyword">var</span> router_factory = ph_libutil.router;
+    <span class="hljs-keyword">var</span> optimizer_factory = ph_libutil.optimizer;
+    <span class="hljs-keyword">var</span> meta_factory = ph_libutil.meta;
+
+    <span class="hljs-keyword">var</span> meta_manager = <span class="hljs-keyword">new</span> meta_factory(process.cwd(), config.meta_dir);
+    <span class="hljs-keyword">var</span> optimizer = <span class="hljs-keyword">new</span> optimizer_factory(meta_manager, config);
+    <span class="hljs-keyword">var</span> router = <span class="hljs-keyword">new</span> router_factory(config.routing);
+
+    <span class="hljs-keyword">var</span> webserver =<span class="hljs-literal">null</span>;
+    router.load(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
+        <span class="hljs-keyword">var</span> h = <span class="hljs-string">"http://"</span>+config.web_domain+(config.web_port?<span class="hljs-string">":"</span>+config.web_port:<span class="hljs-string">""</span>);
+        <span class="hljs-keyword">var</span> hs = <span class="hljs-string">"https://"</span>+config.web_domain+(config.web_domain?<span class="hljs-string">":"</span>+config.web_ssl_port:<span class="hljs-string">""</span>);
+        console.log(<span class="hljs-string">"Webserver started on "</span>+h+<span class="hljs-string">" "</span>+(hs?hs:<span class="hljs-string">""</span>));
+        webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
+    })</pre></div>
+        
+      
+        
+        <p>quit on enter touch pressed</p>
+
+        
+          <div class='highlight'><pre>    readline_toquit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ){
+            webserver.stop();
+        }
+        process.exit(code=<span class="hljs-number">1</span>)
+    });
+}
+
+<span class="hljs-keyword">if</span>( confess != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"confess"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);
+    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>,environment);
+
+    grunt.tasks([<span class="hljs-string">'phantomizer-confess:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        console.log(<span class="hljs-string">"Measure done !"</span>);
+    });
+}
+
+<span class="hljs-keyword">if</span>( test != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"test"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);
+    <span class="hljs-keyword">var</span> confdig      = get_config(project+<span class="hljs-string">'/config.json'</span>,environment);
+
+    grunt.tasks([<span class="hljs-string">'phantomizer-qunit-runner:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        console.log(<span class="hljs-string">"Test done !"</span>);
+    });
+}
+
+<span class="hljs-keyword">if</span>( export_ != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"export"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);
+    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>,environment);
+
+    <span class="hljs-keyword">var</span> t = [
+        <span class="hljs-string">'phantomizer-build2:'</span>+environment,
+        <span class="hljs-string">'phantomizer-export-build:'</span>+environment,</pre></div>
+        
+      
+        
+        <p>‘phantomizer-export-slim:’+environment,</p>
+
+        
+          <div class='highlight'><pre>        <span class="hljs-string">'export-done'</span>
+    ];
+    grunt.tasks(t, {});
+}
+
+<span class="hljs-keyword">if</span>( document_ != <span class="hljs-string">""</span> ){
+
+    project = get_project(argv, <span class="hljs-string">"document"</span>);
+
+    get_config(project+<span class="hljs-string">'/config.json'</span>);
+    <span class="hljs-keyword">var</span> t = [
+        <span class="hljs-string">'phantomizer-docco'</span>,
+        <span class="hljs-string">'phantomizer-styledocco'</span>
+    ];
+    grunt.tasks([
+        <span class="hljs-string">'phantomizer-docco'</span>,
+        <span class="hljs-string">'phantomizer-styledocco'</span>
+    ], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        console.log(<span class="hljs-string">"Documentation done !"</span>);
+    });
+
+}
+
+<span class="hljs-keyword">if</span>( clean != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"clean"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);
+    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>,environment);
+
+    <span class="hljs-keyword">var</span> clean_dir = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(p)</span>{</span>
+        file_utils.deleteFolderRecursive(p);
+        fs.mkdirSync(p);
+        <span class="hljs-keyword">if</span>( verbose ){
+            console.log(<span class="hljs-string">"Cleaned \n\t"</span>+p);
+        }
+    };
+
+    clean_dir(config.documentation_dir);
+    clean_dir(config.export_dir);
+    clean_dir(config.out_dir);
+    clean_dir(config.meta_dir);
+
+    console.log(<span class="hljs-string">"Clean done !"</span>);
+}
+
+<span class="hljs-keyword">if</span>( init != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project = get_project(argv, <span class="hljs-string">"init"</span>);
+
+    <span class="hljs-keyword">var</span> make_dir = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(p)</span>{</span>
+        <span class="hljs-keyword">if</span>( fs.existsSync(p) == <span class="hljs-literal">false</span> ){
+            fs.mkdirSync(p);
+            <span class="hljs-keyword">if</span>( verbose ){
+                console.log(<span class="hljs-string">"Created "</span>+p);
+            }
+        }
+    };
+
+    make_dir(project);
+    make_dir(project+<span class="hljs-string">"/export"</span>);
+    make_dir(project+<span class="hljs-string">"/run"</span>);
+    make_dir(project+<span class="hljs-string">"/run/build"</span>);
+    make_dir(project+<span class="hljs-string">"/run/meta"</span>);
+    make_dir(project+<span class="hljs-string">"/documentation"</span>);
+    make_dir(project+<span class="hljs-string">"/project"</span>);
+    make_dir(project+<span class="hljs-string">"/project/www-core"</span>);
+    make_dir(project+<span class="hljs-string">"/project/www-wbm"</span>);
+    make_dir(project+<span class="hljs-string">"/project/www-vendors"</span>);
+
+    <span class="hljs-keyword">var</span> dist = path.join(path.dirname(fs.realpathSync(__filename)), <span class="hljs-string">'../dist'</span>);
+    <span class="hljs-keyword">if</span>( fs.existsSync(<span class="hljs-string">'Gruntfile.js'</span>) == <span class="hljs-literal">false</span> ){
+        file_utils.copyFile(dist+<span class="hljs-string">'/Gruntfile.js'</span>, <span class="hljs-string">'Gruntfile.js'</span>);
+    }
+    <span class="hljs-keyword">var</span> project_config_file = project+<span class="hljs-string">'/config.json'</span>;
+    <span class="hljs-keyword">if</span>( fs.existsSync(project_config_file) == <span class="hljs-literal">false</span> ){
+        file_utils.copyFile(dist+<span class="hljs-string">'/config.json'</span>, project_config_file);
+        <span class="hljs-keyword">var</span> c = file_utils.readJSON(project_config_file);
+        c.project_dir = project+<span class="hljs-string">"/project/"</span>;
+        c.src_dir = project+<span class="hljs-string">"/project/www-core/"</span>;
+        c.wbm_dir = project+<span class="hljs-string">"/project/www-wbm/"</span>;</pre></div>
+        
+      
+        
+        <p>c.vendors_dir = project+”/project/www-vendors/“; // disabled to let JIT assignation in get_config</p>
+
+        
+          <div class='highlight'><pre>        c.out_dir = project+<span class="hljs-string">"/run/build/"</span>;
+        c.meta_dir = project+<span class="hljs-string">"/run/meta/"</span>;
+        c.export_dir = project+<span class="hljs-string">"/export/"</span>;
+        c.documentation_dir = project+<span class="hljs-string">"/documentation/"</span>;
+        file_utils.writeJSON(project_config_file, c, <span class="hljs-literal">true</span>);
+    }
+    <span class="hljs-keyword">var</span> pckg_config_file = <span class="hljs-string">'package.json'</span>;
+    <span class="hljs-keyword">if</span>( fs.existsSync(pckg_config_file) == <span class="hljs-literal">false</span> ){
+        file_utils.copyFile(dist+<span class="hljs-string">'/package.json'</span>, pckg_config_file);
+        <span class="hljs-keyword">var</span> c = file_utils.readJSON(pckg_config_file);
+        file_utils.writeJSON(pckg_config_file, c, <span class="hljs-literal">true</span>);
+    }
+    <span class="hljs-keyword">if</span>( fs.existsSync(project+<span class="hljs-string">"/project/www-core/index.html"</span>) == <span class="hljs-literal">false</span> ){
+        file_utils.copyFile(dist+<span class="hljs-string">'/www-core/index.html'</span>, project+<span class="hljs-string">"/project/www-core/index.html"</span>);
+    }
+    <span class="hljs-keyword">if</span>( fs.existsSync(project+<span class="hljs-string">"/project/www-core/js/index.js"</span>) == <span class="hljs-literal">false</span> ){
+        fs.mkdirSync(project+<span class="hljs-string">"/project/www-core/js/"</span>);
+        file_utils.copyFile(dist+<span class="hljs-string">'/www-core/js/index.js'</span>, project+<span class="hljs-string">"/project/www-core/js/index.js"</span>);
+    }
+
+    console.log(<span class="hljs-string">"Init done !"</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_project</span><span class="hljs-params">(argv, cmd)</span>{</span>
+    <span class="hljs-keyword">if</span>( argv[cmd] === <span class="hljs-literal">true</span> || argv[cmd] == <span class="hljs-string">""</span> ){
+        console.log(<span class="hljs-string">"Please input the project name such,"</span>);
+        console.log(<span class="hljs-string">"phantomizer --"</span>+cmd+<span class="hljs-string">" &lt;project&gt;"</span>);
+        process.exit(code=<span class="hljs-number">0</span>)
+    }
+    <span class="hljs-keyword">return</span> argv[cmd];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_environment</span><span class="hljs-params">(argv)</span>{</span>
+    <span class="hljs-keyword">if</span>( argv[<span class="hljs-string">"environment"</span>] === <span class="hljs-literal">true</span> || argv[<span class="hljs-string">"environment"</span>] == <span class="hljs-string">""</span> ){
+        console.log(<span class="hljs-string">"Automatically selected environment dev"</span>);
+        console.log(<span class="hljs-string">"you can input the environment using,"</span>);
+        console.log(<span class="hljs-string">"phantomizer --&lt;switch&gt; &lt;project&gt; --environment &lt;environment&gt;"</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"dev"</span>;
+    }
+    <span class="hljs-keyword">return</span> argv[<span class="hljs-string">"environment"</span>];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_config</span><span class="hljs-params">( file,enviroment )</span>{</span>
+    <span class="hljs-keyword">var</span> working_dir = process.cwd();
+    <span class="hljs-keyword">var</span> config = grunt.file.readJSON( file );</pre></div>
+        
+      
+        
+        <p>init general structure</p>
+
+        
+          <div class='highlight'><pre>    config = underscore.defaults(config,{
+        vendors_dir:<span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-websupport"</span>).www_vendors_path,
+        dirlisting_dir:<span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-html-dirlisting"</span>).html_dirlisting.resouces_path,
+        wd:working_dir,
+        project_dir:<span class="hljs-string">""</span>,
+        run_dir:<span class="hljs-string">""</span>,
+        out_dir:<span class="hljs-string">""</span>,
+        meta_dir:<span class="hljs-string">""</span>,
+        export_dir:<span class="hljs-string">""</span>,
+        documentation_dir:<span class="hljs-string">""</span>,
+        src_dir:<span class="hljs-string">""</span>,
+        wbm_dir:<span class="hljs-string">""</span>,
+        web_paths:<span class="hljs-literal">null</span>,
+        web_paths_no_dir:<span class="hljs-literal">null</span>,
+        build_run_paths:<span class="hljs-literal">null</span>,
+        verbose:<span class="hljs-literal">false</span>,
+        debug:<span class="hljs-literal">false</span>,
+        log:<span class="hljs-literal">false</span>
+        <span class="hljs-comment">/*
+        ,
+        web_domain:"localhost",
+        web_port:8080,
+        web_ssl_port:8081,
+        test_web_port:8090,
+        test_web_ssl_port:8091,
+        phantom_web_port:8090,
+        phantom_web_ssl_port:8091*/</span>,
+        environment:{}
+    });</pre></div>
+        
+      
+        
+        <p>init environments</p>
+
+        
+          <div class='highlight'><pre>    config.environment = underscore.defaults(config.environment,{
+        production:{},
+        contribution:{},
+        staging:{},
+        dev:{}
+    });
+
+    config.environment.production = underscore.defaults(config.environment.production,{
+        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        web_domain:<span class="hljs-string">"localhost"</span>,
+        web_port:<span class="hljs-number">8050</span>,
+        web_ssl_port:<span class="hljs-number">8051</span>,
+        test_web_port:<span class="hljs-number">8052</span>,
+        test_web_ssl_port:<span class="hljs-number">8053</span>,
+        phantom_web_port:<span class="hljs-number">8054</span>,
+        phantom_web_ssl_port:<span class="hljs-number">8055</span>
+    });
+
+    config.environment.contribution = underscore.defaults(config.environment.contribution,{
+        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        web_domain:<span class="hljs-string">"localhost"</span>,
+        web_port:<span class="hljs-number">8060</span>,
+        web_ssl_port:<span class="hljs-number">8061</span>,
+        test_web_port:<span class="hljs-number">8062</span>,
+        test_web_ssl_port:<span class="hljs-number">8063</span>,
+        phantom_web_port:<span class="hljs-number">8064</span>,
+        phantom_web_ssl_port:<span class="hljs-number">8065</span>
+    });
+
+    config.environment.staging = underscore.defaults(config.environment.staging,{
+        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        web_domain:<span class="hljs-string">"localhost"</span>,
+        web_port:<span class="hljs-number">8070</span>,
+        web_ssl_port:<span class="hljs-number">8071</span>,
+        test_web_port:<span class="hljs-number">8072</span>,
+        test_web_ssl_port:<span class="hljs-number">8073</span>,
+        phantom_web_port:<span class="hljs-number">8074</span>,
+        phantom_web_ssl_port:<span class="hljs-number">8075</span>
+    });
+
+    config.environment.dev = underscore.defaults(config.environment.dev,{
+        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        web_domain:<span class="hljs-string">"localhost"</span>,
+        web_port:<span class="hljs-number">8080</span>,
+        web_ssl_port:<span class="hljs-number">8081</span>,
+        test_web_port:<span class="hljs-number">8092</span>,
+        test_web_ssl_port:<span class="hljs-number">8083</span>,
+        phantom_web_port:<span class="hljs-number">8084</span>,
+        phantom_web_ssl_port:<span class="hljs-number">8085</span>
+    });</pre></div>
+        
+      
+        
+        <p>init webserver</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span>( enviroment ){
+        config.datasource_base_url = config.environment[enviroment].datasource_base_url;
+        config.web_domain = config.environment[enviroment].web_domain;
+        config.web_port = config.environment[enviroment].web_port;
+        config.web_ssl_port = config.environment[enviroment].web_ssl_port;
+        config.test_web_port = config.environment[enviroment].test_web_ssl_port;
+        config.phantom_web_port = config.environment[enviroment].phantom_web_port;
+        config.phantom_web_ssl_port = config.environment[enviroment].phantom_web_ssl_port;
+    }
+
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config.routing){
+        <span class="hljs-keyword">if</span>( config.routing[n].urls_datasource ){
+            <span class="hljs-keyword">if</span>( ! config.routing[n].urls_datasource.match(<span class="hljs-regexp">/^http/</span>)){
+                config.routing[n].urls_datasource = config.datasource_base_url+<span class="hljs-string">""</span>+config.routing[n].urls_datasource+<span class="hljs-string">""</span>;
+            }
+        }
+    }</pre></div>
+        
+      
+        
+        <p>init directories</p>
+
+        
+          <div class='highlight'><pre>    config.project_dir          = path.resolve(config.project_dir)+<span class="hljs-string">"/"</span>;</pre></div>
+        
+      
+        
+        <p>the paths to build</p>
+
+        
+          <div class='highlight'><pre>    config.run_dir              = path.resolve(config.run_dir)+<span class="hljs-string">"/"</span>;
+    config.meta_dir             = path.resolve(config.meta_dir)+<span class="hljs-string">"/"</span>;
+    config.out_dir              = path.resolve(config.out_dir)+<span class="hljs-string">"/"</span>;</pre></div>
+        
+      
+        
+        <p>the paths to export</p>
+
+        
+          <div class='highlight'><pre>    config.export_dir           = path.resolve(config.export_dir)+<span class="hljs-string">"/"</span>;
+    config.documentation_dir    = path.resolve(config.documentation_dir)+<span class="hljs-string">"/"</span>;</pre></div>
+        
+      
+        
+        <p>the path containing user app</p>
+
+        
+          <div class='highlight'><pre>    config.src_dir              = path.resolve(config.src_dir)+<span class="hljs-string">"/"</span>;
+    config.wbm_dir              = path.resolve(config.wbm_dir)+<span class="hljs-string">"/"</span>;
+    config.vendors_dir          = path.resolve(config.vendors_dir)+<span class="hljs-string">"/"</span>;</pre></div>
+        
+      
+        
+        <p>the path containing assets for dirlisting</p>
+
+        
+          <div class='highlight'><pre>    config.dirlisting_dir       = path.resolve(config.dirlisting_dir)+<span class="hljs-string">"/"</span>;</pre></div>
+        
+      
+        
+        <p>the paths to be served thru developer webserver</p>
+
+        
+          <div class='highlight'><pre>    config.web_paths            = config.web_paths || [
+        config.src_dir,
+        config.wbm_dir,
+        config.vendors_dir,
+        config.dirlisting_dir
+    ];</pre></div>
+        
+      
+        
+        <p>the paths to be served thru builder webserver</p>
+
+        
+          <div class='highlight'><pre>    config.web_paths_no_dir     = [
+        config.src_dir,
+        config.wbm_dir,
+        config.vendors_dir
+    ];</pre></div>
+        
+      
+        
+        <p>the paths to be served to optimizer</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config.web_paths ) config.web_paths[n] = path.resolve(config.web_paths[n])+<span class="hljs-string">"/"</span>;
+    config.build_run_paths      = [];
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config.web_paths ) config.build_run_paths.push(config.web_paths[n]);
+    config.build_run_paths.push(config.out_dir);</pre></div>
+        
+      
+        
+        <p>logging</p>
+
+        
+          <div class='highlight'><pre>    config.verbose              = !!config.verbose;
+    config.debug                = !!config.debug;
+    config.log                  = !!config.log;</pre></div>
+        
+      
+        
+        <p>scripts manipulation</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span>(!config.scripts)
+        config.scripts = {}
+    config.scripts = underscore.defaults(config.scripts,{
+        strips:[
+            <span class="hljs-comment">/*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js"],
+             */</span>
+        ],
+        requirejs:{},
+        prepend:{
+            <span class="hljs-comment">/*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
+                "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+             ]
+             */</span>
+        },
+        append:{
+            <span class="hljs-comment">/*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
+                 "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+             ]
+             */</span>
+        }
+    })
+    config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{
+        <span class="hljs-string">"src"</span>: [
+        <span class="hljs-comment">/*
+         "require-2.1.8.min.js",
+         "require-2.1.9.min.js",
+        */</span>
+        ],
+        <span class="hljs-string">"baseUrl"</span>: <span class="hljs-string">"/js/"</span>,
+        <span class="hljs-string">"paths"</span>:{
+            <span class="hljs-comment">/*
+             "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
+             "vendors": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
+             "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
+            */</span>
+        }
+    })
+    config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{
+        <span class="hljs-string">"almond"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"almond-0.2.5"</span>,
+        <span class="hljs-string">"vendors"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"vendors/"</span>,
+        <span class="hljs-string">"wbm"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"wbm/"</span>
+    })</pre></div>
+        
+      
+        
+        <p>css manipulation</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span>(!config.css)
+        config.css = {}
+    config.css = underscore.defaults(config.css,{
+        strips:[
+            <span class="hljs-comment">/*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css"],
+             */</span>
+        ],
+        prepend:{
+            <span class="hljs-comment">/*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css"
+             ]
+             */</span>
+        },
+        append:{
+            <span class="hljs-comment">/*
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css"
+             ]
+             */</span>
+        }
+    })</pre></div>
+        
+      
+        
+        <p>pass important path to docco task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-docco"</span>,{
+        <span class="hljs-string">'src_dir'</span>:config.src_dir,
+        <span class="hljs-string">'wbm_dir'</span>:config.wbm_dir,
+        <span class="hljs-string">'documentation_dir'</span>:config.documentation_dir,
+        src_pattern:[config.src_dir+<span class="hljs-string">"/js/"</span>,config.wbm_dir+<span class="hljs-string">"/js/"</span>],
+        out_dir:config.documentation_dir+<span class="hljs-string">'/js/'</span>,
+        layout:<span class="hljs-string">'linear'</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to styledocco task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-styledocco"</span>,{
+        <span class="hljs-string">'src_dir'</span>:config.src_dir,
+        <span class="hljs-string">'wbm_dir'</span>:config.wbm_dir,
+        <span class="hljs-string">'documentation_dir'</span>:config.documentation_dir,
+        <span class="hljs-string">"basePath"</span>:config.project_dir,
+        <span class="hljs-string">"src_pattern"</span>:[config.src_dir+<span class="hljs-string">"**/*.css"</span>,config.wbm_dir+<span class="hljs-string">"**/*.css"</span>],
+        <span class="hljs-string">"out_dir"</span>:config.documentation_dir+<span class="hljs-string">"/css/"</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to confess task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-confess"</span>,{
+        meta_dir:config.meta_dir,
+        web_server_paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
+        host:config.web_domain,
+        port:config.test_web_port,
+        ssl_port:config.test_web_ssl_port
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to requirejs task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-requirejs"</span>,{
+        src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+        project_dir: config.project_dir,
+        meta_dir: config.meta_dir,
+        <span class="hljs-string">"baseUrl"</span>: config.src_dir+<span class="hljs-string">""</span>+config.scripts.requirejs.baseUrl,
+        <span class="hljs-string">"optimize"</span>: <span class="hljs-string">"none"</span>,
+        <span class="hljs-string">"wrap"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"name"</span>: <span class="hljs-string">"almond"</span>,
+        <span class="hljs-string">"paths"</span>: config.scripts.requirejs.paths,
+        <span class="hljs-string">"almond_path"</span>: config.vendors_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/almond-0.2.5"</span>,
+        <span class="hljs-string">"vendors_path"</span>: config.vendors_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/vendors"</span>,
+        <span class="hljs-string">"wbm_path"</span>: config.wbm_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/wbm"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-requirejs"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"optimize"</span>: <span class="hljs-string">"uglify"</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to requirecss task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-requirecss"</span>,{
+        src_paths: config.build_run_paths,
+        project_dir: config.project_dir,
+        meta_dir: config.meta_dir,
+        <span class="hljs-string">"optimizeCss"</span>: <span class="hljs-string">"standard.keepComments.keepLines"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-requirecss"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"optimizeCss"</span>: <span class="hljs-string">"standard"</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to manifest task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-manifest"</span>,{
+        meta_dir:config.meta_dir,
+        project_dir: config.project_dir,
+        manifest_reloader:config.vendors_dir+<span class="hljs-string">'/js/manifest.reloader.js'</span>,
+        src_paths:config.build_run_paths,
+        network:[<span class="hljs-string">"*"</span>]
+    });
+    init_task_options(config,<span class="hljs-string">"phantomizer-manifest-html"</span>,{
+        meta_dir:config.meta_dir,
+        project_dir: config.project_dir,
+        manifest_reloader:config.vendors_dir+<span class="hljs-string">'/js/manifest.reloader.js'</span>,
+        src_paths:config.build_run_paths,
+        network:[<span class="hljs-string">"*"</span>]
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to html-assets task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-assets"</span>,{
+        meta_dir:config.meta_dir,
+        out_path:config.out_dir,
+        requirejs_src:config.scripts.requirejs.src || <span class="hljs-literal">null</span>,
+        requirejs_baseUrl:config.scripts.requirejs.baseUrl || <span class="hljs-literal">null</span>,
+        requirejs_paths:config.scripts.requirejs.paths || {},
+        <span class="hljs-string">"manifest"</span>: <span class="hljs-literal">false</span>,
+        paths:config.build_run_paths
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-assets"</span>,<span class="hljs-string">"stryke-build"</span>,{
+        <span class="hljs-string">"file_suffix"</span>:<span class="hljs-string">"-b"</span>,
+        <span class="hljs-string">"requirejs_src"</span>:<span class="hljs-literal">null</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-assets"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
+        <span class="hljs-string">"file_suffix"</span>:<span class="hljs-string">"-ba"</span>,
+        <span class="hljs-string">"requirejs"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"image_merge"</span>: <span class="hljs-literal">true</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-assets"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"file_suffix"</span>:<span class="hljs-string">"-mba"</span>,
+        <span class="hljs-string">"requirejs"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"imgcompressor"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"image_merge"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"uglify_js"</span>: <span class="hljs-literal">true</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to htmlcompressor task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-htmlcompressor"</span>,{
+        meta_dir:config.meta_dir,
+        <span class="hljs-string">"preserved_html_comments"</span>: <span class="hljs-string">"(?si)&lt;!-- #preserve_(js|css) .+? #endpreserve --&gt;"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-htmlcompressor"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"compress-js"</span>:<span class="hljs-literal">true</span>,
+        <span class="hljs-string">"compress-css"</span>:<span class="hljs-literal">true</span>
+    });
+
+    init_task_options(config,<span class="hljs-string">"phantomizer-dir-htmlcompressor"</span>,{
+        meta_dir:config.meta_dir,
+        <span class="hljs-string">"preserved_html_comments"</span>: <span class="hljs-string">"(?si)&lt;!-- #preserve_(js|css) .+? #endpreserve --&gt;"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-dir-htmlcompressor"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"compress-js"</span>:<span class="hljs-literal">true</span>,
+        <span class="hljs-string">"compress-css"</span>:<span class="hljs-literal">true</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to uglify task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-uglifyjs"</span>,{
+        meta_dir:config.meta_dir
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-websupport task</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-dir-inject-html-extras"</span>,{
+        <span class="hljs-string">"requirejs"</span>:config.scripts.requirejs || <span class="hljs-literal">null</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-strykejs</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-strykejs-builder"</span>,{
+        port:config.phantom_web_port,
+        ssl_port:config.phantom_web_ssl_port,
+        paths:config.build_run_paths,
+        meta_dir:config.meta_dir,
+        scripts:config.scripts,
+        css:config.css
+    });
+    init_task_options(config,<span class="hljs-string">"phantomizer-strykejs-builder2"</span>,{
+        run_dir:config.run_dir,
+        meta_dir:config.meta_dir,
+        port:config.phantom_web_port,
+        ssl_port:config.phantom_web_ssl_port,
+        urls_file:<span class="hljs-string">''</span>,
+        paths:config.build_run_paths,
+        scripts:config.scripts,
+        css:config.css
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-html-builder</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-builder"</span>,{
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:config.web_paths_no_dir,
+        htmlcompressor:<span class="hljs-literal">false</span>,
+        build_assets:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-builder"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
+        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-builder"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"htmlcompressor"</span>: <span class="hljs-literal">true</span>
+    });
+
+    init_task_options(config,<span class="hljs-string">"phantomizer-html-jitbuild"</span>,{
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
+        htmlcompressor:<span class="hljs-literal">false</span>,
+        build_assets:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-jitbuild"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
+        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-jitbuild"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"htmlcompressor"</span>: <span class="hljs-literal">true</span>
+    });
+
+    init_task_options(config,<span class="hljs-string">"phantomizer-html-builder2"</span>,{
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:config.web_paths_no_dir,
+        html_manifest:<span class="hljs-literal">false</span>,
+        inject_extras:<span class="hljs-literal">false</span>,
+        htmlcompressor:<span class="hljs-literal">false</span>,
+        build_assets:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-builder2"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
+        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-builder2"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"html_manifest"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"htmlcompressor"</span>: <span class="hljs-literal">true</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-imgopt</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-imgopt"</span>,{
+        optimizationLevel: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"progressive"</span>:<span class="hljs-literal">false</span>,
+        out_path:config.out_dir,
+        meta_dir:config.meta_dir,
+        paths:config.build_run_paths
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-imgopt"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+        <span class="hljs-string">"optimizationLevel"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"progressive"</span>:<span class="hljs-literal">true</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-qunit-runner</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,{
+        <span class="hljs-string">"port"</span>:config.test_web_port,
+        <span class="hljs-string">"ssl_port"</span>:config.test_web_ssl_port,
+        <span class="hljs-string">"paths"</span>:config.web_paths,
+        <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">true</span>,
+        <span class="hljs-string">"base_url"</span>:<span class="hljs-string">"http://"</span>+config.web_domain+<span class="hljs-string">":"</span>+config.test_web_port+<span class="hljs-string">"/"</span>,
+        <span class="hljs-string">"test_scripts_base_url"</span>:<span class="hljs-string">"/js/tests/"</span>,
+        <span class="hljs-string">"requirejs_src"</span>: config.scripts.requirejs.src,
+        <span class="hljs-string">"requirejs_baseUrl"</span>: config.scripts.requirejs.baseUrl
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"dev"</span>,{});
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"staging"</span>,{
+        <span class="hljs-string">"paths"</span>:[
+            <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
+        ],
+        <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"contribution"</span>,{
+        <span class="hljs-string">"paths"</span>:[
+            <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
+        ],
+        <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"production"</span>,{
+        <span class="hljs-string">"paths"</span>:[
+            <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
+        ],
+        <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-gm</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-gm-merge"</span>,{
+        out_dir:config.out_dir,
+        meta_dir:config.meta_dir,
+        <span class="hljs-string">"paths"</span>: config.build_run_paths
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-export-build</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir,
+        <span class="hljs-string">"paths"</span>:config.build_run_paths,
+        <span class="hljs-string">"copy_patterns"</span>:[
+
+            <span class="hljs-string">"**/*.appcache"</span>,
+            <span class="hljs-string">"**/*.manifest"</span>,
+
+            <span class="hljs-string">"**/*.txt"</span>,
+
+            <span class="hljs-string">"**/*.html"</span>,
+            <span class="hljs-string">"**/*.htm"</span>,
+
+            <span class="hljs-string">"**/*.js"</span>,
+
+            <span class="hljs-string">"**/*.css"</span>,
+
+            <span class="hljs-string">"**/*.gif"</span>,
+            <span class="hljs-string">"**/*.jpg"</span>,
+            <span class="hljs-string">"**/*.jpeg"</span>,
+            <span class="hljs-string">"**/*.png"</span>,
+            <span class="hljs-string">"**/*.ico"</span>,
+
+            <span class="hljs-string">"**/*.pdf"</span>,
+
+            <span class="hljs-string">"**/*.xml"</span>,
+            <span class="hljs-string">"**/*.json"</span>,
+            <span class="hljs-string">"**/*.jsonp"</span>,
+
+            <span class="hljs-string">"**/*.map"</span>
+        ]
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"dev"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/dev/www/"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"staging"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/staging/www/"</span>,
+        <span class="hljs-string">"rm_files"</span>:[
+            config.export_dir+<span class="hljs-string">"/staging/www/README.md"</span>
+        ]
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"contribution"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/contribution/www/"</span>,
+        <span class="hljs-string">"rm_files"</span>:[
+            config.export_dir+<span class="hljs-string">"/contribution/www/README.md"</span>
+        ]
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"production"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/production/www/"</span>,
+        <span class="hljs-string">"rm_files"</span>:[
+            config.export_dir+<span class="hljs-string">"/production/www/README.md"</span>
+        ],
+        <span class="hljs-string">"rm_dir"</span>:[
+            config.export_dir+<span class="hljs-string">"/production/www/js/tests/"</span>
+        ]
+    });
+
+    init_task_options(config,<span class="hljs-string">"phantomizer-build"</span>,{
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir,
+            config.documentation_dir
+        ],
+        build_target:<span class="hljs-string">"stryke-assets-min-build"</span>
+    });
+
+    init_task_options(config,<span class="hljs-string">"phantomizer-build2"</span>,{
+        clean_dir:[
+            config.out_dir,
+            config.meta_dir,
+            config.export_dir,
+            config.documentation_dir
+        ],
+        build_target:<span class="hljs-string">"stryke-assets-min-build"</span>,
+        urls_file:<span class="hljs-string">"run/urls.json"</span>,
+        inject_extras:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-build2"</span>,<span class="hljs-string">"dev"</span>,{
+        inject_extras:<span class="hljs-literal">true</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-build2"</span>,<span class="hljs-string">"staging"</span>,{
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-build2"</span>,<span class="hljs-string">"contribution"</span>,{
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-build2"</span>,<span class="hljs-string">"production"</span>,{
+    });</pre></div>
+        
+      
+        
+        <p>pass important path to phantomizer-export-build</p>
+
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-export-slim"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir,
+        <span class="hljs-string">"paths"</span>:config.build_run_paths,
+        <span class="hljs-string">"copy_patterns"</span>:[
+        ]
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-slim"</span>,<span class="hljs-string">"dev"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/dev/"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-slim"</span>,<span class="hljs-string">"staging"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/staging/"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-slim"</span>,<span class="hljs-string">"contribution"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/contribution/"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-export-slim"</span>,<span class="hljs-string">"production"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/production/"</span>
+    });
+
+
+    grunt.config.init(config);
+    <span class="hljs-keyword">return</span> grunt.config.get();
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_task_options</span><span class="hljs-params">(config,task_name,options)</span>{</span>
+    <span class="hljs-keyword">if</span>(!config[task_name]) config[task_name] = {options:{}};
+    <span class="hljs-keyword">if</span>(!config[task_name].options) config[task_name].options = {};
+    underscore.defaults(config[task_name].options, options);
+}
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_target_options</span><span class="hljs-params">(config,task_name,target_name,options)</span>{</span>
+    <span class="hljs-keyword">if</span>(!config[task_name][target_name]) config[task_name][target_name] = {options:{}};
+    <span class="hljs-keyword">if</span>(!config[task_name][target_name].options) config[task_name][target_name].options = {};
+    underscore.defaults(config[task_name][target_name].options,options);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readline_toquit</span><span class="hljs-params">( end_handler )</span>{</span>
+
+    <span class="hljs-keyword">var</span> readline = <span class="hljs-built_in">require</span>(<span class="hljs-string">'readline'</span>)
+    <span class="hljs-keyword">var</span> rl = readline.createInterface(process.stdin, process.stdout);
+
+    rl.question(<span class="hljs-string">'Press enter to leave...\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(answer)</span> {</span>
+        console.log(<span class="hljs-string">'See you soon !'</span>);
+        <span class="hljs-keyword">if</span>( end_handler != <span class="hljs-literal">null</span> ){
+            end_handler()
+        }
+    });
+
+}</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>
