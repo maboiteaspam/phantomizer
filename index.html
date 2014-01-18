@@ -32,13 +32,17 @@
 <a name="phantomizer-v01x" class="anchor" href="#phantomizer-v01x"><span class="octicon octicon-link"></span></a>phantomizer v0.1.x</h1>
 
 <blockquote>
-<p>Provides an environment to develop, run and build Phantomizer projects</p>
+<p>Provides the command line to use a phantomizer project</p>
 </blockquote>
 
 <p>phantomizer embeds popular tools all together
 to provide an unified and easy to use html development environment.</p>
 
-<p>It includes several ready to use / configure task oriented toward web development requirements,</p>
+<p>It includes an embedded web browser to support live reloaded development, network perturbation generator, device previewer for mobile, a dashboard to let you do all of that.</p>
+
+<p>It provides several ready to go automated process about build, test, export.</p>
+
+<p>It includes several ready to use / configure GruntJS task oriented toward web development needs,</p>
 
 <ul>
 <li>minification with requirejs, uglifyjs, htmlcompressor</li>
@@ -53,7 +57,10 @@ to provide an unified and easy to use html development environment.</p>
 <li>confess support</li>
 <li>qrcode helper</li>
 <li>preselected list of client side javascript libraries to consume</li>
-</ul><h1>
+</ul><p>This tool simply tries to provide a simple way to build the newer kind of HTML UI we expect nowadays.
+It relies on various well-known libraries to-do-the-job and pilot them thru the configuration file and the application you ll provide it.</p>
+
+<h1>
 <a name="general-assumption" class="anchor" href="#general-assumption"><span class="octicon octicon-link"></span></a>General assumption</h1>
 
 <p>This project assume you want to make web application, and so provides tools to do it.
@@ -79,16 +86,29 @@ Mac OS setup has to be re tested and verified, some difficulties appeared becaus
 <h1>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
 
-<div class="highlight highlight-bash"><pre>npm cache clean
-npm uninstall -g grunt-cli
-npm install -g grunt-cli
-npm uninstall -g maboiteaspam/phantomizer
-npm install -g maboiteaspam/phantomizer
-
-phantomizer --init my_project
-
-npm install
+<div class="highlight highlight-bash"><pre>npm install maboiteaspam/phantomizer
 </pre></div>
+
+<p>You will be able to run this</p>
+
+<div class="highlight highlight-bash"><pre>nodes_modules/.bin/phantomizer --version
+</pre></div>
+
+<h1>
+<a name="glocal-cli-access" class="anchor" href="#glocal-cli-access"><span class="octicon octicon-link"></span></a>Glocal CLI access</h1>
+
+<div class="highlight highlight-bash"><pre>npm install maboiteaspam/phantomizer -g
+</pre></div>
+
+<p>You will be able to run this</p>
+
+<div class="highlight highlight-bash"><pre>phantomizer --version
+</pre></div>
+
+<div class="highlight highlight-bash"><pre>phantomizer --init my_project
+</pre></div>
+
+<p>the project is then located under ./my_project/</p>
 
 <h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
@@ -105,7 +125,9 @@ phantomizer --document &lt;project_dir&gt;
 
 phantomizer --clean &lt;project_dir&gt;
 
-phantomizer --confess &lt;grunt target&gt;
+phantomizer --list_tasks &lt;project_dir&gt; <span class="o">[</span> --environment &lt;environment&gt; <span class="o">]</span>
+
+phantomizer --describe_task &lt;project_dir&gt; --task &lt;task_name&gt; <span class="o">[</span> --environment &lt;environment&gt; <span class="o">]</span>
 </pre></div>
 
 <h1>
@@ -123,29 +145,36 @@ my_project/documentation contains your documented scripts and css
 my_project/export contains the exported projet files ready to deploy</p>
 
 <h1>
-<a name="embedded-thanks-to-all-of-them" class="anchor" href="#embedded-thanks-to-all-of-them"><span class="octicon octicon-link"></span></a>Embedded, thanks to all of them</h1>
+<a name="the-great-libraries-you-ll-find-in-there" class="anchor" href="#the-great-libraries-you-ll-find-in-there"><span class="octicon octicon-link"></span></a>The great libraries you ll find in there</h1>
 
-<pre><code>phantomjs
+<p>HTML engine
+    phantomjs</p>
 
-https://github.com/senchalabs/connect
-
-https://github.com/jacobrask/styledocco
-https://github.com/jacobrask/docco
-https://github.com/jamesgpearce/confess
-https://github.com/jrburke/requirejs
-https://github.com/mishoo/UglifyJS
-https://github.com/crowjonah/grunt-imgmin
-https://github.com/gruntjs/grunt
-https://github.com/jquery/qunit
-https://github.com/gruntjs/grunt-contrib-qunit
-
-https://github.com/jquery/jquery
-knockout
-holmes
-jshint
-csslint
-csslint
+<pre><code>https://github.com/senchalabs/connect
 </code></pre>
+
+<p>Assets support
+    <a href="https://github.com/jacobrask/styledocco">https://github.com/jacobrask/styledocco</a>
+    <a href="https://github.com/jacobrask/docco">https://github.com/jacobrask/docco</a>
+    <a href="https://github.com/jrburke/requirejs">https://github.com/jrburke/requirejs</a>
+    <a href="https://github.com/mishoo/UglifyJS">https://github.com/mishoo/UglifyJS</a>
+    <a href="https://github.com/crowjonah/grunt-imgmin">https://github.com/crowjonah/grunt-imgmin</a>
+    <a href="https://github.com/gruntjs/grunt">https://github.com/gruntjs/grunt</a></p>
+
+<p>Testing
+    <a href="https://github.com/jquery/qunit">https://github.com/jquery/qunit</a>
+    <a href="https://github.com/gruntjs/grunt-contrib-qunit">https://github.com/gruntjs/grunt-contrib-qunit</a></p>
+
+<p>Analyzing
+    <a href="https://github.com/jamesgpearce/confess">https://github.com/jamesgpearce/confess</a>
+    holmes
+    jshint
+    csslint
+    csslint</p>
+
+<p>Client side
+    <a href="https://github.com/jquery/jquery">https://github.com/jquery/jquery</a>
+    knockout</p>
 
 <h1>
 <a name="why-" class="anchor" href="#why-"><span class="octicon octicon-link"></span></a>Why ?</h1>
