@@ -134,10 +134,6 @@ Client side
     https://github.com/jquery/jquery
     knockout
 
-# Why ?
-
-Because html rocks, but our tools fails.
-
 ## Release History
 
 
