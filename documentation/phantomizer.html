@@ -43,7 +43,7 @@
         
       
         
-        <p>—init <project_folder></p>
+        <p>—init [project_folder]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'init'</span>, <span class="hljs-string">'Initialize the project file systems environment'</span>)
@@ -52,7 +52,7 @@
         
       
         
-        <p>—server <project_folder></p>
+        <p>—server [project_folder]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'server'</span>, <span class="hljs-string">'Starts the built-in web server'</span>)
@@ -61,7 +61,7 @@
         
       
         
-        <p>—test <project_folder></p>
+        <p>—test [project_folder]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'test'</span>, <span class="hljs-string">'Test a project'</span>)
@@ -70,7 +70,7 @@
         
       
         
-        <p>—document <project_folder></p>
+        <p>—document [project_folder]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'document'</span>, <span class="hljs-string">'Document projects javascripts and css files'</span>)
@@ -79,7 +79,7 @@
         
       
         
-        <p>—export <project_folder></p>
+        <p>—export [project_folder]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'export'</span>, <span class="hljs-string">'Export a project'</span>)
@@ -88,7 +88,7 @@
         
       
         
-        <p>—clean <project_folder></p>
+        <p>—clean [project_folder]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'clean'</span>, <span class="hljs-string">'Cleanup tmp files'</span>)
@@ -97,7 +97,7 @@
         
       
         
-        <p>—[init|server|test|document|export|clean] <project_folder> —environment <env_name></p>
+        <p>—[init|server|test|document|export|clean] [project_folder] —environment [env_name]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'environment'</span>, <span class="hljs-string">'Environment to run'</span>)
@@ -106,7 +106,7 @@
         
       
         
-        <p>—list_tasks <project_folder></p>
+        <p>—list_tasks [project_folder]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'list_tasks'</span>, <span class="hljs-string">'List available tasks for configuration'</span>)
@@ -115,7 +115,7 @@
         
       
         
-        <p>—describe_task <project_folder> —task <task_name></p>
+        <p>—describe_task [project_folder] —task [task_name]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'describe_task'</span>, <span class="hljs-string">'Display a task configuration'</span>)
@@ -124,7 +124,7 @@
         
       
         
-        <p>—describe_task <project_folder> —task <task_name></p>
+        <p>—describe_task [project_folder] —task [task_name]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'task'</span>, <span class="hljs-string">'The task to manipulate'</span>)
@@ -133,7 +133,7 @@
         
       
         
-        <p>—[init|server|test|document|export|clean] <project_folder> —verbose</p>
+        <p>—[init|server|test|document|export|clean] [project_folder] —verbose</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'verbose'</span>, <span class="hljs-string">'more verbose'</span>)
@@ -142,7 +142,7 @@
         
       
         
-        <p>—[init|server|test|document|export|clean] <project_folder> —debug</p>
+        <p>—[init|server|test|document|export|clean] [project_folder] —debug</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'debug'</span>, <span class="hljs-string">'debug : even more verbose'</span>)
@@ -168,7 +168,7 @@
         
       
         
-        <p>—server  <project_folder> —default_webdomain <dns_to_listen></p>
+        <p>—server  [project_folder] —default_webdomain [dns_to_listen]</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'default_webdomain'</span>, <span class="hljs-string">'Override default web domain listened by server'</span>)
@@ -524,7 +524,7 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
  */</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_project</span><span class="hljs-params">(argv, cmd)</span>{</span>
     <span class="hljs-keyword">if</span>( argv[cmd] === <span class="hljs-literal">true</span> || argv[cmd] == <span class="hljs-string">""</span> ){
-        grunt.fail.fatal(<span class="hljs-string">"Please input the project name such : phantomizer --"</span>+cmd+<span class="hljs-string">" &lt;project&gt;\n"</span>);
+        grunt.fail.fatal(<span class="hljs-string">"Please input the project name such : phantomizer --"</span>+cmd+<span class="hljs-string">" [project]\n"</span>);
         process.exit(code=<span class="hljs-number">0</span>)
     }
     <span class="hljs-keyword">return</span> argv[cmd];
@@ -539,7 +539,7 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
         grunt.verbose.writeln(<span class="hljs-string">""</span>);
         grunt.verbose.writeln(<span class="hljs-string">"Automatically selected environment dev"</span>);
         grunt.verbose.writeln(<span class="hljs-string">"you can input the environment using,"</span>);
-        grunt.verbose.writeln(<span class="hljs-string">"phantomizer --&lt;switch&gt; &lt;project&gt; --environment &lt;environment&gt;"</span>);
+        grunt.verbose.writeln(<span class="hljs-string">"phantomizer --[switch] [project] --environment [environment]"</span>);
         grunt.verbose.writeln(<span class="hljs-string">""</span>);
         <span class="hljs-keyword">return</span> <span class="hljs-string">"dev"</span>;
     }
