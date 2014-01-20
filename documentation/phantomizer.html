@@ -133,6 +133,32 @@
         
       
         
+        
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'list_tasks'</span>, <span class="hljs-string">'List available tasks'</span>)
+        .string(<span class="hljs-string">'list_tasks'</span>)
+        .default(<span class="hljs-string">'list_tasks'</span>, <span class="hljs-literal">false</span>)</pre></div>
+        
+      
+        
+        <p>—list_envs [project_folder]</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'list_envs'</span>, <span class="hljs-string">'List available environments'</span>)
+        .string(<span class="hljs-string">'list_envs'</span>)
+        .default(<span class="hljs-string">'list_envs'</span>, <span class="hljs-literal">false</span>)</pre></div>
+        
+      
+        
+        <p>—describe_env [project_folder] —environment [env_name]</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'describe_env'</span>, <span class="hljs-string">'Display an environment configuration'</span>)
+        .string(<span class="hljs-string">'describe_env'</span>)
+        .default(<span class="hljs-string">'describe_env'</span>, <span class="hljs-string">""</span>)</pre></div>
+        
+      
+        
         <p>—[init|server|test|document|export|clean] [project_folder] —verbose</p>
 
         
@@ -160,11 +186,7 @@
 
         .describe(<span class="hljs-string">'help'</span>, <span class="hljs-string">'Display help'</span>)
         .boolean(<span class="hljs-string">'help'</span>)
-        .default(<span class="hljs-string">'help'</span>, <span class="hljs-literal">false</span>)
-
-        .describe(<span class="hljs-string">'list_tasks'</span>, <span class="hljs-string">'List availabe tasks'</span>)
-        .string(<span class="hljs-string">'list_tasks'</span>)
-        .default(<span class="hljs-string">'list_tasks'</span>, <span class="hljs-literal">false</span>)</pre></div>
+        .default(<span class="hljs-string">'help'</span>, <span class="hljs-literal">false</span>)</pre></div>
         
       
         
@@ -207,6 +229,8 @@
                 argv.help ||
                 argv.list_tasks ||
                 argv.describe_task ||
+                argv.describe_env ||
+                argv.list_envs ||
                 argv.confess ||
                 <span class="hljs-literal">false</span>;
         })
@@ -260,7 +284,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( help ){
-    console.log(optimist.help())
+    optimist.showHelp()
     process.exit(<span class="hljs-number">0</span>);
 }</pre></div>
         
@@ -469,7 +493,8 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
 
     grunt.log.ok(<span class="hljs-string">"reading configuration file "</span>+project+<span class="hljs-string">'/config.json'</span>);
     <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config ){
-        <span class="hljs-keyword">if</span>( n.match(<span class="hljs-regexp">/^phantomizer-/</span>) ) grunt.log.ok(n);
+        <span class="hljs-keyword">if</span>( n.match(<span class="hljs-regexp">/^phantomizer-/</span>) )
+            grunt.log.writeln(n);
     }
 }</pre></div>
         
@@ -496,6 +521,54 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         grunt.log.writeln( <span class="hljs-built_in">JSON</span>.stringify(config[task_name],<span class="hljs-literal">null</span>,<span class="hljs-number">4</span>) );
     }<span class="hljs-keyword">else</span>{
         grunt.log.warn(<span class="hljs-string">"No such task '"</span>+task_name+<span class="hljs-string">"' found for the project '"</span>+project+<span class="hljs-string">"'"</span>);
+    }
+}</pre></div>
+        
+      
+        
+        <p>list available environments for configuration</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.list_envs != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"list_envs"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
+        
+      
+        
+        <p>configuration initialization, including grunt config, required call prior ro grunt usage</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>, environment, argv.default_webdomain);
+
+    grunt.log.ok(<span class="hljs-string">"reading configuration file "</span>+project+<span class="hljs-string">'/config.json'</span>);
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config.environment ){
+        grunt.log.writeln(n);
+    }
+}</pre></div>
+        
+      
+        
+        <p>Describe options for the given environment name</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.describe_env != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"describe_env"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
+        
+      
+        
+        <p>configuration initialization, including grunt config, required call prior ro grunt usage</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>, environment, argv.default_webdomain);
+
+    <span class="hljs-keyword">if</span>( config.environment[environment] ){
+        grunt.log.ok( environment+<span class="hljs-string">"="</span> );
+        grunt.log.writeln( <span class="hljs-built_in">JSON</span>.stringify(config.environment[environment],<span class="hljs-literal">null</span>,<span class="hljs-number">4</span>) );
+    }<span class="hljs-keyword">else</span>{
+        grunt.log.warn(<span class="hljs-string">"No such environment '"</span>+environment+<span class="hljs-string">"' found for the project '"</span>+project+<span class="hljs-string">"'"</span>);
     }
 }</pre></div>
         
