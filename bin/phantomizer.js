@@ -64,6 +64,10 @@ var argv = optimist.usage('Phantomizer command line')
         .boolean('version')
         .default('version', false)
 
+        .describe('help', 'Display help')
+        .boolean('help')
+        .default('help', false)
+
         .describe('list_tasks', 'List availabe tasks')
         .string('list_tasks')
         .default('list_tasks', false)
@@ -86,6 +90,7 @@ var argv = optimist.usage('Phantomizer command line')
                 argv.document!=false ||
                 argv.clean!=false ||
                 argv.version!=false ||
+                argv.help!=false ||
                 argv.describe_task!=false ||
                 argv.list_tasks!=false ||
                 false;
@@ -110,6 +115,7 @@ var environment = argv.environment || false;
 var default_webdomain = argv.default_webdomain || false;
 var verbose = argv.verbose || false;
 var version = argv.version || false;
+var help = argv.help || false;
 var debug = argv.debug || false;
 
 grunt.log.subhead("Welcome to phantomizer !")
@@ -118,6 +124,11 @@ if( version ){
     var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
     pkg = JSON.parse(pkg);
     grunt.log.ok("phantomizer " + pkg.version)
+    process.exit(0);
+}
+
+if( help ){
+    console.log(optimist.help())
     process.exit(0);
 }
 
