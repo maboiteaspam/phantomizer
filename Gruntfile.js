@@ -31,6 +31,9 @@ module.exports = function(grunt) {
     grunt.registerTask('cleanup-grunt-temp', [],function(){
         wrench.rmdirSyncRecursive(__dirname + '/.grunt', !true);
     });
+
+    // juts run this command to generate docco doc and push on github
+    // grunt
     grunt.registerTask('default', ['docco','gh-pages', 'cleanup-grunt-temp']);
 
 };
