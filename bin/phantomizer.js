@@ -62,6 +62,21 @@ var argv = optimist.usage('Phantomizer command line')
         .string('task')
         .default('task', "")
 
+        //
+        .describe('list_tasks', 'List available tasks')
+        .string('list_tasks')
+        .default('list_tasks', false)
+
+        // --list_envs [project_folder]
+        .describe('list_envs', 'List available environments')
+        .string('list_envs')
+        .default('list_envs', false)
+
+        // --describe_env [project_folder] --environment [env_name]
+        .describe('describe_env', 'Display an environment configuration')
+        .string('describe_env')
+        .default('describe_env', "")
+
         // --[init|server|test|document|export|clean] [project_folder] --verbose
         .describe('verbose', 'more verbose')
         .boolean('verbose')
@@ -81,9 +96,6 @@ var argv = optimist.usage('Phantomizer command line')
         .boolean('help')
         .default('help', false)
 
-        .describe('list_tasks', 'List availabe tasks')
-        .string('list_tasks')
-        .default('list_tasks', false)
         // --server  [project_folder] --default_webdomain [dns_to_listen]
         .describe('default_webdomain', 'Override default web domain listened by server')
         .string('default_webdomain')
@@ -112,6 +124,8 @@ var argv = optimist.usage('Phantomizer command line')
                 argv.help ||
                 argv.list_tasks ||
                 argv.describe_task ||
+                argv.describe_env ||
+                argv.list_envs ||
                 argv.confess ||
                 false;
         })
@@ -145,7 +159,7 @@ if( version ){
 
 // display help
 if( help ){
-    console.log(optimist.help())
+    optimist.showHelp()
     process.exit(0);
 }
 
@@ -273,7 +287,8 @@ if( argv.list_tasks != "" ){
 
     grunt.log.ok("reading configuration file "+project+'/config.json');
     for( var n in config ){
-        if( n.match(/^phantomizer-/) ) grunt.log.ok(n);
+        if( n.match(/^phantomizer-/) )
+            grunt.log.writeln(n);
     }
 }
 
@@ -291,6 +306,36 @@ if( argv.describe_task != "" ){
         grunt.log.writeln( JSON.stringify(config[task_name],null,4) );
     }else{
         grunt.log.warn("No such task '"+task_name+"' found for the project '"+project+"'");
+    }
+}
+
+// list available environments for configuration
+if( argv.list_envs != "" ){
+
+    var project     = get_project(argv, "list_envs");
+    var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
+    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
+
+    grunt.log.ok("reading configuration file "+project+'/config.json');
+    for( var n in config.environment ){
+        grunt.log.writeln(n);
+    }
+}
+
+// Describe options for the given environment name
+if( argv.describe_env != "" ){
+
+    var project     = get_project(argv, "describe_env");
+    var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
+    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
+
+    if( config.environment[environment] ){
+        grunt.log.ok( environment+"=" );
+        grunt.log.writeln( JSON.stringify(config.environment[environment],null,4) );
+    }else{
+        grunt.log.warn("No such environment '"+environment+"' found for the project '"+project+"'");
     }
 }
 
