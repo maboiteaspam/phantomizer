@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-// load some modules
 var fs = require("fs");
 var path = require("path");
 var optimist = require("optimist");
@@ -12,55 +11,69 @@ var file_utils = ph_libutil.file_utils;
 
 // parse command line arguments
 var argv = optimist.usage('Phantomizer command line')
-        // do we start a webserver ?
-        .describe('server', 'Start a ready to use built-in web server')
-        .string('server')
-        .default('server', false)
 
-        // needs to init your project ?
-        .describe('init', 'Init a project')
+        // --init <project_folder>
+        .describe('init', 'Initialize the project file systems environment')
         .string('init')
-        .default('init', false)
+        .default('init', "")
 
-        .describe('confess', 'Measure loading times of an url')
-        .string('confess')
-        .default('confess', false)
+        // --server <project_folder>
+        .describe('server', 'Starts the built-in web server')
+        .string('server')
+        .default('server', "")
 
+        // --test <project_folder>
         .describe('test', 'Test a project')
         .string('test')
-        .default('test', false)
+        .default('test', "")
 
+        // --document <project_folder>
+        .describe('document', 'Document projects javascripts and css files')
+        .string('document')
+        .default('document', "")
+
+        // --export <project_folder>
         .describe('export', 'Export a project')
         .string('export')
-        .default('export', false)
+        .default('export', "")
 
-        .describe('document', 'Document a project')
-        .string('document')
-        .default('document', false)
-
-        .describe('clean', 'Cleanup generated project files')
+        // --clean <project_folder>
+        .describe('clean', 'Cleanup tmp files')
         .string('clean')
-        .default('clean', false)
+        .default('clean', "")
 
+        // --[init|server|test|document|export|clean] <project_folder> --environment <env_name>
         .describe('environment', 'Environment to run')
         .string('environment')
-        .default('environment', false)
+        .default('environment', "")
 
-        .describe('default_webdomain', 'Override default web domain')
-        .string('default_webdomain')
-        .default('default_webdomain', false)
+        // --list_tasks <project_folder>
+        .describe('list_tasks', 'List available tasks for configuration')
+        .string('list_tasks')
+        .default('list_tasks', "")
 
-        // needs more info ? Use -verbose
-        .describe('verbose', 'more Verbose')
+        // --describe_task <project_folder> --task <task_name>
+        .describe('describe_task', 'Display a task configuration')
+        .string('describe_task')
+        .default('describe_task', "")
+
+        // --describe_task <project_folder> --task <task_name>
+        .describe('task', 'The task to manipulate')
+        .string('task')
+        .default('task', "")
+
+        // --[init|server|test|document|export|clean] <project_folder> --verbose
+        .describe('verbose', 'more verbose')
         .boolean('verbose')
         .default('verbose', false)
 
-        // needs to dbug ? Use -debug
-        .describe('verbose', 'debug : even more verbose')
-        .boolean('verbose')
-        .default('verbose', false)
+        // --[init|server|test|document|export|clean] <project_folder> --debug
+        .describe('debug', 'debug : even more verbose')
+        .boolean('debug')
+        .default('debug', false)
 
-        .describe('version', 'Display version')
+        // --version
+        .describe('version', 'Display version from package.json file')
         .boolean('version')
         .default('version', false)
 
@@ -71,28 +84,35 @@ var argv = optimist.usage('Phantomizer command line')
         .describe('list_tasks', 'List availabe tasks')
         .string('list_tasks')
         .default('list_tasks', false)
+        // --server  <project_folder> --default_webdomain <dns_to_listen>
+        .describe('default_webdomain', 'Override default web domain listened by server')
+        .string('default_webdomain')
+        .default('default_webdomain', "")
 
-        .describe('describe_task', 'Display a task configuration')
-        .string('describe_task')
-        .default('describe_task', false)
-
-        .describe('task', 'The task to manipulate')
-        .string('task')
-        .default('task', false)
+        // @dot not use
+        .describe('confess', 'Measure loading times of an url')
+        .string('confess')
+        .default('confess', "")
 
         .check(function(argv){
-            // requires to input one of those switch
-            return argv.server!=false ||
-                argv.init!=false ||
-                argv.test!=false ||
-                argv.confess!=false ||
-                argv.export!=false ||
-                argv.document!=false ||
-                argv.clean!=false ||
-                argv.version!=false ||
-                argv.help!=false ||
-                argv.describe_task!=false ||
-                argv.list_tasks!=false ||
+            if( argv.describe_task!="" && argv.task=="" )
+                return false;
+            return true;
+        })
+
+        .check(function(argv){
+            // requires one of those switch
+            return argv.init ||
+                argv.server ||
+                argv.test ||
+                argv.document ||
+                argv.export ||
+                argv.clean||
+                argv.version ||
+                argv.help ||
+                argv.list_tasks ||
+                argv.describe_task ||
+                argv.confess ||
                 false;
         })
 
@@ -101,22 +121,14 @@ var argv = optimist.usage('Phantomizer command line')
 
 var known_configs = {};
 // let check we have some data to work on
-var server = argv.server || "";
-var init = argv.init || "";
-var test = argv.test || "";
-var export_ = argv.export || "";
-var document_ = argv.document || "";
-var confess = argv.confess || "";
-var clean = argv.clean || "";
-var describe_task = argv.describe_task || "";
-var task_name = argv.task || "";
-var list_tasks = argv.list_tasks || false;
-var environment = argv.environment || false;
-var default_webdomain = argv.default_webdomain || false;
 var verbose = argv.verbose || false;
 var version = argv.version || false;
 var help = argv.help || false;
 var debug = argv.debug || false;
+
+// set grunt js log verbosity
+grunt.option('verbose', verbose);
+grunt.option('debug', debug);
 
 grunt.log.subhead("Welcome to phantomizer !")
 
@@ -134,19 +146,18 @@ if( help ){
 
 
 // Did you want to start webserver
-if( server != "" ){
+if( argv.server != "" ){
 
     var project = get_project(argv, "server");
-    environment = get_environment(argv);
-
-    var webserver_factory = ph_libutil.webserver;
+    var environment = get_environment(argv);
 
     // configuration initialization, including grunt config, required call prior ro grunt usage
-    var config = get_config(project+'/config.json', environment);
+    var config = get_config(project+'/config.json', environment, argv.default_webdomain);
 
     var router_factory = ph_libutil.router;
     var optimizer_factory = ph_libutil.optimizer;
     var meta_factory = ph_libutil.meta;
+    var webserver_factory = ph_libutil.webserver;
 
     var meta_manager = new meta_factory(process.cwd(), config.meta_dir);
     var optimizer = new optimizer_factory(meta_manager, config);
@@ -171,7 +182,7 @@ if( server != "" ){
 }
 
 // hmm, this needs improvements to let us select a target, or better an url from command line
-if( confess != "" ){
+if( argv.confess != "" ){
 
     var project     = get_project(argv, "confess");
     var environment = get_environment(argv);
@@ -183,7 +194,7 @@ if( confess != "" ){
     });
 }
 
-if( test != "" ){
+if( argv.test != "" ){
 
     var project     = get_project(argv, "test");
     var environment = get_environment(argv);
@@ -195,49 +206,46 @@ if( test != "" ){
     });
 }
 
-if( export_ != "" ){
+if( argv.export != "" ){
 
     var project     = get_project(argv, "export");
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
 
-    var t = [
+    var tasks = [
         'phantomizer-build2:'+environment,
         'phantomizer-export-build:'+environment,
         // 'phantomizer-export-slim:'+environment,
         'export-done'
     ];
-    grunt.tasks(t, {}, function(){
+    grunt.tasks(tasks, {}, function(){
         grunt.log.ok("Export done !");
     });
 }
 
-if( document_ != "" ){
+if( argv.document != "" ){
 
     project = get_project(argv, "document");
     // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
 
-    var t = [
+    var tasks = [
         'phantomizer-docco',
         'phantomizer-styledocco'
     ];
-    grunt.tasks([
-        'phantomizer-docco',
-        'phantomizer-styledocco'
-    ], {}, function(){
+    grunt.tasks(tasks, {}, function(){
         grunt.log.ok("Documentation done !");
     });
 
 }
 
-if( clean != "" ){
+if( argv.clean != "" ){
 
     var project     = get_project(argv, "clean");
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior ro grunt usage
-    var config      = get_config(project+'/config.json',environment);
+    var config      = get_config(project+'/config.json',environment, argv.default_webdomain);
 
     var clean_dir = function(p){
         file_utils.deleteFolderRecursive(p);
@@ -255,13 +263,12 @@ if( clean != "" ){
     grunt.log.ok("Clean done !");
 }
 
-if( list_tasks != "" ){
+if( argv.list_tasks != "" ){
 
     var project     = get_project(argv, "list_tasks");
-
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior ro grunt usage
-    var config      = get_config(project+'/config.json', environment);
+    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
 
     grunt.log.ok("reading configuration file "+project+'/config.json');
     for( var n in config ){
@@ -269,13 +276,13 @@ if( list_tasks != "" ){
     }
 }
 
-if( describe_task != "" ){
+if( argv.describe_task != "" ){
 
     var project     = get_project(argv, "describe_task");
-
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior ro grunt usage
-    var config      = get_config(project+'/config.json', environment);
+    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
+    var task_name = argv.task || "";
 
     if( config[task_name] ){
         grunt.log.ok( task_name+"=" );
@@ -285,7 +292,7 @@ if( describe_task != "" ){
     }
 }
 
-if( init != "" ){
+if( argv.init != "" ){
 
     var project = get_project(argv, "init");
 
@@ -344,20 +351,32 @@ if( init != "" ){
     grunt.log.ok("Init done !");
 }
 
+
+/**
+ * Helps to get the right value from optimist object
+ * @param argv
+ * @param cmd
+ * @returns {*}
+ */
 function get_project(argv, cmd){
     if( argv[cmd] === true || argv[cmd] == "" ){
-        console.log("Please input the project name such,");
-        console.log("phantomizer --"+cmd+" <project>");
+        grunt.fail.fatal("Please input the project name such : phantomizer --"+cmd+" <project>\n");
         process.exit(code=0)
     }
     return argv[cmd];
 }
-
+/**
+ * Helps to get the right value from optimist object
+ * @param argv
+ * @returns {*}
+ */
 function get_environment(argv){
     if( argv["environment"] === true || argv["environment"] == "" ){
-        console.log("Automatically selected environment dev");
-        console.log("you can input the environment using,");
-        console.log("phantomizer --<switch> <project> --environment <environment>");
+        grunt.verbose.writeln("");
+        grunt.verbose.writeln("Automatically selected environment dev");
+        grunt.verbose.writeln("you can input the environment using,");
+        grunt.verbose.writeln("phantomizer --<switch> <project> --environment <environment>");
+        grunt.verbose.writeln("");
         return "dev";
     }
     return argv["environment"];
@@ -365,21 +384,41 @@ function get_environment(argv){
 
 
 /**
- * initialize grunt configuration
- * using shorter user config file
+ * Get the configuration object
+ * after parsing thru grunt config system
+ * Should receive the project configuration file
  * @param file
  * @param enviroment
  * @returns {*}
  */
-function get_config( file,enviroment ){
+function get_config( file,enviroment,default_webdomain ){
+
     var k = file+""+enviroment;
     if( !known_configs[k] ){
-        known_configs[k] = init_config(file,enviroment);
+        known_configs[k] = init_config(file,enviroment,default_webdomain);
     }
     return known_configs[k];
 }
-function init_config(file,enviroment){
+/**
+ * Given a json file,
+ * parse it,
+ * apply default values,
+ * apply environment values,
+ * apply grunt js config system,
+ * render it
+ *
+ * @param file
+ * @param enviroment
+ * @returns {*}
+ */
+function init_config(file,enviroment,default_webdomain){
     var working_dir = process.cwd();
+
+// check for existsing configuration file in the supposed project directory
+    if( grunt.file.exists(file) == false ){
+        grunt.fail.fatal("Project configuration file does not exists at "+file);
+    }
+
     var config = grunt.file.readJSON( file );
 // init general structure
     config = underscore.defaults(config,{
@@ -405,7 +444,8 @@ function init_config(file,enviroment){
         default_webdomain: default_webdomain || "localhost",
         environment:{}
     });
-// init environments
+
+// pre define some environment out of the box
     config.environment = underscore.defaults(config.environment,{
         production:{},
         contribution:{},
@@ -457,15 +497,15 @@ function init_config(file,enviroment){
         phantom_web_ssl_port:8085
     });
 
-// init webserver
+// init configuration accordingly to the environement variable
     if( enviroment ){
-        config.datasource_base_url = config.environment[enviroment].datasource_base_url;
-        config.web_domain = config.environment[enviroment].web_domain;
-        config.web_port = config.environment[enviroment].web_port;
-        config.web_ssl_port = config.environment[enviroment].web_ssl_port;
-        config.test_web_port = config.environment[enviroment].test_web_ssl_port;
-        config.phantom_web_port = config.environment[enviroment].phantom_web_port;
-        config.phantom_web_ssl_port = config.environment[enviroment].phantom_web_ssl_port;
+        if( !config.environment[enviroment] ){
+            grunt.fail.fatal("Unknown environment "+enviroment+" in the configuration file");
+        }else{
+            for( var n in config.environment[enviroment] ){
+                config[n] = config.environment[enviroment][n];
+            }
+        }
     }
 
     for( var n in config.routing){
@@ -516,7 +556,7 @@ function init_config(file,enviroment){
     config.scripts = underscore.defaults(config.scripts,{
         strips:[
             /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.js"],
+             "/js/vendors/go-jquery/jquery-2.0.3.min.js",
              */
         ],
         requirejs:{},
@@ -562,7 +602,7 @@ function init_config(file,enviroment){
     config.css = underscore.defaults(config.css,{
         strips:[
             /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.css"],
+             "/js/vendors/go-jquery/jquery-2.0.3.min.css",
              */
         ],
         prepend:{
@@ -969,17 +1009,54 @@ function init_config(file,enviroment){
     return grunt.config.get();
 }
 
+/**
+ * Init a task option in the grunt js manner
+ *
+ * {
+ *  "task_name":{
+ *      "options":{}
+ *  }
+ * }
+ *
+ * @param config
+ * @param task_name
+ * @param options
+ */
 function init_task_options(config,task_name,options){
     if(!config[task_name]) config[task_name] = {options:{}};
     if(!config[task_name].options) config[task_name].options = {};
     underscore.defaults(config[task_name].options, options);
 }
+/**
+ * Init a task target option in the grunt js manner
+ *
+ * {
+ *  "task_name":{
+ *      "options":{},
+ *      "target_name":{
+ *          "options":{}
+ *      }
+ *  }
+ * }
+ *
+ * @param config
+ * @param task_name
+ * @param target_name
+ * @param options
+ */
 function init_target_options(config,task_name,target_name,options){
     if(!config[task_name][target_name]) config[task_name][target_name] = {options:{}};
     if(!config[task_name][target_name].options) config[task_name][target_name].options = {};
     underscore.defaults(config[task_name][target_name].options,options);
 }
 
+/**
+ * Waits for user to press Enter key,
+ * kills remaining webserver,
+ * exit
+ *
+ * @param end_handler
+ */
 function readline_toquit( end_handler ){
 
     var readline = require('readline')
