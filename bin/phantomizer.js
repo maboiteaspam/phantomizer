@@ -12,62 +12,62 @@ var file_utils = ph_libutil.file_utils;
 // parse command line arguments
 var argv = optimist.usage('Phantomizer command line')
 
-        // --init <project_folder>
+        // --init [project_folder]
         .describe('init', 'Initialize the project file systems environment')
         .string('init')
         .default('init', "")
 
-        // --server <project_folder>
+        // --server [project_folder]
         .describe('server', 'Starts the built-in web server')
         .string('server')
         .default('server', "")
 
-        // --test <project_folder>
+        // --test [project_folder]
         .describe('test', 'Test a project')
         .string('test')
         .default('test', "")
 
-        // --document <project_folder>
+        // --document [project_folder]
         .describe('document', 'Document projects javascripts and css files')
         .string('document')
         .default('document', "")
 
-        // --export <project_folder>
+        // --export [project_folder]
         .describe('export', 'Export a project')
         .string('export')
         .default('export', "")
 
-        // --clean <project_folder>
+        // --clean [project_folder]
         .describe('clean', 'Cleanup tmp files')
         .string('clean')
         .default('clean', "")
 
-        // --[init|server|test|document|export|clean] <project_folder> --environment <env_name>
+        // --[init|server|test|document|export|clean] [project_folder] --environment [env_name]
         .describe('environment', 'Environment to run')
         .string('environment')
         .default('environment', "")
 
-        // --list_tasks <project_folder>
+        // --list_tasks [project_folder]
         .describe('list_tasks', 'List available tasks for configuration')
         .string('list_tasks')
         .default('list_tasks', "")
 
-        // --describe_task <project_folder> --task <task_name>
+        // --describe_task [project_folder] --task [task_name]
         .describe('describe_task', 'Display a task configuration')
         .string('describe_task')
         .default('describe_task', "")
 
-        // --describe_task <project_folder> --task <task_name>
+        // --describe_task [project_folder] --task [task_name]
         .describe('task', 'The task to manipulate')
         .string('task')
         .default('task', "")
 
-        // --[init|server|test|document|export|clean] <project_folder> --verbose
+        // --[init|server|test|document|export|clean] [project_folder] --verbose
         .describe('verbose', 'more verbose')
         .boolean('verbose')
         .default('verbose', false)
 
-        // --[init|server|test|document|export|clean] <project_folder> --debug
+        // --[init|server|test|document|export|clean] [project_folder] --debug
         .describe('debug', 'debug : even more verbose')
         .boolean('debug')
         .default('debug', false)
@@ -84,7 +84,7 @@ var argv = optimist.usage('Phantomizer command line')
         .describe('list_tasks', 'List availabe tasks')
         .string('list_tasks')
         .default('list_tasks', false)
-        // --server  <project_folder> --default_webdomain <dns_to_listen>
+        // --server  [project_folder] --default_webdomain [dns_to_listen]
         .describe('default_webdomain', 'Override default web domain listened by server')
         .string('default_webdomain')
         .default('default_webdomain', "")
@@ -360,7 +360,7 @@ if( argv.init != "" ){
  */
 function get_project(argv, cmd){
     if( argv[cmd] === true || argv[cmd] == "" ){
-        grunt.fail.fatal("Please input the project name such : phantomizer --"+cmd+" <project>\n");
+        grunt.fail.fatal("Please input the project name such : phantomizer --"+cmd+" [project]\n");
         process.exit(code=0)
     }
     return argv[cmd];
@@ -375,7 +375,7 @@ function get_environment(argv){
         grunt.verbose.writeln("");
         grunt.verbose.writeln("Automatically selected environment dev");
         grunt.verbose.writeln("you can input the environment using,");
-        grunt.verbose.writeln("phantomizer --<switch> <project> --environment <environment>");
+        grunt.verbose.writeln("phantomizer --[switch] [project] --environment [environment]");
         grunt.verbose.writeln("");
         return "dev";
     }
