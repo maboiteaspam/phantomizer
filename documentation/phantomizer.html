@@ -214,11 +214,12 @@
         .argv
     ;
 
+
 <span class="hljs-keyword">var</span> known_configs = {};</pre></div>
         
       
         
-        <p>let check we have some data to work on</p>
+        <p>fine tune some data</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">var</span> verbose = argv.verbose || <span class="hljs-literal">false</span>;
@@ -232,25 +233,40 @@
 
         
           <div class='highlight'><pre>grunt.option(<span class="hljs-string">'verbose'</span>, verbose);
-grunt.option(<span class="hljs-string">'debug'</span>, debug);
+grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
+        
+      
+        
+        <p>Welcome user</p>
 
-grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
+        
+          <div class='highlight'><pre>grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)</pre></div>
+        
+      
+        
+        <p>display version number</p>
 
-<span class="hljs-keyword">if</span>( version ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( version ){
     <span class="hljs-keyword">var</span> pkg = fs.readFileSync(__dirname+<span class="hljs-string">"/../package.json"</span>, <span class="hljs-string">'utf-8'</span>);
     pkg = <span class="hljs-built_in">JSON</span>.parse(pkg);
     grunt.log.ok(<span class="hljs-string">"phantomizer "</span> + pkg.version)
     process.exit(<span class="hljs-number">0</span>);
-}
+}</pre></div>
+        
+      
+        
+        <p>display help</p>
 
-<span class="hljs-keyword">if</span>( help ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( help ){
     console.log(optimist.help())
     process.exit(<span class="hljs-number">0</span>);
 }</pre></div>
         
       
         
-        <p>Did you want to start webserver</p>
+        <p>Starts local webserver for development purpose</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.server != <span class="hljs-string">""</span> ){
@@ -274,13 +290,37 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
     <span class="hljs-keyword">var</span> optimizer = <span class="hljs-keyword">new</span> optimizer_factory(meta_manager, config);
     <span class="hljs-keyword">var</span> router = <span class="hljs-keyword">new</span> router_factory(config.routing);
 
-    <span class="hljs-keyword">var</span> webserver =<span class="hljs-literal">null</span>;
-    router.load(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
-        webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
-        <span class="hljs-keyword">var</span> h = <span class="hljs-string">"http://"</span>+config.web_domain+(config.web_port?<span class="hljs-string">":"</span>+config.web_port:<span class="hljs-string">""</span>);
+    <span class="hljs-keyword">var</span> webserver = <span class="hljs-literal">null</span>;</pre></div>
+        
+      
+        
+        <p>load routes, eventually from a remote webserver</p>
+
+        
+          <div class='highlight'><pre>    router.load(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span></pre></div>
+        
+      
+        
+        <p>create a new local webserver with found route urls</p>
+
+        
+          <div class='highlight'><pre>        webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,process.cwd(), config);</pre></div>
+        
+      
+        
+        <p>try to listen both clear text and ssl</p>
+
+        
+          <div class='highlight'><pre>        <span class="hljs-keyword">var</span> h = <span class="hljs-string">"http://"</span>+config.web_domain+(config.web_port?<span class="hljs-string">":"</span>+config.web_port:<span class="hljs-string">""</span>);
         <span class="hljs-keyword">var</span> hs = <span class="hljs-string">"https://"</span>+config.web_domain+(config.web_domain?<span class="hljs-string">":"</span>+config.web_ssl_port:<span class="hljs-string">""</span>);
-        grunt.log.ok(<span class="hljs-string">"Webserver started on "</span>+h+<span class="hljs-string">" "</span>+(hs?hs:<span class="hljs-string">""</span>))
-        webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
+        grunt.log.ok(<span class="hljs-string">"Webserver started on "</span>+h+<span class="hljs-string">" "</span>+(hs?hs:<span class="hljs-string">""</span>))</pre></div>
+        
+      
+        
+        <p>starts local webserver</p>
+
+        
+          <div class='highlight'><pre>        webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
     })</pre></div>
         
       
@@ -298,27 +338,10 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
         
       
         
-        <p>hmm, this needs improvements to let us select a target, or better an url from command line</p>
+        <p>run the project test suites</p>
 
         
-          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.confess != <span class="hljs-string">""</span> ){
-
-    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"confess"</span>);
-    <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
-        
-      
-        
-        <p>configuration initialization, including grunt config, required call prior ro grunt usage</p>
-
-        
-          <div class='highlight'><pre>    init_config(project+<span class="hljs-string">'/config.json'</span>, environment);
-
-    grunt.tasks([<span class="hljs-string">'phantomizer-confess:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
-        grunt.log.ok(<span class="hljs-string">"Measure done !"</span>);
-    });
-}
-
-<span class="hljs-keyword">if</span>( argv.test != <span class="hljs-string">""</span> ){
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.test != <span class="hljs-string">""</span> ){
 
     <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"test"</span>);
     <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
@@ -333,9 +356,14 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
     grunt.tasks([<span class="hljs-string">'phantomizer-qunit-runner:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
         grunt.log.ok(<span class="hljs-string">"Test done !"</span>);
     });
-}
+}</pre></div>
+        
+      
+        
+        <p>build and export the project</p>
 
-<span class="hljs-keyword">if</span>( argv.export != <span class="hljs-string">""</span> ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.export != <span class="hljs-string">""</span> ){
 
     <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"export"</span>);
     <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
@@ -361,9 +389,14 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
     grunt.tasks(tasks, {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
         grunt.log.ok(<span class="hljs-string">"Export done !"</span>);
     });
-}
+}</pre></div>
+        
+      
+        
+        <p>document the project javacscrit and css files</p>
 
-<span class="hljs-keyword">if</span>( argv.document != <span class="hljs-string">""</span> ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.document != <span class="hljs-string">""</span> ){
 
     project = get_project(argv, <span class="hljs-string">"document"</span>);</pre></div>
         
@@ -382,9 +415,14 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
         grunt.log.ok(<span class="hljs-string">"Documentation done !"</span>);
     });
 
-}
+}</pre></div>
+        
+      
+        
+        <p>clean the temporary files and folders</p>
 
-<span class="hljs-keyword">if</span>( argv.clean != <span class="hljs-string">""</span> ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.clean != <span class="hljs-string">""</span> ){
 
     <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"clean"</span>);
     <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
@@ -410,9 +448,14 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
     clean_dir(config.meta_dir);
 
     grunt.log.ok(<span class="hljs-string">"Clean done !"</span>);
-}
+}</pre></div>
+        
+      
+        
+        <p>list available tasks for configuration</p>
 
-<span class="hljs-keyword">if</span>( argv.list_tasks != <span class="hljs-string">""</span> ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.list_tasks != <span class="hljs-string">""</span> ){
 
     <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"list_tasks"</span>);
     <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
@@ -428,9 +471,14 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
     <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config ){
         <span class="hljs-keyword">if</span>( n.match(<span class="hljs-regexp">/^phantomizer-/</span>) ) grunt.log.ok(n);
     }
-}
+}</pre></div>
+        
+      
+        
+        <p>Describe options for the given task name</p>
 
-<span class="hljs-keyword">if</span>( argv.describe_task != <span class="hljs-string">""</span> ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.describe_task != <span class="hljs-string">""</span> ){
 
     <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"describe_task"</span>);
     <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
@@ -449,9 +497,14 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
     }<span class="hljs-keyword">else</span>{
         grunt.log.warn(<span class="hljs-string">"No such task '"</span>+task_name+<span class="hljs-string">"' found for the project '"</span>+project+<span class="hljs-string">"'"</span>);
     }
-}
+}</pre></div>
+        
+      
+        
+        <p>Initialize directory structure for the given project name</p>
 
-<span class="hljs-keyword">if</span>( argv.init != <span class="hljs-string">""</span> ){
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.init != <span class="hljs-string">""</span> ){
 
     <span class="hljs-keyword">var</span> project = get_project(argv, <span class="hljs-string">"init"</span>);
 
@@ -513,6 +566,28 @@ grunt.log.subhead(<span class="hljs-string">"Welcome to phantomizer !"</span>)
     }
 
     grunt.log.ok(<span class="hljs-string">"Init done !"</span>);
+}</pre></div>
+        
+      
+        
+        <p>hmm, this needs improvements to let us select a target, or better an url from command line</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.confess != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"confess"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
+        
+      
+        
+        <p>configuration initialization, including grunt config, required call prior ro grunt usage</p>
+
+        
+          <div class='highlight'><pre>    init_config(project+<span class="hljs-string">'/config.json'</span>, environment);
+
+    grunt.tasks([<span class="hljs-string">'phantomizer-confess:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        grunt.log.ok(<span class="hljs-string">"Measure done !"</span>);
+    });
 }
 
 
