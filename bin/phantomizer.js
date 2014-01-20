@@ -119,8 +119,10 @@ var argv = optimist.usage('Phantomizer command line')
         .argv
     ;
 
+
 var known_configs = {};
-// let check we have some data to work on
+
+// fine tune some data
 var verbose = argv.verbose || false;
 var version = argv.version || false;
 var help = argv.help || false;
@@ -130,8 +132,10 @@ var debug = argv.debug || false;
 grunt.option('verbose', verbose);
 grunt.option('debug', debug);
 
+// Welcome user
 grunt.log.subhead("Welcome to phantomizer !")
 
+// display version number
 if( version ){
     var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
     pkg = JSON.parse(pkg);
@@ -139,13 +143,14 @@ if( version ){
     process.exit(0);
 }
 
+// display help
 if( help ){
     console.log(optimist.help())
     process.exit(0);
 }
 
 
-// Did you want to start webserver
+// Starts local webserver for development purpose
 if( argv.server != "" ){
 
     var project = get_project(argv, "server");
@@ -163,12 +168,16 @@ if( argv.server != "" ){
     var optimizer = new optimizer_factory(meta_manager, config);
     var router = new router_factory(config.routing);
 
-    var webserver =null;
+    var webserver = null;
+    // load routes, eventually from a remote webserver
     router.load(function(){
+        // create a new local webserver with found route urls
         webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
+        // try to listen both clear text and ssl
         var h = "http://"+config.web_domain+(config.web_port?":"+config.web_port:"");
         var hs = "https://"+config.web_domain+(config.web_domain?":"+config.web_ssl_port:"");
         grunt.log.ok("Webserver started on "+h+" "+(hs?hs:""))
+        // starts local webserver
         webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
     })
 
@@ -181,19 +190,7 @@ if( argv.server != "" ){
     });
 }
 
-// hmm, this needs improvements to let us select a target, or better an url from command line
-if( argv.confess != "" ){
-
-    var project     = get_project(argv, "confess");
-    var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
-    init_config(project+'/config.json', environment);
-
-    grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
-        grunt.log.ok("Measure done !");
-    });
-}
-
+// run the project test suites
 if( argv.test != "" ){
 
     var project     = get_project(argv, "test");
@@ -206,6 +203,7 @@ if( argv.test != "" ){
     });
 }
 
+// build and export the project
 if( argv.export != "" ){
 
     var project     = get_project(argv, "export");
@@ -224,6 +222,7 @@ if( argv.export != "" ){
     });
 }
 
+// document the project javacscrit and css files
 if( argv.document != "" ){
 
     project = get_project(argv, "document");
@@ -240,6 +239,7 @@ if( argv.document != "" ){
 
 }
 
+// clean the temporary files and folders
 if( argv.clean != "" ){
 
     var project     = get_project(argv, "clean");
@@ -263,6 +263,7 @@ if( argv.clean != "" ){
     grunt.log.ok("Clean done !");
 }
 
+// list available tasks for configuration
 if( argv.list_tasks != "" ){
 
     var project     = get_project(argv, "list_tasks");
@@ -276,6 +277,7 @@ if( argv.list_tasks != "" ){
     }
 }
 
+// Describe options for the given task name
 if( argv.describe_task != "" ){
 
     var project     = get_project(argv, "describe_task");
@@ -292,6 +294,7 @@ if( argv.describe_task != "" ){
     }
 }
 
+// Initialize directory structure for the given project name
 if( argv.init != "" ){
 
     var project = get_project(argv, "init");
@@ -349,6 +352,19 @@ if( argv.init != "" ){
     }
 
     grunt.log.ok("Init done !");
+}
+
+// hmm, this needs improvements to let us select a target, or better an url from command line
+if( argv.confess != "" ){
+
+    var project     = get_project(argv, "confess");
+    var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
+    init_config(project+'/config.json', environment);
+
+    grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
+        grunt.log.ok("Measure done !");
+    });
 }
 
 
