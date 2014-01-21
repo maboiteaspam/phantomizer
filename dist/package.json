@@ -10,6 +10,7 @@
 
         ,"phantomjs": "1.9.x"
 
+        ,"phantomizer": "maboiteaspam/phantomizer"
         ,"phantomizer-grunt": "maboiteaspam/phantomizer-grunt"
         ,"phantomizer-styledocco": "maboiteaspam/phantomizer-styledocco"
         ,"phantomizer-docco": "maboiteaspam/phantomizer-docco"
