@@ -1009,7 +1009,7 @@ function init_config(file,enviroment,default_webdomain){
             config.documentation_dir
         ],
         build_target:"stryke-assets-min-build",
-        urls_file:"run/urls.json",
+        urls_file:config.run_dir+"/urls.json",
         inject_extras:false
     });
     init_target_options(config,"phantomizer-build2","dev",{
