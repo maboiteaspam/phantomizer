@@ -1,6 +1,6 @@
 {
   "name": "phantomizer",
-  "version": "0.1.42",
+  "version": "0.1.43",
   "private": true,
   "preferGlobal": true,
   "description": "Embedded web development environment, helps to build better HTML ui",
@@ -32,6 +32,6 @@
     "grunt-docco": "DavidSouther/grunt-docco",
     "grunt-gh-pages": "~0.9.0",
     "wrench": "~1.5.6",
-    "grunt-release": "~0.6.0"
+    "grunt-release": "geddski/grunt-release"
   }
 }
