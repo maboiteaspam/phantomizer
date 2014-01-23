@@ -28,11 +28,11 @@ It relies on various well-known libraries to-do-the-job and pilot them thru the 
 
 # Website
 
-    http://maboiteaspam.github.io/phantomizer/
+http://maboiteaspam.github.io/phantomizer/
 
 # Generated documentation
 
-    http://maboiteaspam.github.io/phantomizer/documentation/phantomizer.html
+http://maboiteaspam.github.io/phantomizer/documentation/phantomizer.html
 
 # General assumption
 This project assume you want to make web application, and so provides tools to do it.
