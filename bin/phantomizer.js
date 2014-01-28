@@ -124,8 +124,8 @@ var argv = optimist.usage('Phantomizer command line')
                 argv.help ||
                 argv.list_tasks ||
                 argv.describe_task ||
-                argv.describe_env ||
                 argv.list_envs ||
+                argv.describe_env ||
                 argv.confess ||
                 false;
         })

@@ -74,21 +74,23 @@ phantomizer --version
 
 # Usage
 ```bash
+
+phantomizer --version
+phantomizer --help
+
 phantomizer --init <project_dir>
 
 phantomizer --server <project_dir> [ --environment <environment> ]
-
 phantomizer --test <project_dir> [ --environment <environment> ]
-
 phantomizer --export <project_dir> [ --environment <environment> ]
-
 phantomizer --document <project_dir>
-
 phantomizer --clean <project_dir>
 
 phantomizer --list_tasks <project_dir> [ --environment <environment> ]
-
 phantomizer --describe_task <project_dir> --task <task_name> [ --environment <environment> ]
+
+phantomizer --list_envs <project_dir> [ --environment <environment> ]
+phantomizer --describe_env <project_dir> --task <task_name> [ --environment <environment> ]
 ```
 
 # Start
