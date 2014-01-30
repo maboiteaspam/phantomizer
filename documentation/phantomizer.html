@@ -36,7 +36,7 @@
         
       
         
-        <p>parse command line arguments</p>
+        <h3>parse command line arguments</h3>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">var</span> argv = optimist.usage(<span class="hljs-string">'Phantomizer command line'</span>)</pre></div>
@@ -282,7 +282,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>display version number</p>
+        <h3>display version number</h3>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( version ){
@@ -294,7 +294,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>display help</p>
+        <h3>display help</h3>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( help ){
@@ -304,7 +304,8 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>Starts local webserver for development purpose</p>
+        <p><h3>Starts local webserver</h3>
+For development purpose</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.server != <span class="hljs-string">""</span> ){
@@ -413,7 +414,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>run the project test suites</p>
+        <h3>Run project tests</h3>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.test != <span class="hljs-string">""</span> ){</pre></div>
@@ -446,7 +447,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>build and export the project</p>
+        <h3>Build then export the project</h3>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.export != <span class="hljs-string">""</span> ){</pre></div>
@@ -507,7 +508,8 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>document the project javascript and css files</p>
+        <p><h3>Document the project</h3>
+Document all javascript and css files</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.document != <span class="hljs-string">""</span> ){</pre></div>
@@ -556,7 +558,9 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>clean the temporary files and folders</p>
+        <p><h3>Clean the project</h3>
+delete the temporary,
+build, export, documentation files and folders</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.clean != <span class="hljs-string">""</span> ){</pre></div>
@@ -589,7 +593,9 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>list available tasks for configuration</p>
+        <p><h3>List tasks</h3>
+Provide useful information about
+the configuration used during any operation</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.list_tasks != <span class="hljs-string">""</span> ){</pre></div>
@@ -635,7 +641,8 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>Describe options for the given task name</p>
+        <p><h3>Describe task</h3>
+Details a specific task options</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.describe_task != <span class="hljs-string">""</span> ){</pre></div>
@@ -683,7 +690,8 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>list available environments for configuration</p>
+        <p><h3>List available environment</h3>
+Environments let adjust some behavior</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.list_envs != <span class="hljs-string">""</span> ){</pre></div>
@@ -716,7 +724,8 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>Describe options for the given environment name</p>
+        <p><h3>Describe environment</h3>
+Details specififc environment options</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.describe_env != <span class="hljs-string">""</span> ){</pre></div>
@@ -763,7 +772,10 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p>Initialize directory structure for the given project name</p>
+        <p><h3>Initialize a project</h3>
+Initialize directory structure
+Initialize default files
+package.json Gruntfile.js, config.json, index.htm, index.js</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.init != <span class="hljs-string">""</span> ){</pre></div>
