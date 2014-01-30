@@ -26,11 +26,9 @@ It includes several ready to use / configure GruntJS task oriented toward web de
 This tool simply tries to provide a simple way to build the newer kind of HTML UI we expect nowadays.
 It relies on various well-known libraries to-do-the-job and pilot them thru the configuration file and the application you ll provide it.
 
-# Website
+# Documentation Index
 
 http://maboiteaspam.github.io/phantomizer/
-
-# Generated documentation
 
 http://maboiteaspam.github.io/phantomizer/documentation/phantomizer.html
 
@@ -127,7 +125,6 @@ my_project/export contains the exported project files, ready to deploy.
     https://github.com/jamesgpearce/confess
     holmes
     jshint
-    csslint
     csslint
 
 Client side
