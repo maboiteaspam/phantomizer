@@ -220,9 +220,9 @@ if( argv.test != "" ){
 
     // the project to test
     var project     = get_project(argv, "test");
-    // the specific environment to setup for the tests
+    // the specific environment to setup
     var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
+    // configuration initialization, including grunt config, required call prior to grunt usage
     init_config(project+'/config.json', environment);
 
     grunt.tasks(['phantomizer-qunit-runner:'+environment], {}, function(){
@@ -235,32 +235,40 @@ if( argv.export != "" ){
 
     // the project to export
     var project     = get_project(argv, "export");
-    // the specific environment to setup for the export
+    // the specific environment to setup
     var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
+
+    // configuration initialization, including grunt config, required call prior to grunt usage
     init_config(project+'/config.json', environment);
 
     var tasks = [
+        // invoke the task to build the whole project
         'phantomizer-project-builder:'+environment,
+        // invoke the task to export build files to export directory
         'phantomizer-export-build:'+environment,
         // 'phantomizer-export-slim:'+environment
     ];
+    // invoke grunt
     grunt.tasks(tasks, {}, function(){
         grunt.log.ok("Export done !");
     });
 }
 
-// document the project javacscrit and css files
+// document the project javascript and css files
 if( argv.document != "" ){
 
+    // the project to document
     project = get_project(argv, "document");
-    // configuration initialization, including grunt config, required call prior ro grunt usage
+    // configuration initialization, including grunt config, required call prior to grunt usage
     init_config(project+'/config.json', environment);
 
     var tasks = [
+        // invoke the task to document javascript files
         'phantomizer-docco',
+        // invoke the task to document css files
         'phantomizer-styledocco'
     ];
+    // invoke grunt
     grunt.tasks(tasks, {}, function(){
         grunt.log.ok("Documentation done !");
     });
@@ -270,23 +278,19 @@ if( argv.document != "" ){
 // clean the temporary files and folders
 if( argv.clean != "" ){
 
+    // the project to clean
     var project     = get_project(argv, "clean");
-    var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
-    var config      = get_config(project+'/config.json',environment, argv.default_webdomain);
+    // configuration initialization, including grunt config, required call prior to grunt usage
+    var config      = get_config(project+'/config.json', null, argv.default_webdomain);
 
-    var clean_dir = function(p){
-        file_utils.deleteFolderRecursive(p);
-        fs.mkdirSync(p);
-        if( verbose ){
-            grunt.log.ok("Cleaned \n\t"+p);
-        }
-    };
-
-    clean_dir(config.documentation_dir);
-    clean_dir(config.export_dir);
-    clean_dir(config.out_dir);
-    clean_dir(config.meta_dir);
+    var delete_dir = function(p){
+        grunt.verbose.writeln(p)
+        grunt.file.delete(p, {force: true})
+    }
+    delete_dir(config.documentation_dir)
+    delete_dir(config.export_dir)
+    delete_dir(config.out_dir)
+    delete_dir(config.meta_dir)
 
     grunt.log.ok("Clean done !");
 }
@@ -294,28 +298,35 @@ if( argv.clean != "" ){
 // list available tasks for configuration
 if( argv.list_tasks != "" ){
 
+    // the project to list tasks of
     var project     = get_project(argv, "list_tasks");
+    // the specific environment to setup
     var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
+    // configuration initialization, including grunt config, required call prior to grunt usage
     var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
 
     grunt.log.ok("reading configuration file "+project+'/config.json');
+    // iterate config properties
     for( var n in config ){
-        if( n.match(/^phantomizer-/) )
-            grunt.log.writeln(n);
+        // print its name if it starts by phantomizer-
+        if( n.match(/^phantomizer-/) ) grunt.log.writeln(n);
     }
 }
 
 // Describe options for the given task name
 if( argv.describe_task != "" ){
 
+    // the project to describe task of
     var project     = get_project(argv, "describe_task");
+    // the specific environment to setup
     var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
+    // configuration initialization, including grunt config, required call prior to grunt usage
     var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
     var task_name = argv.task || "";
 
+    // if the task exists
     if( config[task_name] ){
+        // pretty prints it
         grunt.log.ok( task_name+"=" );
         grunt.log.writeln( JSON.stringify(config[task_name],null,4) );
     }else{
@@ -326,13 +337,14 @@ if( argv.describe_task != "" ){
 // list available environments for configuration
 if( argv.list_envs != "" ){
 
+    // the project to describe environments of
     var project     = get_project(argv, "list_envs");
-    var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
-    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
+    // configuration initialization, including grunt config, required call prior to grunt usage
+    var config      = get_config(project+'/config.json', null, argv.default_webdomain);
 
     grunt.log.ok("reading configuration file "+project+'/config.json');
     for( var n in config.environment ){
+        // prints its name
         grunt.log.writeln(n);
     }
 }
@@ -340,12 +352,16 @@ if( argv.list_envs != "" ){
 // Describe options for the given environment name
 if( argv.describe_env != "" ){
 
+    // the project to describe environment of
     var project     = get_project(argv, "describe_env");
+    // the specific environment to setup
     var environment = get_environment(argv);
-    // configuration initialization, including grunt config, required call prior ro grunt usage
+    // configuration initialization, including grunt config, required call prior to grunt usage
     var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
 
+    // if the environment exists
     if( config.environment[environment] ){
+        // pretty prints it
         grunt.log.ok( environment+"=" );
         grunt.log.writeln( JSON.stringify(config.environment[environment],null,4) );
     }else{
@@ -356,16 +372,16 @@ if( argv.describe_env != "" ){
 // Initialize directory structure for the given project name
 if( argv.init != "" ){
 
+    // the project to initialize
     var project = get_project(argv, "init");
 
     var make_dir = function(p){
-        if( fs.existsSync(p) == false ){
-            fs.mkdirSync(p);
-            if( verbose ){
-                grunt.log.ok("Created "+p);
-            }
-        }
+        grunt.file.mkdir(p)
+        grunt.log.ok("\t"+p);
     };
+
+    grunt.log.ok("Setting up directory structure");
+    grunt.log.ok(process.cwd());
 
     make_dir(project);
     make_dir(project+"/export");
@@ -376,16 +392,24 @@ if( argv.init != "" ){
     make_dir(project+"/project");
     make_dir(project+"/project/www-core");
     make_dir(project+"/project/www-wbm");
-    make_dir(project+"/project/www-vendors");
+    //make_dir(project+"/project/www-vendors");
 
+    // locate dist files to install
     var dist = path.join(path.dirname(fs.realpathSync(__filename)), '../dist');
+
+    // if user Grunt file does not exists
     if( fs.existsSync('Gruntfile.js') == false ){
-        file_utils.copyFile(dist+'/Gruntfile.js', 'Gruntfile.js');
+        // set it up
+        grunt.file.copy(dist+'/Gruntfile.js', 'Gruntfile.js');
     }
+
+    // if user Project config file does not exists
     var project_config_file = project+'/config.json';
     if( fs.existsSync(project_config_file) == false ){
+        // loads dist version
         file_utils.copyFile(dist+'/config.json', project_config_file);
         var c = file_utils.readJSON(project_config_file);
+        // adjust the configuration to that specific project
         c.project_dir = project+"/project/";
         c.src_dir = project+"/project/www-core/";
         c.wbm_dir = project+"/project/www-wbm/";
@@ -394,19 +418,25 @@ if( argv.init != "" ){
         c.meta_dir = project+"/run/meta/";
         c.export_dir = project+"/export/";
         c.documentation_dir = project+"/documentation/";
+        // saves it
         file_utils.writeJSON(project_config_file, c, true);
     }
+    // if user Package config file does not exists
     var pckg_config_file = 'package.json';
     if( fs.existsSync(pckg_config_file) == false ){
-        file_utils.copyFile(dist+'/package.json', pckg_config_file);
-        var c = file_utils.readJSON(pckg_config_file);
-        file_utils.writeJSON(pckg_config_file, c, true);
+        // set it up
+        grunt.file.copy(dist+'/package.json', pckg_config_file);
     }
-    if( fs.existsSync(project+"/project/www-core/index.html") == false ){
+    // if project HTML index file does not exist
+    if( fs.existsSync(project+"/project/www-core/index.html") == false
+        && fs.existsSync(project+"/project/www-core/index.htm") == false ){
+        // set it up
         file_utils.copyFile(dist+'/www-core/index.html', project+"/project/www-core/index.html");
     }
+    // if project JS index file does not exist
     if( fs.existsSync(project+"/project/www-core/js/index.js") == false ){
         fs.mkdirSync(project+"/project/www-core/js/");
+        // set it up
         file_utils.copyFile(dist+'/www-core/js/index.js', project+"/project/www-core/js/index.js");
     }
 
@@ -463,14 +493,14 @@ function get_environment(argv){
  * after parsing thru grunt config system
  * Should receive the project configuration file
  * @param file
- * @param enviroment
+ * @param environment|null
  * @returns {*}
  */
-function get_config( file,enviroment,default_webdomain ){
+function get_config( file,environment,default_webdomain ){
 
-    var k = file+""+enviroment;
+    var k = file+""+environment;
     if( !known_configs[k] ){
-        known_configs[k] = init_config(file,enviroment,default_webdomain);
+        known_configs[k] = init_config(file,environment,default_webdomain);
     }
     return known_configs[k];
 }
@@ -483,10 +513,10 @@ function get_config( file,enviroment,default_webdomain ){
  * render it
  *
  * @param file
- * @param enviroment
+ * @param environment
  * @returns {*}
  */
-function init_config(file,enviroment,default_webdomain){
+function init_config(file,environment,default_webdomain){
     var working_dir = process.cwd();
 
 // check for existsing configuration file in the supposed project directory
@@ -572,17 +602,18 @@ function init_config(file,enviroment,default_webdomain){
         phantom_web_ssl_port:8085
     });
 
-// init configuration accordingly to the environement variable
-    if( enviroment ){
-        if( !config.environment[enviroment] ){
-            grunt.fail.fatal("Unknown environment "+enviroment+" in the configuration file");
+// Adjust general configuration with selected environment
+    if( environment ){
+        if( !config.environment[environment] ){
+            grunt.fail.fatal("Unknown environment "+environment+" in the configuration file");
         }else{
-            for( var n in config.environment[enviroment] ){
-                config[n] = config.environment[enviroment][n];
+            for( var n in config.environment[environment] ){
+                config[n] = config.environment[environment][n];
             }
         }
     }
 
+    // finalize routes[].urls_datasource url with datasource_base_url
     for( var n in config.routing){
         if( config.routing[n].urls_datasource ){
             if( ! config.routing[n].urls_datasource.match(/^http/)){
@@ -594,11 +625,11 @@ function init_config(file,enviroment,default_webdomain){
 
 // init directories
     config.project_dir          = path.resolve(config.project_dir)+"/";
-// the paths to build
+// the paths to run the build
     config.run_dir              = path.resolve(config.run_dir)+"/";
     config.meta_dir             = path.resolve(config.meta_dir)+"/";
     config.out_dir              = path.resolve(config.out_dir)+"/";
-// the paths to export
+// the paths to export build files to
     config.export_dir           = path.resolve(config.export_dir)+"/";
     config.documentation_dir    = path.resolve(config.documentation_dir)+"/";
 // the path containing user app
@@ -614,6 +645,7 @@ function init_config(file,enviroment,default_webdomain){
         config.vendors_dir,
         config.dirlisting_dir
     ];
+    for( var n in config.web_paths ) config.web_paths[n] = path.resolve(config.web_paths[n])+"/";
 // the paths to be served thru builder webserver
     config.web_paths_no_dir     = [
         config.src_dir,
@@ -621,43 +653,56 @@ function init_config(file,enviroment,default_webdomain){
         config.vendors_dir
     ];
 // the paths to be served to optimizer
-    for( var n in config.web_paths ) config.web_paths[n] = path.resolve(config.web_paths[n])+"/";
     config.build_run_paths      = [];
     for( var n in config.web_paths ) config.build_run_paths.push(config.web_paths[n]);
     config.build_run_paths.push(config.out_dir);
 // scripts manipulation
-    if(!config.scripts)
-        config.scripts = {}
-    config.scripts = underscore.defaults(config.scripts,{
-        strips:[
-            /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.js",
-             */
-        ],
-        requirejs:{},
-        prepend:{
-            /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
-             "/js/vendors/go-jquery/jquery-2.0.3.min.js"
-             ]
-             */
-        },
-        append:{
-            /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
-             "/js/vendors/go-jquery/jquery-2.0.3.min.js"
-             ]
-             */
-        }
-    })
+    if(!config.scripts){
+        config.scripts = underscore.defaults(config.scripts || {},{
+            // references scripts to delete from the built files
+            // they are absolute url
+            strips:[
+                /*
+                     "/js/vendors/go-jquery/jquery-2.0.3.min.js",
+                 */
+            ],
+            // an object of requirejs options
+            requirejs:{},
+            // references scripts to prepend before your script node
+            prepend:{
+                // each reference can be a composition of scripts
+                // they are absolute url
+                /*
+                     "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
+                         "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+                     ]
+                 */
+            },
+            // references scripts to append to the bottom of the document
+            append:{
+                // each reference can be a composition of scripts
+                // they are absolute url
+                /*
+                     "/js/vendors/go-jquery/jquery-2.0.3.min.js": [
+                         "/js/vendors/go-jquery/jquery-2.0.3.min.js"
+                     ]
+                 */
+            }
+        })
+    }
+    // requirejs default options
     config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{
+        // list absolute urls to requirejs version that could be encountered
         "src": [
             /*
-             "require-2.1.8.min.js",
+             "require-2.1.10.min.js",
              "require-2.1.9.min.js",
+             "require-2.1.8.min.js",
              */
         ],
+        // the project base url for requirejs optimization, loading ect
         "baseUrl": "/js/",
+        // the project paths for requirejs optimization, loading ect
         "paths":{
             /*
              "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
@@ -665,38 +710,50 @@ function init_config(file,enviroment,default_webdomain){
              "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
              */
         }
-    })
+    });
+    // predefine some requirejs paths
     config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{
+        // reference almond for better built files
         "almond": config.scripts.requirejs.baseUrl+"almond-0.2.5",
+        // the phantomizer-websupport preselected libraries
         "vendors": config.scripts.requirejs.baseUrl+"vendors/",
+        // the wbm additional project folder
         "wbm": config.scripts.requirejs.baseUrl+"wbm/"
     })
 // css manipulation
-    if(!config.css)
-        config.css = {}
-    config.css = underscore.defaults(config.css,{
-        strips:[
-            /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.css",
-             */
-        ],
-        prepend:{
-            /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
-             "/js/vendors/go-jquery/jquery-2.0.3.min.css"
-             ]
-             */
-        },
-        append:{
-            /*
-             "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
-             "/js/vendors/go-jquery/jquery-2.0.3.min.css"
-             ]
-             */
-        }
-    })
+    if(!config.css){
+        config.css = underscore.defaults(config.css || {},{
+            // references css to delete from the built files
+            // they are absolute url
+            strips:[
+                /*
+                     "/css/my.css",
+                 */
+            ],
+            // references css to prepend before your css node
+            prepend:{
+                // each reference can be a composition of scripts
+                // they are absolute url
+                /*
+                     "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
+                        "/js/vendors/go-jquery/jquery-2.0.3.min.css"
+                     ]
+                 */
+            },
+            // references css to append to the bottom of the document
+            append:{
+                // each reference can be a composition of scripts
+                // they are absolute url
+                /*
+                     "/js/vendors/go-jquery/jquery-2.0.3.min.css": [
+                        "/js/vendors/go-jquery/jquery-2.0.3.min.css"
+                     ]
+                 */
+            }
+        })
+    }
 
-// pass important path to docco task
+// <h3>initialize phantomizer-docco</h3>
     init_task_options(config,"phantomizer-docco",{
         'src_dir':config.src_dir,
         'wbm_dir':config.wbm_dir,
@@ -707,7 +764,7 @@ function init_config(file,enviroment,default_webdomain){
     });
 
 
-// pass important path to styledocco task
+// <h3>initialize phantomizer-styledocco</h3>
     init_task_options(config,"phantomizer-styledocco",{
         'src_dir':config.src_dir,
         'wbm_dir':config.wbm_dir,
@@ -717,7 +774,7 @@ function init_config(file,enviroment,default_webdomain){
         "out_dir":config.documentation_dir+"/css/"
     });
 
-// pass important path to confess task
+// <h3>initialize phantomizer-confess</h3>
     init_task_options(config,"phantomizer-confess",{
         meta_dir:config.meta_dir,
         web_server_paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
@@ -726,7 +783,7 @@ function init_config(file,enviroment,default_webdomain){
         ssl_port:config.test_web_ssl_port
     });
 
-// pass important path to requirejs task
+// <h3>initialize phantomizer-requirejs</h3>
     init_task_options(config,"phantomizer-requirejs",{
         src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
         project_dir: config.project_dir,
@@ -744,7 +801,7 @@ function init_config(file,enviroment,default_webdomain){
         "optimize": "uglify"
     });
 
-// pass important path to requirecss task
+// <h3>initialize phantomizer-requirecss</h3>
     init_task_options(config,"phantomizer-requirecss",{
         src_paths: config.build_run_paths,
         project_dir: config.project_dir,
@@ -755,7 +812,7 @@ function init_config(file,enviroment,default_webdomain){
         "optimizeCss": "standard"
     });
 
-// pass important path to manifest task
+// <h3>initialize phantomizer-manifest</h3>
     init_task_options(config,"phantomizer-manifest",{
         meta_dir:config.meta_dir,
         project_dir: config.project_dir,
@@ -771,7 +828,7 @@ function init_config(file,enviroment,default_webdomain){
         network:["*"]
     });
 
-// pass important path to html-assets task
+// <h3>initialize phantomizer-html-assets</h3>
     init_task_options(config,"phantomizer-html-assets",{
         meta_dir:config.meta_dir,
         out_path:config.out_dir,
@@ -798,7 +855,7 @@ function init_config(file,enviroment,default_webdomain){
         "uglify_js": true
     });
 
-// pass important path to htmlcompressor task
+// <h3>initialize phantomizer-htmlcompressor</h3>
     init_task_options(config,"phantomizer-htmlcompressor",{
         meta_dir:config.meta_dir,
         "preserved_html_comments": "(?si)<!-- #preserve_(js|css) .+? #endpreserve -->"
@@ -817,17 +874,17 @@ function init_config(file,enviroment,default_webdomain){
         "compress-css":true
     });
 
-// pass important path to uglify task
+// <h3>initialize phantomizer-uglifyjs</h3>
     init_task_options(config,"phantomizer-uglifyjs",{
         meta_dir:config.meta_dir
     });
 
-// pass important path to phantomizer-websupport task
+// <h3>initialize phantomizer-dir-inject-html-extras</h3>
     init_task_options(config,"phantomizer-dir-inject-html-extras",{
         "requirejs":config.scripts.requirejs || null
     });
 
-// pass important path to phantomizer-strykejs
+// <h3>initialize phantomizer-strykejs</h3>
     init_task_options(config,"phantomizer-strykejs-builder",{
         port:config.phantom_web_port,
         ssl_port:config.phantom_web_ssl_port,
@@ -847,7 +904,7 @@ function init_config(file,enviroment,default_webdomain){
         css:config.css
     });
 
-// pass important path to phantomizer-html-builder
+// <h3>initialize phantomizer-html-builder</h3>
     init_task_options(config,"phantomizer-html-builder",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
@@ -863,6 +920,7 @@ function init_config(file,enviroment,default_webdomain){
         "htmlcompressor": true
     });
 
+// <h3>initialize phantomizer-html-jitbuild</h3>
     init_task_options(config,"phantomizer-html-jitbuild",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
@@ -878,6 +936,7 @@ function init_config(file,enviroment,default_webdomain){
         "htmlcompressor": true
     });
 
+// <h3>initialize phantomizer-html-builder2</h3>
     init_task_options(config,"phantomizer-html-builder2",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
@@ -896,7 +955,7 @@ function init_config(file,enviroment,default_webdomain){
         "htmlcompressor": true
     });
 
-// pass important path to phantomizer-imgopt
+// <h3>initialize phantomizer-imgopt</h3>
     init_task_options(config,"phantomizer-imgopt",{
         optimizationLevel: 0,
         "progressive":false,
@@ -909,7 +968,7 @@ function init_config(file,enviroment,default_webdomain){
         "progressive":true
     });
 
-// pass important path to phantomizer-qunit-runner
+// <h3>initialize phantomizer-qunit-runner</h3>
     init_task_options(config,"phantomizer-qunit-runner",{
         "port":config.test_web_port,
         "ssl_port":config.test_web_ssl_port,
@@ -940,14 +999,14 @@ function init_config(file,enviroment,default_webdomain){
         "inject_assets":false
     });
 
-// pass important path to phantomizer-gm
+// <h3>initialize phantomizer-gm-merge</h3>
     init_task_options(config,"phantomizer-gm-merge",{
         out_dir:config.out_dir,
         meta_dir:config.meta_dir,
         "paths": config.build_run_paths
     });
 
-// pass important path to phantomizer-export-build
+// <h3>initialize phantomizer-export-build</h3>
     init_task_options(config,"phantomizer-export-build",{
         "export_dir":config.export_dir,
         "paths":config.build_run_paths,
@@ -1005,6 +1064,7 @@ function init_config(file,enviroment,default_webdomain){
         ]
     });
 
+// <h3>initialize phantomizer-build</h3>
     init_task_options(config,"phantomizer-build",{
         clean_dir:[
             config.out_dir,
@@ -1015,6 +1075,7 @@ function init_config(file,enviroment,default_webdomain){
         build_target:"stryke-assets-min-build"
     });
 
+// <h3>initialize phantomizer-project-builder</h3>
     init_task_options(config,"phantomizer-project-builder",{
         clean_dir:[
             config.out_dir,
@@ -1059,7 +1120,7 @@ function init_config(file,enviroment,default_webdomain){
         ]
     });
 
-// pass important path to phantomizer-export-build
+// <h3>initialize phantomizer-export-slim</h3>
     init_task_options(config,"phantomizer-export-slim",{
         "export_dir":config.export_dir,
         "paths":config.build_run_paths,
@@ -1080,10 +1141,15 @@ function init_config(file,enviroment,default_webdomain){
     });
 
 
+// pass it to grunt to parse all inlined options
     grunt.config.init(config);
+
+    // return the parsed config
     return grunt.config.get();
 }
 
+
+// helper fnctions
 /**
  * Init a task option in the grunt js manner
  *
