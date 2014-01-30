@@ -107,6 +107,10 @@ var argv = optimist.usage('Phantomizer command line')
         .default('confess', "")
 
         .check(function(argv){
+            // if describe_env is provided, then environment is required
+            if( argv.describe_env!="" && argv.environment=="" )
+                return false;
+            // if describe_task is provided, then task is required
             if( argv.describe_task!="" && argv.task=="" )
                 return false;
             return true;
@@ -134,13 +138,15 @@ var argv = optimist.usage('Phantomizer command line')
     ;
 
 
-var known_configs = {};
-
+// declare variables and
 // fine tune some data
 var verbose = argv.verbose || false;
 var version = argv.version || false;
 var help = argv.help || false;
 var debug = argv.debug || false;
+
+var known_configs = {};
+
 
 // set grunt js log verbosity
 grunt.option('verbose', verbose);
@@ -170,19 +176,24 @@ if( argv.server != "" ){
     var project = get_project(argv, "server");
     var environment = get_environment(argv);
 
-    // configuration initialization, including grunt config, required call prior ro grunt usage
+    // configuration initialization, including grunt config, required call prior to grunt usage
     var config = get_config(project+'/config.json', environment, argv.default_webdomain);
 
+    // initialize some helpers
     var router_factory = ph_libutil.router;
     var optimizer_factory = ph_libutil.optimizer;
     var meta_factory = ph_libutil.meta;
     var webserver_factory = ph_libutil.webserver;
 
+    // hols meta of all built files
     var meta_manager = new meta_factory(process.cwd(), config.meta_dir);
+    // knows how to proceed optimization
     var optimizer = new optimizer_factory(meta_manager, config);
+    // provides a catalog of route url
     var router = new router_factory(config.routing);
-
+    // a specifically designed webserver for JIT optimization
     var webserver = null;
+
     // load routes, eventually from a remote webserver
     router.load(function(){
         // create a new local webserver with found route urls
@@ -197,9 +208,9 @@ if( argv.server != "" ){
 
 // quit on enter touch pressed
     readline_toquit(function(){
-        if( webserver != null ){
-            webserver.stop();
-        }
+        // stops remaining web server
+        if( webserver != null ) webserver.stop();
+        // exit program
         process.exit(code=1)
     });
 }
@@ -207,7 +218,9 @@ if( argv.server != "" ){
 // run the project test suites
 if( argv.test != "" ){
 
+    // the project to test
     var project     = get_project(argv, "test");
+    // the specific environment to setup for the tests
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
@@ -220,16 +233,17 @@ if( argv.test != "" ){
 // build and export the project
 if( argv.export != "" ){
 
+    // the project to export
     var project     = get_project(argv, "export");
+    // the specific environment to setup for the export
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior ro grunt usage
     init_config(project+'/config.json', environment);
 
     var tasks = [
-        'phantomizer-build2:'+environment,
+        'phantomizer-project-builder:'+environment,
         'phantomizer-export-build:'+environment,
-        // 'phantomizer-export-slim:'+environment,
-        'export-done'
+        // 'phantomizer-export-slim:'+environment
     ];
     grunt.tasks(tasks, {}, function(){
         grunt.log.ok("Export done !");
@@ -1001,7 +1015,7 @@ function init_config(file,enviroment,default_webdomain){
         build_target:"stryke-assets-min-build"
     });
 
-    init_task_options(config,"phantomizer-build2",{
+    init_task_options(config,"phantomizer-project-builder",{
         clean_dir:[
             config.out_dir,
             config.meta_dir,
@@ -1012,7 +1026,7 @@ function init_config(file,enviroment,default_webdomain){
         urls_file:config.run_dir+"/urls.json",
         inject_extras:false
     });
-    init_target_options(config,"phantomizer-build2","dev",{
+    init_target_options(config,"phantomizer-project-builder","dev",{
         clean_dir:[
             config.out_dir,
             config.meta_dir,
@@ -1020,7 +1034,7 @@ function init_config(file,enviroment,default_webdomain){
             config.documentation_dir
         ]
     });
-    init_target_options(config,"phantomizer-build2","staging",{
+    init_target_options(config,"phantomizer-project-builder","staging",{
         clean_dir:[
             config.out_dir,
             config.meta_dir,
@@ -1028,7 +1042,7 @@ function init_config(file,enviroment,default_webdomain){
             config.documentation_dir
         ]
     });
-    init_target_options(config,"phantomizer-build2","contribution",{
+    init_target_options(config,"phantomizer-project-builder","contribution",{
         clean_dir:[
             config.out_dir,
             config.meta_dir,
@@ -1036,7 +1050,7 @@ function init_config(file,enviroment,default_webdomain){
             config.documentation_dir
         ]
     });
-    init_target_options(config,"phantomizer-build2","production",{
+    init_target_options(config,"phantomizer-project-builder","production",{
         clean_dir:[
             config.out_dir,
             config.meta_dir,
