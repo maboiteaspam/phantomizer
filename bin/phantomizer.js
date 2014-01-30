@@ -9,7 +9,7 @@ var underscore = require("underscore");
 
 var file_utils = ph_libutil.file_utils;
 
-// parse command line arguments
+// <h3>parse command line arguments</h3>
 var argv = optimist.usage('Phantomizer command line')
 
         // --init [project_folder]
@@ -155,7 +155,7 @@ grunt.option('debug', debug);
 // Welcome user
 grunt.log.subhead("Welcome to phantomizer !")
 
-// display version number
+// <h3>display version number</h3>
 if( version ){
     var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
     pkg = JSON.parse(pkg);
@@ -163,14 +163,15 @@ if( version ){
     process.exit(0);
 }
 
-// display help
+// <h3>display help</h3>
 if( help ){
     optimist.showHelp()
     process.exit(0);
 }
 
 
-// Starts local webserver for development purpose
+// <h3>Starts local webserver</h3>
+// For development purpose
 if( argv.server != "" ){
 
     var project = get_project(argv, "server");
@@ -215,7 +216,7 @@ if( argv.server != "" ){
     });
 }
 
-// run the project test suites
+// <h3>Run project tests</h3>
 if( argv.test != "" ){
 
     // the project to test
@@ -230,7 +231,7 @@ if( argv.test != "" ){
     });
 }
 
-// build and export the project
+// <h3>Build then export the project</h3>
 if( argv.export != "" ){
 
     // the project to export
@@ -254,7 +255,8 @@ if( argv.export != "" ){
     });
 }
 
-// document the project javascript and css files
+// <h3>Document the project</h3>
+// Document all javascript and css files
 if( argv.document != "" ){
 
     // the project to document
@@ -275,7 +277,9 @@ if( argv.document != "" ){
 
 }
 
-// clean the temporary files and folders
+// <h3>Clean the project</h3>
+// delete the temporary,
+// build, export, documentation files and folders
 if( argv.clean != "" ){
 
     // the project to clean
@@ -295,7 +299,9 @@ if( argv.clean != "" ){
     grunt.log.ok("Clean done !");
 }
 
-// list available tasks for configuration
+// <h3>List tasks</h3>
+// Provide useful information about
+// the configuration used during any operation
 if( argv.list_tasks != "" ){
 
     // the project to list tasks of
@@ -313,7 +319,8 @@ if( argv.list_tasks != "" ){
     }
 }
 
-// Describe options for the given task name
+// <h3>Describe task</h3>
+// Details a specific task options
 if( argv.describe_task != "" ){
 
     // the project to describe task of
@@ -334,7 +341,8 @@ if( argv.describe_task != "" ){
     }
 }
 
-// list available environments for configuration
+// <h3>List available environment</h3>
+// Environments let adjust some behavior
 if( argv.list_envs != "" ){
 
     // the project to describe environments of
@@ -349,7 +357,8 @@ if( argv.list_envs != "" ){
     }
 }
 
-// Describe options for the given environment name
+// <h3>Describe environment</h3>
+// Details specififc environment options
 if( argv.describe_env != "" ){
 
     // the project to describe environment of
@@ -369,7 +378,10 @@ if( argv.describe_env != "" ){
     }
 }
 
-// Initialize directory structure for the given project name
+// <h3>Initialize a project</h3>
+// Initialize directory structure
+// Initialize default files
+// package.json Gruntfile.js, config.json, index.htm, index.js
 if( argv.init != "" ){
 
     // the project to initialize
