@@ -60,6 +60,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('cleanup-grunt-temp', [],function(){
         wrench.rmdirSyncRecursive(__dirname + '/.grunt', !true);
+        wrench.rmdirSyncRecursive(__dirname + '/documentation', !true);
     });
 
     // to generate and publish the docco style documentation

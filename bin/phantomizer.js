@@ -469,6 +469,7 @@ if( argv.confess != "" ){
 }
 
 
+// <h2>Helper functions</h2>
 /**
  * Helps to get the right value from optimist object
  * @param argv
@@ -500,6 +501,7 @@ function get_environment(argv){
 }
 
 
+// <h2>Phantomizer Configuration getter</h2>
 /**
  * Get the configuration object
  * after parsing thru grunt config system
@@ -1161,7 +1163,7 @@ function init_config(file,environment,default_webdomain){
 }
 
 
-// helper fnctions
+// <h2>helper functions</h2>
 /**
  * Init a task option in the grunt js manner
  *
