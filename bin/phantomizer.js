@@ -156,7 +156,8 @@ grunt.option('debug', debug);
 // Welcome user
 grunt.log.subhead("Welcome to phantomizer !")
 
-// <h3>display version number
+// display version number
+// ----------
 if( version ){
     var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
     pkg = JSON.parse(pkg);
@@ -164,14 +165,16 @@ if( version ){
     process.exit(0);
 }
 
-// <h3>display help
+// display help
+// ----------
 if( help ){
     optimist.showHelp()
     process.exit(0);
 }
 
 
-// <h3>Starts local webserver
+// Starts local webserver
+// ----------
 // For development purpose
 if( argv.server != "" ){
 
@@ -217,7 +220,7 @@ if( argv.server != "" ){
     });
 }
 
-// <h3>Run project tests
+// Run project tests
 // ----------
 if( argv.test != "" ){
 
@@ -233,7 +236,7 @@ if( argv.test != "" ){
     });
 }
 
-// <h3>Build then export the project
+// Build then export the project
 // ----------
 if( argv.export != "" ){
 
@@ -258,7 +261,7 @@ if( argv.export != "" ){
     });
 }
 
-// <h3>Document the project
+// Document the project
 // ----------
 // Document all javascript and css files
 if( argv.document != "" ){
@@ -281,7 +284,7 @@ if( argv.document != "" ){
 
 }
 
-// <h3>Clean the project
+// Clean the project
 // ----------
 // delete the temporary,
 // build, export, documentation files and folders
@@ -303,7 +306,7 @@ if( argv.clean != "" ){
     grunt.log.ok("Clean done !");
 }
 
-// <h3>List tasks
+// List tasks
 // ----------
 // Provide useful information about
 // the configuration used during any operation
@@ -324,7 +327,7 @@ if( argv.list_tasks != "" ){
     }
 }
 
-// <h3>Describe task
+// Describe task
 // ----------
 // Details a specific task options
 if( argv.describe_task != "" ){
@@ -347,7 +350,7 @@ if( argv.describe_task != "" ){
     }
 }
 
-// <h3>List available environment
+// List available environment
 // ----------
 // Environments let adjust some behavior
 if( argv.list_envs != "" ){
@@ -364,7 +367,7 @@ if( argv.list_envs != "" ){
     }
 }
 
-// <h3>Describe environment
+// Describe environment
 // ----------
 // Details specififc environment options
 if( argv.describe_env != "" ){
@@ -386,7 +389,7 @@ if( argv.describe_env != "" ){
     }
 }
 
-// <h3>Initialize a project
+// Initialize a project
 // ----------
 // Initialize directory structure
 // Initialize default files
@@ -779,7 +782,7 @@ function init_config(project,environment,default_webdomain){
         })
     }
 
-// <h3>initialize phantomizer-docco
+// initialize phantomizer-docco
 // ----------
     init_task_options(config,"phantomizer-docco",{
         src_pattern:[config.src_dir+"/js/",config.wbm_dir+"/js/"],
@@ -788,7 +791,7 @@ function init_config(project,environment,default_webdomain){
     });
 
 
-// <h3>initialize phantomizer-styledocco
+// initialize phantomizer-styledocco
 // ----------
     init_task_options(config,"phantomizer-styledocco",{
         "basePath":config.project_dir,
@@ -796,7 +799,7 @@ function init_config(project,environment,default_webdomain){
         "out_dir":config.documentation_dir+"/css/"
     });
 
-// <h3>initialize phantomizer-confess
+// initialize phantomizer-confess
 // ----------
     init_task_options(config,"phantomizer-confess",{
         meta_dir:config.meta_dir,
@@ -806,7 +809,7 @@ function init_config(project,environment,default_webdomain){
         ssl_port:config.test_web_ssl_port
     });
 
-// <h3>initialize phantomizer-requirejs
+// initialize phantomizer-requirejs
 // ----------
     init_task_options(config,"phantomizer-requirejs",{
         src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
@@ -825,7 +828,7 @@ function init_config(project,environment,default_webdomain){
         "optimize": "uglify"
     });
 
-// <h3>initialize phantomizer-requirecss
+// initialize phantomizer-requirecss
 // ----------
     init_task_options(config,"phantomizer-requirecss",{
         src_paths: config.build_run_paths,
