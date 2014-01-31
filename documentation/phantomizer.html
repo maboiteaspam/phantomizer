@@ -318,7 +318,7 @@ For development purpose</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config = get_config(project+<span class="hljs-string">'/config.json'</span>, environment, argv.default_webdomain);</pre></div>
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config = get_config(project, environment, argv.default_webdomain);</pre></div>
         
       
         
@@ -438,7 +438,7 @@ For development purpose</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    init_config(project+<span class="hljs-string">'/config.json'</span>, environment);
+          <div class='highlight'><pre>    init_config(project, environment);
 
     grunt.tasks([<span class="hljs-string">'phantomizer-qunit-runner:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
         grunt.log.ok(<span class="hljs-string">"Test done !"</span>);
@@ -471,7 +471,7 @@ For development purpose</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    init_config(project+<span class="hljs-string">'/config.json'</span>, environment);
+          <div class='highlight'><pre>    init_config(project, environment);
 
     <span class="hljs-keyword">var</span> tasks = [</pre></div>
         
@@ -526,7 +526,7 @@ Document all javascript and css files</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    init_config(project+<span class="hljs-string">'/config.json'</span>, environment);
+          <div class='highlight'><pre>    init_config(project, environment);
 
     <span class="hljs-keyword">var</span> tasks = [</pre></div>
         
@@ -577,7 +577,7 @@ build, export, documentation files and folders</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>, <span class="hljs-literal">null</span>, argv.default_webdomain);
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project, <span class="hljs-literal">null</span>, argv.default_webdomain);
 
     <span class="hljs-keyword">var</span> delete_dir = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(p)</span>{</span>
         grunt.verbose.writeln(p)
@@ -619,7 +619,7 @@ the configuration used during any operation</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>, environment, argv.default_webdomain);
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project, environment, argv.default_webdomain);
 
     grunt.log.ok(<span class="hljs-string">"reading configuration file "</span>+project+<span class="hljs-string">'/config.json'</span>);</pre></div>
         
@@ -666,7 +666,7 @@ Details a specific task options</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>, environment, argv.default_webdomain);
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project, environment, argv.default_webdomain);
     <span class="hljs-keyword">var</span> task_name = argv.task || <span class="hljs-string">""</span>;</pre></div>
         
       
@@ -708,7 +708,7 @@ Environments let adjust some behavior</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>, <span class="hljs-literal">null</span>, argv.default_webdomain);
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project, <span class="hljs-literal">null</span>, argv.default_webdomain);
 
     grunt.log.ok(<span class="hljs-string">"reading configuration file "</span>+project+<span class="hljs-string">'/config.json'</span>);
     <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config.environment ){</pre></div>
@@ -749,7 +749,7 @@ Details specififc environment options</p>
         <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project+<span class="hljs-string">'/config.json'</span>, environment, argv.default_webdomain);</pre></div>
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config      = get_config(project, environment, argv.default_webdomain);</pre></div>
         
       
         
@@ -941,7 +941,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         <p>configuration initialization, including grunt config, required call prior ro grunt usage</p>
 
         
-          <div class='highlight'><pre>    init_config(project+<span class="hljs-string">'/config.json'</span>, environment);
+          <div class='highlight'><pre>    init_config(project, environment);
 
     grunt.tasks([<span class="hljs-string">'phantomizer-confess:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
         grunt.log.ok(<span class="hljs-string">"Measure done !"</span>);
@@ -996,11 +996,11 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
  * @param environment|null
  * @returns {*}
  */</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_config</span><span class="hljs-params">( file,environment,default_webdomain )</span>{</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_config</span><span class="hljs-params">( project,environment,default_webdomain )</span>{</span>
 
     <span class="hljs-keyword">var</span> k = file+<span class="hljs-string">""</span>+environment;
     <span class="hljs-keyword">if</span>( !known_configs[k] ){
-        known_configs[k] = init_config(file,environment,default_webdomain);
+        known_configs[k] = init_config(project,environment,default_webdomain);
     }
     <span class="hljs-keyword">return</span> known_configs[k];
 }
@@ -1016,7 +1016,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
  * @param environment
  * @returns {*}
  */</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_config</span><span class="hljs-params">(file,environment,default_webdomain)</span>{</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_config</span><span class="hljs-params">(project,environment,default_webdomain)</span>{</span>
     <span class="hljs-keyword">var</span> working_dir = process.cwd();</pre></div>
         
       
@@ -1024,7 +1024,8 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         <p>check for existsing configuration file in the supposed project directory</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">if</span>( grunt.file.exists(file) == <span class="hljs-literal">false</span> ){
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> file = project+<span class="hljs-string">'/config.json'</span>;
+    <span class="hljs-keyword">if</span>( grunt.file.exists(file) == <span class="hljs-literal">false</span> ){
         grunt.fail.fatal(<span class="hljs-string">"Project configuration file does not exists at "</span>+file);
     }
 
@@ -1045,14 +1046,14 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         <p>user directory</p>
 
         
-          <div class='highlight'><pre>        project_dir:<span class="hljs-string">""</span>,
-        run_dir:<span class="hljs-string">""</span>,
-        out_dir:<span class="hljs-string">""</span>,
-        meta_dir:<span class="hljs-string">""</span>,
-        export_dir:<span class="hljs-string">""</span>,
-        documentation_dir:<span class="hljs-string">""</span>,
-        src_dir:<span class="hljs-string">""</span>,
-        wbm_dir:<span class="hljs-string">""</span>,
+          <div class='highlight'><pre>        project_dir:project+<span class="hljs-string">"/"</span>,
+        run_dir:project+<span class="hljs-string">"/run"</span>,
+        out_dir:project+<span class="hljs-string">"/run/build/"</span>,
+        meta_dir:project+<span class="hljs-string">"/run/meta/"</span>,
+        export_dir:project+<span class="hljs-string">"/export/"</span>,
+        documentation_dir:project+<span class="hljs-string">"/documentation/"</span>,
+        src_dir:project+<span class="hljs-string">"/www-core/"</span>,
+        wbm_dir:project+<span class="hljs-string">"/www-wbm/"</span>,
         web_paths:<span class="hljs-literal">null</span>,
         web_paths_no_dir:<span class="hljs-literal">null</span>,
         build_run_paths:<span class="hljs-literal">null</span>,</pre></div>
@@ -1433,9 +1434,6 @@ they are absolute url</p>
 
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-docco"</span>,{
-        <span class="hljs-string">'src_dir'</span>:config.src_dir,
-        <span class="hljs-string">'wbm_dir'</span>:config.wbm_dir,
-        <span class="hljs-string">'documentation_dir'</span>:config.documentation_dir,
         src_pattern:[config.src_dir+<span class="hljs-string">"/js/"</span>,config.wbm_dir+<span class="hljs-string">"/js/"</span>],
         out_dir:config.documentation_dir+<span class="hljs-string">'/js/'</span>,
         layout:<span class="hljs-string">'linear'</span>
@@ -1447,9 +1445,6 @@ they are absolute url</p>
 
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-styledocco"</span>,{
-        <span class="hljs-string">'src_dir'</span>:config.src_dir,
-        <span class="hljs-string">'wbm_dir'</span>:config.wbm_dir,
-        <span class="hljs-string">'documentation_dir'</span>:config.documentation_dir,
         <span class="hljs-string">"basePath"</span>:config.project_dir,
         <span class="hljs-string">"src_pattern"</span>:[config.src_dir+<span class="hljs-string">"**/*.css"</span>,config.wbm_dir+<span class="hljs-string">"**/*.css"</span>],
         <span class="hljs-string">"out_dir"</span>:config.documentation_dir+<span class="hljs-string">"/css/"</span>
@@ -1615,7 +1610,6 @@ they are absolute url</p>
         meta_dir:config.meta_dir,
         port:config.phantom_web_port,
         ssl_port:config.phantom_web_ssl_port,
-        urls_file:<span class="hljs-string">''</span>,
         paths:config.build_run_paths,
         scripts:config.scripts,
         css:config.css
@@ -1669,6 +1663,7 @@ they are absolute url</p>
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-builder2"</span>,{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
+        run_dir:config.run_dir,
         paths:config.web_paths_no_dir,
         html_manifest:<span class="hljs-literal">false</span>,
         inject_extras:<span class="hljs-literal">false</span>,
