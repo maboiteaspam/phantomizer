@@ -9,7 +9,8 @@ var underscore = require("underscore");
 
 var file_utils = ph_libutil.file_utils;
 
-// <h3>parse command line arguments</h3>
+// parse command line arguments
+// ----------
 var argv = optimist.usage('Phantomizer command line')
 
         // --init [project_folder]
@@ -155,7 +156,7 @@ grunt.option('debug', debug);
 // Welcome user
 grunt.log.subhead("Welcome to phantomizer !")
 
-// <h3>display version number</h3>
+// <h3>display version number
 if( version ){
     var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
     pkg = JSON.parse(pkg);
@@ -163,14 +164,14 @@ if( version ){
     process.exit(0);
 }
 
-// <h3>display help</h3>
+// <h3>display help
 if( help ){
     optimist.showHelp()
     process.exit(0);
 }
 
 
-// <h3>Starts local webserver</h3>
+// <h3>Starts local webserver
 // For development purpose
 if( argv.server != "" ){
 
@@ -216,7 +217,8 @@ if( argv.server != "" ){
     });
 }
 
-// <h3>Run project tests</h3>
+// <h3>Run project tests
+// ----------
 if( argv.test != "" ){
 
     // the project to test
@@ -231,7 +233,8 @@ if( argv.test != "" ){
     });
 }
 
-// <h3>Build then export the project</h3>
+// <h3>Build then export the project
+// ----------
 if( argv.export != "" ){
 
     // the project to export
@@ -255,7 +258,8 @@ if( argv.export != "" ){
     });
 }
 
-// <h3>Document the project</h3>
+// <h3>Document the project
+// ----------
 // Document all javascript and css files
 if( argv.document != "" ){
 
@@ -277,7 +281,8 @@ if( argv.document != "" ){
 
 }
 
-// <h3>Clean the project</h3>
+// <h3>Clean the project
+// ----------
 // delete the temporary,
 // build, export, documentation files and folders
 if( argv.clean != "" ){
@@ -298,7 +303,8 @@ if( argv.clean != "" ){
     grunt.log.ok("Clean done !");
 }
 
-// <h3>List tasks</h3>
+// <h3>List tasks
+// ----------
 // Provide useful information about
 // the configuration used during any operation
 if( argv.list_tasks != "" ){
@@ -318,7 +324,8 @@ if( argv.list_tasks != "" ){
     }
 }
 
-// <h3>Describe task</h3>
+// <h3>Describe task
+// ----------
 // Details a specific task options
 if( argv.describe_task != "" ){
 
@@ -340,7 +347,8 @@ if( argv.describe_task != "" ){
     }
 }
 
-// <h3>List available environment</h3>
+// <h3>List available environment
+// ----------
 // Environments let adjust some behavior
 if( argv.list_envs != "" ){
 
@@ -356,7 +364,8 @@ if( argv.list_envs != "" ){
     }
 }
 
-// <h3>Describe environment</h3>
+// <h3>Describe environment
+// ----------
 // Details specififc environment options
 if( argv.describe_env != "" ){
 
@@ -377,7 +386,8 @@ if( argv.describe_env != "" ){
     }
 }
 
-// <h3>Initialize a project</h3>
+// <h3>Initialize a project
+// ----------
 // Initialize directory structure
 // Initialize default files
 // package.json Gruntfile.js, config.json, index.htm, index.js
@@ -468,7 +478,8 @@ if( argv.confess != "" ){
 }
 
 
-// <h2>Helper functions</h2>
+// Helper functions
+// -------------
 /**
  * Helps to get the right value from optimist object
  * @param argv
@@ -500,7 +511,8 @@ function get_environment(argv){
 }
 
 
-// <h2>Phantomizer Configuration getter</h2>
+// Phantomizer Configuration getter
+// -------------
 /**
  * Get the configuration object
  * after parsing thru grunt config system
@@ -767,7 +779,8 @@ function init_config(project,environment,default_webdomain){
         })
     }
 
-// <h3>initialize phantomizer-docco</h3>
+// <h3>initialize phantomizer-docco
+// ----------
     init_task_options(config,"phantomizer-docco",{
         src_pattern:[config.src_dir+"/js/",config.wbm_dir+"/js/"],
         out_dir:config.documentation_dir+'/js/',
@@ -775,14 +788,16 @@ function init_config(project,environment,default_webdomain){
     });
 
 
-// <h3>initialize phantomizer-styledocco</h3>
+// <h3>initialize phantomizer-styledocco
+// ----------
     init_task_options(config,"phantomizer-styledocco",{
         "basePath":config.project_dir,
         "src_pattern":[config.src_dir+"**/*.css",config.wbm_dir+"**/*.css"],
         "out_dir":config.documentation_dir+"/css/"
     });
 
-// <h3>initialize phantomizer-confess</h3>
+// <h3>initialize phantomizer-confess
+// ----------
     init_task_options(config,"phantomizer-confess",{
         meta_dir:config.meta_dir,
         web_server_paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
@@ -791,7 +806,8 @@ function init_config(project,environment,default_webdomain){
         ssl_port:config.test_web_ssl_port
     });
 
-// <h3>initialize phantomizer-requirejs</h3>
+// <h3>initialize phantomizer-requirejs
+// ----------
     init_task_options(config,"phantomizer-requirejs",{
         src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
         project_dir: config.project_dir,
@@ -809,7 +825,8 @@ function init_config(project,environment,default_webdomain){
         "optimize": "uglify"
     });
 
-// <h3>initialize phantomizer-requirecss</h3>
+// <h3>initialize phantomizer-requirecss
+// ----------
     init_task_options(config,"phantomizer-requirecss",{
         src_paths: config.build_run_paths,
         project_dir: config.project_dir,
@@ -820,7 +837,8 @@ function init_config(project,environment,default_webdomain){
         "optimizeCss": "standard"
     });
 
-// <h3>initialize phantomizer-manifest</h3>
+// initialize phantomizer-manifest
+// ----------
     init_task_options(config,"phantomizer-manifest",{
         meta_dir:config.meta_dir,
         project_dir: config.project_dir,
@@ -836,7 +854,8 @@ function init_config(project,environment,default_webdomain){
         network:["*"]
     });
 
-// <h3>initialize phantomizer-html-assets</h3>
+// initialize phantomizer-html-assets
+// ----------
     init_task_options(config,"phantomizer-html-assets",{
         meta_dir:config.meta_dir,
         out_path:config.out_dir,
@@ -863,7 +882,8 @@ function init_config(project,environment,default_webdomain){
         "uglify_js": true
     });
 
-// <h3>initialize phantomizer-htmlcompressor</h3>
+// initialize phantomizer-htmlcompressor
+// ----------
     init_task_options(config,"phantomizer-htmlcompressor",{
         meta_dir:config.meta_dir,
         "preserved_html_comments": "(?si)<!-- #preserve_(js|css) .+? #endpreserve -->"
@@ -882,17 +902,20 @@ function init_config(project,environment,default_webdomain){
         "compress-css":true
     });
 
-// <h3>initialize phantomizer-uglifyjs</h3>
+// initialize phantomizer-uglifyjs
+// ----------
     init_task_options(config,"phantomizer-uglifyjs",{
         meta_dir:config.meta_dir
     });
 
-// <h3>initialize phantomizer-dir-inject-html-extras</h3>
+// initialize phantomizer-dir-inject-html-extras
+// ----------
     init_task_options(config,"phantomizer-dir-inject-html-extras",{
         "requirejs":config.scripts.requirejs || null
     });
 
-// <h3>initialize phantomizer-strykejs</h3>
+// initialize phantomizer-strykejs
+// ----------
     init_task_options(config,"phantomizer-strykejs-builder",{
         port:config.phantom_web_port,
         ssl_port:config.phantom_web_ssl_port,
@@ -911,7 +934,8 @@ function init_config(project,environment,default_webdomain){
         css:config.css
     });
 
-// <h3>initialize phantomizer-html-builder</h3>
+// initialize phantomizer-html-builder
+// ----------
     init_task_options(config,"phantomizer-html-builder",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
@@ -927,7 +951,8 @@ function init_config(project,environment,default_webdomain){
         "htmlcompressor": true
     });
 
-// <h3>initialize phantomizer-html-jitbuild</h3>
+// initialize phantomizer-html-jitbuild
+// ----------
     init_task_options(config,"phantomizer-html-jitbuild",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
@@ -943,7 +968,8 @@ function init_config(project,environment,default_webdomain){
         "htmlcompressor": true
     });
 
-// <h3>initialize phantomizer-html-builder2</h3>
+// initialize phantomizer-html-builder2
+// ----------
     init_task_options(config,"phantomizer-html-project-builder",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
@@ -963,7 +989,8 @@ function init_config(project,environment,default_webdomain){
         "htmlcompressor": true
     });
 
-// <h3>initialize phantomizer-imgopt</h3>
+// initialize phantomizer-imgopt
+// ----------
     init_task_options(config,"phantomizer-imgopt",{
         optimizationLevel: 0,
         "progressive":false,
@@ -976,7 +1003,8 @@ function init_config(project,environment,default_webdomain){
         "progressive":true
     });
 
-// <h3>initialize phantomizer-qunit-runner</h3>
+// initialize phantomizer-qunit-runner
+// ----------
     init_task_options(config,"phantomizer-qunit-runner",{
         "port":config.test_web_port,
         "ssl_port":config.test_web_ssl_port,
@@ -1007,14 +1035,16 @@ function init_config(project,environment,default_webdomain){
         "inject_assets":false
     });
 
-// <h3>initialize phantomizer-gm-merge</h3>
+// initialize phantomizer-gm-merge
+// ----------
     init_task_options(config,"phantomizer-gm-merge",{
         out_dir:config.out_dir,
         meta_dir:config.meta_dir,
         "paths": config.build_run_paths
     });
 
-// <h3>initialize phantomizer-export-build</h3>
+// initialize phantomizer-export-build
+// ----------
     init_task_options(config,"phantomizer-export-build",{
         "export_dir":config.export_dir,
         "paths":config.build_run_paths,
@@ -1072,7 +1102,8 @@ function init_config(project,environment,default_webdomain){
         ]
     });
 
-// <h3>initialize phantomizer-build</h3>
+// initialize phantomizer-build
+// ----------
     init_task_options(config,"phantomizer-build",{
         clean_dir:[
             config.out_dir,
@@ -1083,7 +1114,8 @@ function init_config(project,environment,default_webdomain){
         build_target:"stryke-assets-min-build"
     });
 
-// <h3>initialize phantomizer-project-builder</h3>
+// initialize phantomizer-project-builder
+// ----------
     init_task_options(config,"phantomizer-project-builder",{
         clean_dir:[
             config.out_dir,
@@ -1128,7 +1160,8 @@ function init_config(project,environment,default_webdomain){
         ]
     });
 
-// <h3>initialize phantomizer-export-slim</h3>
+// initialize phantomizer-export-slim
+// ----------
     init_task_options(config,"phantomizer-export-slim",{
         "export_dir":config.export_dir,
         "paths":config.build_run_paths,
@@ -1157,7 +1190,8 @@ function init_config(project,environment,default_webdomain){
 }
 
 
-// <h2>helper functions</h2>
+// helper functions
+// -------------
 /**
  * Init a task option in the grunt js manner
  *
