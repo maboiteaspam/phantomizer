@@ -1,9 +1,5 @@
 module.exports = function(grunt) {
 
-
-    var wrench = require('wrench'),
-        util = require('util');
-
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -59,6 +55,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-release');
 
     grunt.registerTask('cleanup-grunt-temp', [],function(){
+        var wrench = require('wrench');
         wrench.rmdirSyncRecursive(__dirname + '/.grunt', !true);
         wrench.rmdirSyncRecursive(__dirname + '/documentation', !true);
     });

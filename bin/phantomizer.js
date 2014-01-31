@@ -178,7 +178,7 @@ if( argv.server != "" ){
     var environment = get_environment(argv);
 
     // configuration initialization, including grunt config, required call prior to grunt usage
-    var config = get_config(project+'/config.json', environment, argv.default_webdomain);
+    var config = get_config(project, environment, argv.default_webdomain);
 
     // initialize some helpers
     var router_factory = ph_libutil.router;
@@ -224,7 +224,7 @@ if( argv.test != "" ){
     // the specific environment to setup
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior to grunt usage
-    init_config(project+'/config.json', environment);
+    init_config(project, environment);
 
     grunt.tasks(['phantomizer-qunit-runner:'+environment], {}, function(){
         grunt.log.ok("Test done !");
@@ -240,7 +240,7 @@ if( argv.export != "" ){
     var environment = get_environment(argv);
 
     // configuration initialization, including grunt config, required call prior to grunt usage
-    init_config(project+'/config.json', environment);
+    init_config(project, environment);
 
     var tasks = [
         // invoke the task to build the whole project
@@ -262,7 +262,7 @@ if( argv.document != "" ){
     // the project to document
     project = get_project(argv, "document");
     // configuration initialization, including grunt config, required call prior to grunt usage
-    init_config(project+'/config.json', environment);
+    init_config(project, environment);
 
     var tasks = [
         // invoke the task to document javascript files
@@ -285,7 +285,7 @@ if( argv.clean != "" ){
     // the project to clean
     var project     = get_project(argv, "clean");
     // configuration initialization, including grunt config, required call prior to grunt usage
-    var config      = get_config(project+'/config.json', null, argv.default_webdomain);
+    var config      = get_config(project, null, argv.default_webdomain);
 
     var delete_dir = function(p){
         grunt.verbose.writeln(p)
@@ -309,7 +309,7 @@ if( argv.list_tasks != "" ){
     // the specific environment to setup
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior to grunt usage
-    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
+    var config      = get_config(project, environment, argv.default_webdomain);
 
     grunt.log.ok("reading configuration file "+project+'/config.json');
     // iterate config properties
@@ -328,7 +328,7 @@ if( argv.describe_task != "" ){
     // the specific environment to setup
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior to grunt usage
-    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
+    var config      = get_config(project, environment, argv.default_webdomain);
     var task_name = argv.task || "";
 
     // if the task exists
@@ -348,7 +348,7 @@ if( argv.list_envs != "" ){
     // the project to describe environments of
     var project     = get_project(argv, "list_envs");
     // configuration initialization, including grunt config, required call prior to grunt usage
-    var config      = get_config(project+'/config.json', null, argv.default_webdomain);
+    var config      = get_config(project, null, argv.default_webdomain);
 
     grunt.log.ok("reading configuration file "+project+'/config.json');
     for( var n in config.environment ){
@@ -366,7 +366,7 @@ if( argv.describe_env != "" ){
     // the specific environment to setup
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior to grunt usage
-    var config      = get_config(project+'/config.json', environment, argv.default_webdomain);
+    var config      = get_config(project, environment, argv.default_webdomain);
 
     // if the environment exists
     if( config.environment[environment] ){
@@ -461,7 +461,7 @@ if( argv.confess != "" ){
     var project     = get_project(argv, "confess");
     var environment = get_environment(argv);
     // configuration initialization, including grunt config, required call prior ro grunt usage
-    init_config(project+'/config.json', environment);
+    init_config(project, environment);
 
     grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
         grunt.log.ok("Measure done !");
@@ -510,11 +510,11 @@ function get_environment(argv){
  * @param environment|null
  * @returns {*}
  */
-function get_config( file,environment,default_webdomain ){
+function get_config( project,environment,default_webdomain ){
 
     var k = file+""+environment;
     if( !known_configs[k] ){
-        known_configs[k] = init_config(file,environment,default_webdomain);
+        known_configs[k] = init_config(project,environment,default_webdomain);
     }
     return known_configs[k];
 }
@@ -530,10 +530,11 @@ function get_config( file,environment,default_webdomain ){
  * @param environment
  * @returns {*}
  */
-function init_config(file,environment,default_webdomain){
+function init_config(project,environment,default_webdomain){
     var working_dir = process.cwd();
 
 // check for existsing configuration file in the supposed project directory
+    var file = project+'/config.json';
     if( grunt.file.exists(file) == false ){
         grunt.fail.fatal("Project configuration file does not exists at "+file);
     }
@@ -545,14 +546,14 @@ function init_config(file,environment,default_webdomain){
         dirlisting_dir:require("phantomizer-html-dirlisting").html_dirlisting.resouces_path,
         wd:working_dir,
 // user directory
-        project_dir:"",
-        run_dir:"",
-        out_dir:"",
-        meta_dir:"",
-        export_dir:"",
-        documentation_dir:"",
-        src_dir:"",
-        wbm_dir:"",
+        project_dir:project+"/",
+        run_dir:project+"/run",
+        out_dir:project+"/run/build/",
+        meta_dir:project+"/run/meta/",
+        export_dir:project+"/export/",
+        documentation_dir:project+"/documentation/",
+        src_dir:project+"/www-core/",
+        wbm_dir:project+"/www-wbm/",
         web_paths:null,
         web_paths_no_dir:null,
         build_run_paths:null,
@@ -906,7 +907,6 @@ function init_config(file,environment,default_webdomain){
         meta_dir:config.meta_dir,
         port:config.phantom_web_port,
         ssl_port:config.phantom_web_ssl_port,
-        urls_file:'',
         paths:config.build_run_paths,
         scripts:config.scripts,
         css:config.css
@@ -948,6 +948,7 @@ function init_config(file,environment,default_webdomain){
     init_task_options(config,"phantomizer-html-builder2",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
+        run_dir:config.run_dir,
         paths:config.web_paths_no_dir,
         html_manifest:false,
         inject_extras:false,
