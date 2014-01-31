@@ -189,7 +189,7 @@ if( argv.server != "" ){
     // hols meta of all built files
     var meta_manager = new meta_factory(process.cwd(), config.meta_dir);
     // knows how to proceed optimization
-    var optimizer = new optimizer_factory(meta_manager, config);
+    var optimizer = new optimizer_factory(meta_manager, config, grunt);
     // provides a catalog of route url
     var router = new router_factory(config.routing);
     // a specifically designed webserver for JIT optimization
@@ -198,7 +198,7 @@ if( argv.server != "" ){
     // load routes, eventually from a remote webserver
     router.load(function(){
         // create a new local webserver with found route urls
-        webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config);
+        webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config, grunt);
         // try to listen both clear text and ssl
         var h = "http://"+config.web_domain+(config.web_port?":"+config.web_port:"");
         var hs = "https://"+config.web_domain+(config.web_domain?":"+config.web_ssl_port:"");
@@ -293,8 +293,7 @@ if( argv.clean != "" ){
     }
     delete_dir(config.documentation_dir)
     delete_dir(config.export_dir)
-    delete_dir(config.out_dir)
-    delete_dir(config.meta_dir)
+    delete_dir(config.run_dir)
 
     grunt.log.ok("Clean done !");
 }
