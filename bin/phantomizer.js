@@ -512,7 +512,7 @@ function get_environment(argv){
  */
 function get_config( project,environment,default_webdomain ){
 
-    var k = file+""+environment;
+    var k = project+""+environment;
     if( !known_configs[k] ){
         known_configs[k] = init_config(project,environment,default_webdomain);
     }
