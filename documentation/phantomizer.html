@@ -36,8 +36,12 @@
         
       
         
-        <h3>parse command line arguments</h3>
+        <h2 id="parse-command-line-arguments">parse command line arguments</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre><span class="hljs-keyword">var</span> argv = optimist.usage(<span class="hljs-string">'Phantomizer command line'</span>)</pre></div>
         
@@ -282,7 +286,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <h3>display version number</h3>
+        <p><h3>display version number</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( version ){
@@ -294,7 +298,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <h3>display help</h3>
+        <p><h3>display help</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( help ){
@@ -304,7 +308,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
       
         
-        <p><h3>Starts local webserver</h3>
+        <p><h3>Starts local webserver
 For development purpose</p>
 
         
@@ -342,7 +346,7 @@ For development purpose</p>
         <p>knows how to proceed optimization</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> optimizer = <span class="hljs-keyword">new</span> optimizer_factory(meta_manager, config);</pre></div>
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> optimizer = <span class="hljs-keyword">new</span> optimizer_factory(meta_manager, config, grunt);</pre></div>
         
       
         
@@ -370,7 +374,7 @@ For development purpose</p>
         <p>create a new local webserver with found route urls</p>
 
         
-          <div class='highlight'><pre>        webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,process.cwd(), config);</pre></div>
+          <div class='highlight'><pre>        webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,process.cwd(), config, grunt);</pre></div>
         
       
         
@@ -414,8 +418,12 @@ For development purpose</p>
         
       
         
-        <h3>Run project tests</h3>
+        <h2 id="-h3-run-project-tests"><h3>Run project tests</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.test != <span class="hljs-string">""</span> ){</pre></div>
         
@@ -447,8 +455,12 @@ For development purpose</p>
         
       
         
-        <h3>Build then export the project</h3>
+        <h2 id="-h3-build-then-export-the-project"><h3>Build then export the project</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.export != <span class="hljs-string">""</span> ){</pre></div>
         
@@ -508,8 +520,12 @@ For development purpose</p>
         
       
         
-        <p><h3>Document the project</h3>
-Document all javascript and css files</p>
+        <h2 id="-h3-document-the-project"><h3>Document the project</h2>
+
+        
+      
+        
+        <p>Document all javascript and css files</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.document != <span class="hljs-string">""</span> ){</pre></div>
@@ -558,8 +574,12 @@ Document all javascript and css files</p>
         
       
         
-        <p><h3>Clean the project</h3>
-delete the temporary,
+        <h2 id="-h3-clean-the-project"><h3>Clean the project</h2>
+
+        
+      
+        
+        <p>delete the temporary,
 build, export, documentation files and folders</p>
 
         
@@ -585,16 +605,19 @@ build, export, documentation files and folders</p>
     }
     delete_dir(config.documentation_dir)
     delete_dir(config.export_dir)
-    delete_dir(config.out_dir)
-    delete_dir(config.meta_dir)
+    delete_dir(config.run_dir)
 
     grunt.log.ok(<span class="hljs-string">"Clean done !"</span>);
 }</pre></div>
         
       
         
-        <p><h3>List tasks</h3>
-Provide useful information about
+        <h2 id="-h3-list-tasks"><h3>List tasks</h2>
+
+        
+      
+        
+        <p>Provide useful information about
 the configuration used during any operation</p>
 
         
@@ -641,8 +664,12 @@ the configuration used during any operation</p>
         
       
         
-        <p><h3>Describe task</h3>
-Details a specific task options</p>
+        <h2 id="-h3-describe-task"><h3>Describe task</h2>
+
+        
+      
+        
+        <p>Details a specific task options</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.describe_task != <span class="hljs-string">""</span> ){</pre></div>
@@ -690,8 +717,12 @@ Details a specific task options</p>
         
       
         
-        <p><h3>List available environment</h3>
-Environments let adjust some behavior</p>
+        <h2 id="-h3-list-available-environment"><h3>List available environment</h2>
+
+        
+      
+        
+        <p>Environments let adjust some behavior</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.list_envs != <span class="hljs-string">""</span> ){</pre></div>
@@ -724,8 +755,12 @@ Environments let adjust some behavior</p>
         
       
         
-        <p><h3>Describe environment</h3>
-Details specififc environment options</p>
+        <h2 id="-h3-describe-environment"><h3>Describe environment</h2>
+
+        
+      
+        
+        <p>Details specififc environment options</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.describe_env != <span class="hljs-string">""</span> ){</pre></div>
@@ -772,8 +807,12 @@ Details specififc environment options</p>
         
       
         
-        <p><h3>Initialize a project</h3>
-Initialize directory structure
+        <h2 id="-h3-initialize-a-project"><h3>Initialize a project</h2>
+
+        
+      
+        
+        <p>Initialize directory structure
 Initialize default files
 package.json Gruntfile.js, config.json, index.htm, index.js</p>
 
@@ -950,8 +989,12 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
       
         
-        <h2>Helper functions</h2>
+        <h2 id="helper-functions">Helper functions</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre><span class="hljs-comment">/**
  * Helps to get the right value from optimist object
@@ -985,8 +1028,12 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
       
         
-        <h2>Phantomizer Configuration getter</h2>
+        <h2 id="phantomizer-configuration-getter">Phantomizer Configuration getter</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre><span class="hljs-comment">/**
  * Get the configuration object
@@ -998,7 +1045,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
  */</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_config</span><span class="hljs-params">( project,environment,default_webdomain )</span>{</span>
 
-    <span class="hljs-keyword">var</span> k = file+<span class="hljs-string">""</span>+environment;
+    <span class="hljs-keyword">var</span> k = project+<span class="hljs-string">""</span>+environment;
     <span class="hljs-keyword">if</span>( !known_configs[k] ){
         known_configs[k] = init_config(project,environment,default_webdomain);
     }
@@ -1430,8 +1477,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-docco</h3>
+        <h2 id="-h3-initialize-phantomizer-docco"><h3>initialize phantomizer-docco</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-docco"</span>,{
         src_pattern:[config.src_dir+<span class="hljs-string">"/js/"</span>,config.wbm_dir+<span class="hljs-string">"/js/"</span>],
@@ -1441,8 +1492,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-styledocco</h3>
+        <h2 id="-h3-initialize-phantomizer-styledocco"><h3>initialize phantomizer-styledocco</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-styledocco"</span>,{
         <span class="hljs-string">"basePath"</span>:config.project_dir,
@@ -1452,8 +1507,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-confess</h3>
+        <h2 id="-h3-initialize-phantomizer-confess"><h3>initialize phantomizer-confess</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-confess"</span>,{
         meta_dir:config.meta_dir,
@@ -1465,8 +1524,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-requirejs</h3>
+        <h2 id="-h3-initialize-phantomizer-requirejs"><h3>initialize phantomizer-requirejs</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-requirejs"</span>,{
         src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
@@ -1487,8 +1550,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-requirecss</h3>
+        <h2 id="-h3-initialize-phantomizer-requirecss"><h3>initialize phantomizer-requirecss</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-requirecss"</span>,{
         src_paths: config.build_run_paths,
@@ -1502,8 +1569,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-manifest</h3>
+        <h2 id="initialize-phantomizer-manifest">initialize phantomizer-manifest</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-manifest"</span>,{
         meta_dir:config.meta_dir,
@@ -1522,8 +1593,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-html-assets</h3>
+        <h2 id="initialize-phantomizer-html-assets">initialize phantomizer-html-assets</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-assets"</span>,{
         meta_dir:config.meta_dir,
@@ -1553,8 +1628,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-htmlcompressor</h3>
+        <h2 id="initialize-phantomizer-htmlcompressor">initialize phantomizer-htmlcompressor</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-htmlcompressor"</span>,{
         meta_dir:config.meta_dir,
@@ -1576,8 +1655,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-uglifyjs</h3>
+        <h2 id="initialize-phantomizer-uglifyjs">initialize phantomizer-uglifyjs</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-uglifyjs"</span>,{
         meta_dir:config.meta_dir
@@ -1585,8 +1668,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-dir-inject-html-extras</h3>
+        <h2 id="initialize-phantomizer-dir-inject-html-extras">initialize phantomizer-dir-inject-html-extras</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-dir-inject-html-extras"</span>,{
         <span class="hljs-string">"requirejs"</span>:config.scripts.requirejs || <span class="hljs-literal">null</span>
@@ -1594,8 +1681,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-strykejs</h3>
+        <h2 id="initialize-phantomizer-strykejs">initialize phantomizer-strykejs</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-strykejs-builder"</span>,{
         port:config.phantom_web_port,
@@ -1617,8 +1708,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-html-builder</h3>
+        <h2 id="initialize-phantomizer-html-builder">initialize phantomizer-html-builder</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-builder"</span>,{
         out_path:config.out_dir,
@@ -1637,8 +1732,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-html-jitbuild</h3>
+        <h2 id="initialize-phantomizer-html-jitbuild">initialize phantomizer-html-jitbuild</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-jitbuild"</span>,{
         out_path:config.out_dir,
@@ -1657,8 +1756,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-html-builder2</h3>
+        <h2 id="initialize-phantomizer-html-builder2">initialize phantomizer-html-builder2</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-project-builder"</span>,{
         out_path:config.out_dir,
@@ -1681,8 +1784,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-imgopt</h3>
+        <h2 id="initialize-phantomizer-imgopt">initialize phantomizer-imgopt</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-imgopt"</span>,{
         optimizationLevel: <span class="hljs-number">0</span>,
@@ -1698,8 +1805,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-qunit-runner</h3>
+        <h2 id="initialize-phantomizer-qunit-runner">initialize phantomizer-qunit-runner</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,{
         <span class="hljs-string">"port"</span>:config.test_web_port,
@@ -1733,8 +1844,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-gm-merge</h3>
+        <h2 id="initialize-phantomizer-gm-merge">initialize phantomizer-gm-merge</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-gm-merge"</span>,{
         out_dir:config.out_dir,
@@ -1744,8 +1859,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-export-build</h3>
+        <h2 id="initialize-phantomizer-export-build">initialize phantomizer-export-build</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,{
         <span class="hljs-string">"export_dir"</span>:config.export_dir,
@@ -1806,8 +1925,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-build</h3>
+        <h2 id="initialize-phantomizer-build">initialize phantomizer-build</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-build"</span>,{
         clean_dir:[
@@ -1821,8 +1944,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-project-builder</h3>
+        <h2 id="initialize-phantomizer-project-builder">initialize phantomizer-project-builder</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,{
         clean_dir:[
@@ -1870,8 +1997,12 @@ they are absolute url</p>
         
       
         
-        <h3>initialize phantomizer-export-slim</h3>
+        <h2 id="initialize-phantomizer-export-slim">initialize phantomizer-export-slim</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-export-slim"</span>,{
         <span class="hljs-string">"export_dir"</span>:config.export_dir,
@@ -1909,8 +2040,12 @@ they are absolute url</p>
         
       
         
-        <h2>helper functions</h2>
+        <h2 id="helper-functions">helper functions</h2>
 
+        
+      
+        
+        
         
           <div class='highlight'><pre><span class="hljs-comment">/**
  * Init a task option in the grunt js manner
