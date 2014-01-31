@@ -1605,7 +1605,7 @@ they are absolute url</p>
         scripts:config.scripts,
         css:config.css
     });
-    init_task_options(config,<span class="hljs-string">"phantomizer-strykejs-builder2"</span>,{
+    init_task_options(config,<span class="hljs-string">"phantomizer-strykejs-project-builder"</span>,{
         run_dir:config.run_dir,
         meta_dir:config.meta_dir,
         port:config.phantom_web_port,
@@ -1660,7 +1660,7 @@ they are absolute url</p>
         <h3>initialize phantomizer-html-builder2</h3>
 
         
-          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-builder2"</span>,{
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-html-project-builder"</span>,{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
         run_dir:config.run_dir,
@@ -1670,10 +1670,10 @@ they are absolute url</p>
         htmlcompressor:<span class="hljs-literal">false</span>,
         build_assets:<span class="hljs-literal">false</span>
     });
-    init_target_options(config,<span class="hljs-string">"phantomizer-html-builder2"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-project-builder"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
         <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
     });
-    init_target_options(config,<span class="hljs-string">"phantomizer-html-builder2"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+    init_target_options(config,<span class="hljs-string">"phantomizer-html-project-builder"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
         <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>,
         <span class="hljs-string">"html_manifest"</span>: <span class="hljs-literal">false</span>,
         <span class="hljs-string">"htmlcompressor"</span>: <span class="hljs-literal">true</span>
