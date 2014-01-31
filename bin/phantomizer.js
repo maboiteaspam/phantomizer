@@ -769,9 +769,6 @@ function init_config(file,environment,default_webdomain){
 
 // <h3>initialize phantomizer-docco</h3>
     init_task_options(config,"phantomizer-docco",{
-        'src_dir':config.src_dir,
-        'wbm_dir':config.wbm_dir,
-        'documentation_dir':config.documentation_dir,
         src_pattern:[config.src_dir+"/js/",config.wbm_dir+"/js/"],
         out_dir:config.documentation_dir+'/js/',
         layout:'linear'
@@ -780,9 +777,6 @@ function init_config(file,environment,default_webdomain){
 
 // <h3>initialize phantomizer-styledocco</h3>
     init_task_options(config,"phantomizer-styledocco",{
-        'src_dir':config.src_dir,
-        'wbm_dir':config.wbm_dir,
-        'documentation_dir':config.documentation_dir,
         "basePath":config.project_dir,
         "src_pattern":[config.src_dir+"**/*.css",config.wbm_dir+"**/*.css"],
         "out_dir":config.documentation_dir+"/css/"
