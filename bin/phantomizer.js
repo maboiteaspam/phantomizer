@@ -902,7 +902,7 @@ function init_config(project,environment,default_webdomain){
         scripts:config.scripts,
         css:config.css
     });
-    init_task_options(config,"phantomizer-strykejs-builder2",{
+    init_task_options(config,"phantomizer-strykejs-project-builder",{
         run_dir:config.run_dir,
         meta_dir:config.meta_dir,
         port:config.phantom_web_port,
@@ -945,7 +945,7 @@ function init_config(project,environment,default_webdomain){
     });
 
 // <h3>initialize phantomizer-html-builder2</h3>
-    init_task_options(config,"phantomizer-html-builder2",{
+    init_task_options(config,"phantomizer-html-project-builder",{
         out_path:config.out_dir,
         meta_dir:config.meta_dir,
         run_dir:config.run_dir,
@@ -955,10 +955,10 @@ function init_config(project,environment,default_webdomain){
         htmlcompressor:false,
         build_assets:false
     });
-    init_target_options(config,"phantomizer-html-builder2","stryke-assets-build",{
+    init_target_options(config,"phantomizer-html-project-builder","stryke-assets-build",{
         "build_assets": true
     });
-    init_target_options(config,"phantomizer-html-builder2","stryke-assets-min-build",{
+    init_target_options(config,"phantomizer-html-project-builder","stryke-assets-min-build",{
         "build_assets": true,
         "html_manifest": false,
         "htmlcompressor": true
