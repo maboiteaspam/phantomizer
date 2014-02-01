@@ -402,29 +402,29 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         <p>starts local webserver</p>
 
         
-          <div class='highlight'><pre>        webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
-    })</pre></div>
+          <div class='highlight'><pre>        webserver.start(config.web_port,config.web_ssl_port,config.web_domain);</pre></div>
         
       
         
         <p>quit on enter touch pressed</p>
 
         
-          <div class='highlight'><pre>    readline_toquit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span></pre></div>
+          <div class='highlight'><pre>        readline_toquit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span></pre></div>
         
       
         
         <p>stops remaining web server</p>
 
         
-          <div class='highlight'><pre>        <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ) webserver.stop();</pre></div>
+          <div class='highlight'><pre>            <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ) webserver.stop();</pre></div>
         
       
         
         <p>exit program</p>
 
         
-          <div class='highlight'><pre>        process.exit(code=<span class="hljs-number">1</span>)
+          <div class='highlight'><pre>            process.exit(code=<span class="hljs-number">1</span>)
+        });
     });
 }</pre></div>
         
@@ -1179,7 +1179,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
         web_port:<span class="hljs-number">8080</span>,
         web_ssl_port:<span class="hljs-number">8081</span>,
-        test_web_port:<span class="hljs-number">8092</span>,
+        test_web_port:<span class="hljs-number">8082</span>,
         test_web_ssl_port:<span class="hljs-number">8083</span>,
         phantom_web_port:<span class="hljs-number">8084</span>,
         phantom_web_ssl_port:<span class="hljs-number">8085</span>
