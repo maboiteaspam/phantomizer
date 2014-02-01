@@ -579,10 +579,15 @@ function init_config(project,environment,default_webdomain){
 // datasource urls
         datasource_base_url:"http://localhost/",
         datasource_credentials:{
+            // a file containing credentials such user:pwd
             auth_file:"",
+            // env variable name containing the user
             user_env_var:"",
+            // env variable name containing the password
             pwd_env_var:"",
+            // user in the configuration
             user:"",
+            // pwd in the configuration
             pwd:""
         },
 // client side dns
