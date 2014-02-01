@@ -1124,9 +1124,65 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
           <div class='highlight'><pre>        verbose: !!verbose,
         debug: !!debug,
-        log: !!verbose,
-        default_webdomain: default_webdomain || <span class="hljs-string">"localhost"</span>,
-        environment:{}
+        log: !!verbose,</pre></div>
+        
+      
+        
+        <p>datasource urls</p>
+
+        
+          <div class='highlight'><pre>        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        datasource_credentials:{</pre></div>
+        
+      
+        
+        <p>a file containing credentials such user:pwd</p>
+
+        
+          <div class='highlight'><pre>            auth_file:<span class="hljs-string">""</span>,</pre></div>
+        
+      
+        
+        <p>env variable name containing the user</p>
+
+        
+          <div class='highlight'><pre>            user_env_var:<span class="hljs-string">""</span>,</pre></div>
+        
+      
+        
+        <p>env variable name containing the password</p>
+
+        
+          <div class='highlight'><pre>            pwd_env_var:<span class="hljs-string">""</span>,</pre></div>
+        
+      
+        
+        <p>user in the configuration</p>
+
+        
+          <div class='highlight'><pre>            user:<span class="hljs-string">""</span>,</pre></div>
+        
+      
+        
+        <p>pwd in the configuration</p>
+
+        
+          <div class='highlight'><pre>            pwd:<span class="hljs-string">""</span>
+        },</pre></div>
+        
+      
+        
+        <p>client side dns</p>
+
+        
+          <div class='highlight'><pre>        default_webdomain: default_webdomain || <span class="hljs-string">"localhost"</span>,</pre></div>
+        
+      
+        
+        <p>environment specifics</p>
+
+        
+          <div class='highlight'><pre>        environment:{}
     });</pre></div>
         
       
@@ -1142,7 +1198,8 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
     });
 
     config.environment.production = underscore.defaults(config.environment.production,{
-        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
         web_port:<span class="hljs-number">8050</span>,
         web_ssl_port:<span class="hljs-number">8051</span>,
@@ -1153,7 +1210,8 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
     });
 
     config.environment.contribution = underscore.defaults(config.environment.contribution,{
-        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
         web_port:<span class="hljs-number">8060</span>,
         web_ssl_port:<span class="hljs-number">8061</span>,
@@ -1164,7 +1222,8 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
     });
 
     config.environment.staging = underscore.defaults(config.environment.staging,{
-        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
         web_port:<span class="hljs-number">8070</span>,
         web_ssl_port:<span class="hljs-number">8071</span>,
@@ -1175,7 +1234,8 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
     });
 
     config.environment.dev = underscore.defaults(config.environment.dev,{
-        datasource_base_url:<span class="hljs-string">"http://localhost/"</span>,
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
         web_port:<span class="hljs-number">8080</span>,
         web_ssl_port:<span class="hljs-number">8081</span>,
@@ -1202,13 +1262,17 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
       
         
-        <p>finalize routes[].urls_datasource url with datasource_base_url</p>
+        <p>finalize routes[].urls_datasource url with config.datasource_base_url</p>
 
         
           <div class='highlight'><pre>    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config.routing){
         <span class="hljs-keyword">if</span>( config.routing[n].urls_datasource ){
             <span class="hljs-keyword">if</span>( ! config.routing[n].urls_datasource.match(<span class="hljs-regexp">/^http/</span>)){
                 config.routing[n].urls_datasource = config.datasource_base_url+<span class="hljs-string">""</span>+config.routing[n].urls_datasource+<span class="hljs-string">""</span>;
+            }
+
+            <span class="hljs-keyword">if</span>( !config.routing[n].datasource_credentials ){
+                config.routing[n].datasource_credentials = config.datasource_credentials;
             }
         }
     }</pre></div>
