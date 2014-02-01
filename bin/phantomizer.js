@@ -575,7 +575,19 @@ function init_config(project,environment,default_webdomain){
         verbose: !!verbose,
         debug: !!debug,
         log: !!verbose,
+
+// datasource urls
+        datasource_base_url:"http://localhost/",
+        datasource_credentials:{
+            auth_file:"",
+            user_env_var:"",
+            pwd_env_var:"",
+            user:"",
+            pwd:""
+        },
+// client side dns
         default_webdomain: default_webdomain || "localhost",
+// environment specifics
         environment:{}
     });
 
@@ -588,7 +600,8 @@ function init_config(project,environment,default_webdomain){
     });
 
     config.environment.production = underscore.defaults(config.environment.production,{
-        datasource_base_url:"http://localhost/",
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:"<%= default_webdomain %>",
         web_port:8050,
         web_ssl_port:8051,
@@ -599,7 +612,8 @@ function init_config(project,environment,default_webdomain){
     });
 
     config.environment.contribution = underscore.defaults(config.environment.contribution,{
-        datasource_base_url:"http://localhost/",
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:"<%= default_webdomain %>",
         web_port:8060,
         web_ssl_port:8061,
@@ -610,7 +624,8 @@ function init_config(project,environment,default_webdomain){
     });
 
     config.environment.staging = underscore.defaults(config.environment.staging,{
-        datasource_base_url:"http://localhost/",
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:"<%= default_webdomain %>",
         web_port:8070,
         web_ssl_port:8071,
@@ -621,7 +636,8 @@ function init_config(project,environment,default_webdomain){
     });
 
     config.environment.dev = underscore.defaults(config.environment.dev,{
-        datasource_base_url:"http://localhost/",
+        datasource_base_url: config.datasource_base_url,
+        datasource_credentials: config.datasource_credentials,
         web_domain:"<%= default_webdomain %>",
         web_port:8080,
         web_ssl_port:8081,
@@ -631,7 +647,7 @@ function init_config(project,environment,default_webdomain){
         phantom_web_ssl_port:8085
     });
 
-// Adjust general configuration with selected environment
+    // Adjust general configuration with selected environment
     if( environment ){
         if( !config.environment[environment] ){
             grunt.fail.fatal("Unknown environment "+environment+" in the configuration file");
@@ -642,11 +658,15 @@ function init_config(project,environment,default_webdomain){
         }
     }
 
-    // finalize routes[].urls_datasource url with datasource_base_url
+    // finalize routes[].urls_datasource url with config.datasource_base_url
     for( var n in config.routing){
         if( config.routing[n].urls_datasource ){
             if( ! config.routing[n].urls_datasource.match(/^http/)){
                 config.routing[n].urls_datasource = config.datasource_base_url+""+config.routing[n].urls_datasource+"";
+            }
+
+            if( !config.routing[n].datasource_credentials ){
+                config.routing[n].datasource_credentials = config.datasource_credentials;
             }
         }
     }
