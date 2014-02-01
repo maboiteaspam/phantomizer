@@ -209,14 +209,14 @@ if( argv.server != "" ){
         grunt.log.ok("Webserver started on "+h+" "+(hs?hs:""))
         // starts local webserver
         webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
-    })
 
-// quit on enter touch pressed
-    readline_toquit(function(){
-        // stops remaining web server
-        if( webserver != null ) webserver.stop();
-        // exit program
-        process.exit(code=1)
+        // quit on enter touch pressed
+        readline_toquit(function(){
+            // stops remaining web server
+            if( webserver != null ) webserver.stop();
+            // exit program
+            process.exit(code=1)
+        });
     });
 }
 
@@ -625,7 +625,7 @@ function init_config(project,environment,default_webdomain){
         web_domain:"<%= default_webdomain %>",
         web_port:8080,
         web_ssl_port:8081,
-        test_web_port:8092,
+        test_web_port:8082,
         test_web_ssl_port:8083,
         phantom_web_port:8084,
         phantom_web_ssl_port:8085
