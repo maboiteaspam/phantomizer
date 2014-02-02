@@ -29,6 +29,7 @@
         ,"grunt-contrib-jshint": "gruntjs/grunt-contrib-jshint"
         ,"jshint-junit-reporter": "git://github.com/xjamundx/jshint-junit-reporter"
         ,"jshint-path-reporter": "git://github.com/Bartvds/jshint-path-reporter"
+        ,"grunt-contrib-csslint": "~0.2.0"
 
 
     }

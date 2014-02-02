@@ -313,7 +313,8 @@ if( argv.code_review != "" ){
 
     var tasks = [
         // invoke the task to analyze javascript files
-        'jshint:'+target
+        'jshint:'+target,
+        'csslint:'+target
     ];
 
     // invoke grunt
@@ -862,8 +863,22 @@ function init_config(project,environment,default_webdomain){
         "out_dir":config.documentation_dir+"/css/"
     });
 
-// initialize phantomizer-styledocco
+// initialize grunt-contrib-jshint
 // ----------
+    var jshint_src = {
+        src:[
+            config.src_dir+"**/*.js",
+            config.wbm_dir+"**/*.js",
+
+            '!'+config.src_dir+'**/*.min.js',
+            '!'+config.src_dir+'**/*.min-js',
+            '!'+config.src_dir+'**/vendors/**',
+
+            '!'+config.wbm_dir+'**/*.min.js',
+            '!'+config.wbm_dir+'**/*.min-js',
+            '!'+config.wbm_dir+'**/vendors/**'
+        ]
+    };
     init_task_options(config,"jshint",{
         force: true,
         '-W097': true,
@@ -893,57 +908,46 @@ function init_config(project,environment,default_webdomain){
     });
     init_target_options(config,"jshint","default",{
             reporter: './node_modules/jshint-path-reporter'
-        },
-        {
-            src:[
-                config.src_dir+"**/*.js",
-                config.wbm_dir+"**/*.js",
-
-                '!'+config.src_dir+'**/*.min.js',
-                '!'+config.src_dir+'**/*.min-js',
-                '!'+config.src_dir+'**/vendors/**',
-
-                '!'+config.wbm_dir+'**/*.min.js',
-                '!'+config.wbm_dir+'**/*.min-js',
-                '!'+config.wbm_dir+'**/vendors/**'
-            ]
-        });
+    },jshint_src);
     init_target_options(config,"jshint","checkstyle",{
             reporter: 'checkstyle',
-            reporterOutput: config.project_dir+'/jshint-output.txt'
-        },
-        {
-            src:[
-                config.src_dir+"**/*.js",
-                config.wbm_dir+"**/*.js",
-
-                '!'+config.src_dir+'**/*.min.js',
-                '!'+config.src_dir+'**/*.min-js',
-                '!'+config.src_dir+'**/vendors/**',
-
-                '!'+config.wbm_dir+'**/*.min.js',
-                '!'+config.wbm_dir+'**/*.min-js',
-                '!'+config.wbm_dir+'**/vendors/**'
-            ]
-        });
+            reporterOutput: config.project_dir+'/jshint_checkstyle.xml'
+    },jshint_src);
     init_target_options(config,"jshint","junit",{
             reporter: './node_modules/jshint-junit-reporter/reporter.js',
-            reporterOutput: config.project_dir+'/jshint-junit-output.xml'
-        },
-        {
-            src:[
-                config.src_dir+"**/*.js",
-                config.wbm_dir+"**/*.js",
+            reporterOutput: config.project_dir+'/jshint_junit.xml'
+    },jshint_src);
 
-                '!'+config.src_dir+'**/*.min.js',
-                '!'+config.src_dir+'**/*.min-js',
-                '!'+config.src_dir+'**/vendors/**',
+// initialize grunt-contrib-jshint
+// ----------
+    var csslint_src = {
+        src:[
+            config.src_dir+"**/*.css",
+            config.wbm_dir+"**/*.css",
 
-                '!'+config.wbm_dir+'**/*.min.js',
-                '!'+config.wbm_dir+'**/*.min-js',
-                '!'+config.wbm_dir+'**/vendors/**'
-            ]
-        });
+            '!'+config.src_dir+'**/*.min.css',
+            '!'+config.src_dir+'**/*.min-css',
+            '!'+config.src_dir+'**/vendors/**',
+
+            '!'+config.wbm_dir+'**/*.min.css',
+            '!'+config.wbm_dir+'**/*.min-css',
+            '!'+config.wbm_dir+'**/vendors/**'
+        ]
+    };
+    init_task_options(config,"csslint",{
+    });
+    init_target_options(config,"csslint","default",{
+    },csslint_src);
+    init_target_options(config,"csslint","checkstyle",{
+        formatters: [
+            {id: 'checkstyle-xml', dest: config.project_dir+'/csslint_checkstyle.xml'}
+        ]
+    },csslint_src);
+    init_target_options(config,"csslint","junit",{
+        formatters: [
+            {id: 'junit-xml', dest: config.project_dir+'/csslint_junit.xml'}
+        ]
+    },csslint_src);
 
 // initialize phantomizer-confess
 // ----------
