@@ -26,6 +26,7 @@
     "grunt": "0.4.x",
     "optimist": "0.4.x",
     "underscore": "1.5.x",
+    "express": "~3.4.8",
     "phantomizer-websupport": "git://github.com/maboiteaspam/phantomizer-websupport.git",
     "phantomizer-libutil": "git://github.com/maboiteaspam/phantomizer-libutil.git",
     "phantomizer-html-dirlisting": "git://github.com/maboiteaspam/phantomizer-html-dirlisting.git"
