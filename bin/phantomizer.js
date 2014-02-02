@@ -549,7 +549,7 @@ if( argv.browse_export != "" ){
 
     var http_clear;
     var app = express();
-    app.use(express.logger());
+    app.use(express.logger('dev'));
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.directory(directory));
@@ -1079,7 +1079,8 @@ function init_config(project,environment,default_webdomain){
         network:["*"]
     });
     init_task_options(config,"phantomizer-project-manifest",{
-        target_path: config.export_dir
+        target_path: config.export_dir,
+        network:["*"]
     });
 
 // initialize phantomizer-html-assets
