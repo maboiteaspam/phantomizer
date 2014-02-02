@@ -266,9 +266,6 @@ if( argv.export != "" ){
     var tasks = [
         // invoke the task to build the whole project
         'phantomizer-project-builder:'+environment,
-        // invoke the task to export build files to export directory
-        'phantomizer-export-build:'+environment,
-        // 'phantomizer-export-slim:'+environment
     ];
     // invoke grunt
     grunt.tasks(tasks, {}, function(){
@@ -992,19 +989,15 @@ function init_config(project,environment,default_webdomain){
 
 // initialize phantomizer-manifest
 // ----------
-    init_task_options(config,"phantomizer-manifest",{
-        meta_dir:config.meta_dir,
-        project_dir: config.project_dir,
-        manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
-        src_paths:config.build_run_paths,
-        network:["*"]
-    });
     init_task_options(config,"phantomizer-manifest-html",{
         meta_dir:config.meta_dir,
         project_dir: config.project_dir,
         manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
         src_paths:config.build_run_paths,
         network:["*"]
+    });
+    init_task_options(config,"phantomizer-project-manifest",{
+        target_path: config.export_dir
     });
 
 // initialize phantomizer-html-assets
@@ -1047,7 +1040,7 @@ function init_config(project,environment,default_webdomain){
     });
 
     init_task_options(config,"phantomizer-dir-htmlcompressor",{
-        meta_dir:config.meta_dir,
+        in_dir:config.export_dir,
         "preserved_html_comments": "(?si)<!-- #preserve_(js|css) .+? #endpreserve -->"
     });
     init_target_options(config,"phantomizer-dir-htmlcompressor","stryke-assets-min-build",{
@@ -1128,18 +1121,14 @@ function init_config(project,environment,default_webdomain){
         meta_dir:config.meta_dir,
         run_dir:config.run_dir,
         paths:config.web_paths_no_dir,
-        html_manifest:false,
         inject_extras:false,
-        htmlcompressor:false,
         build_assets:false
     });
     init_target_options(config,"phantomizer-html-project-builder","stryke-assets-build",{
         "build_assets": true
     });
     init_target_options(config,"phantomizer-html-project-builder","stryke-assets-min-build",{
-        "build_assets": true,
-        "html_manifest": false,
-        "htmlcompressor": true
+        "build_assets": true
     });
 
 // initialize phantomizer-imgopt
@@ -1230,30 +1219,6 @@ function init_config(project,environment,default_webdomain){
             "**/*.map"
         ]
     });
-    init_target_options(config,"phantomizer-export-build","dev",{
-        "export_dir":config.export_dir+"/dev/www/"
-    });
-    init_target_options(config,"phantomizer-export-build","staging",{
-        "export_dir":config.export_dir+"/staging/www/",
-        "rm_files":[
-            config.export_dir+"/staging/www/README.md"
-        ]
-    });
-    init_target_options(config,"phantomizer-export-build","contribution",{
-        "export_dir":config.export_dir+"/contribution/www/",
-        "rm_files":[
-            config.export_dir+"/contribution/www/README.md"
-        ]
-    });
-    init_target_options(config,"phantomizer-export-build","production",{
-        "export_dir":config.export_dir+"/production/www/",
-        "rm_files":[
-            config.export_dir+"/production/www/README.md"
-        ],
-        "rm_dir":[
-            config.export_dir+"/production/www/js/tests/"
-        ]
-    });
 
 // initialize phantomizer-build
 // ----------
@@ -1277,40 +1242,77 @@ function init_config(project,environment,default_webdomain){
             config.documentation_dir
         ],
         build_target:"stryke-assets-min-build",
-        urls_file:config.run_dir+"/urls.json",
-        inject_extras:false
+        inject_extras:false,
+        htmlcompressor:true,
+        build_assets:true,
+        html_manifest:true,
+        sitemap:true,
+        "web_domain":config.web_domain
     });
     init_target_options(config,"phantomizer-project-builder","dev",{
+        "export_dir":config.export_dir+"/dev/www/",
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+"/dev/",
             config.documentation_dir
+        ],
+        "rm_files":[
+            config.export_dir+"/dev/www/README.md"
+        ],
+        "rm_dir":[
+            config.export_dir+"/dev/www/js/tests/"
         ]
     });
     init_target_options(config,"phantomizer-project-builder","staging",{
+        "export_dir":config.export_dir+"/staging/www/",
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+"/staging/",
             config.documentation_dir
+        ],
+        "rm_files":[
+            config.export_dir+"/staging/www/README.md"
+        ],
+        "rm_dir":[
+            config.export_dir+"/staging/www/js/tests/"
         ]
     });
     init_target_options(config,"phantomizer-project-builder","contribution",{
+        "export_dir":config.export_dir+"/contribution/www/",
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+"/contribution/",
             config.documentation_dir
+        ],
+        "rm_files":[
+            config.export_dir+"/contribution/www/README.md"
+        ],
+        "rm_dir":[
+            config.export_dir+"/contribution/www/js/tests/"
         ]
     });
     init_target_options(config,"phantomizer-project-builder","production",{
+        "export_dir":config.export_dir+"/production/www/",
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+"/production/",
             config.documentation_dir
+        ],
+        "rm_files":[
+            config.export_dir+"/production/www/README.md"
+        ],
+        "rm_dir":[
+            config.export_dir+"/production/www/js/tests/"
         ]
+    });
+
+// initialize phantomizer-sitemap
+// ----------
+    init_task_options(config,"phantomizer-sitemap",{
     });
 
 // initialize phantomizer-export-slim
