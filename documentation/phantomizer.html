@@ -537,21 +537,8 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
         <p>invoke the task to build the whole project</p>
 
         
-          <div class='highlight'><pre>        <span class="hljs-string">'phantomizer-project-builder:'</span>+environment,</pre></div>
-        
-      
-        
-        <p>invoke the task to export build files to export directory</p>
-
-        
-          <div class='highlight'><pre>        <span class="hljs-string">'phantomizer-export-build:'</span>+environment,</pre></div>
-        
-      
-        
-        <p>‘phantomizer-export-slim:’+environment</p>
-
-        
-          <div class='highlight'><pre>    ];</pre></div>
+          <div class='highlight'><pre>        <span class="hljs-string">'phantomizer-project-builder:'</span>+environment,
+    ];</pre></div>
         
       
         
@@ -1839,19 +1826,15 @@ junit, requires an reporterOutput option
         
         
         
-          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-manifest"</span>,{
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-manifest-html"</span>,{
         meta_dir:config.meta_dir,
         project_dir: config.project_dir,
         manifest_reloader:config.vendors_dir+<span class="hljs-string">'/js/manifest.reloader.js'</span>,
         src_paths:config.build_run_paths,
         network:[<span class="hljs-string">"*"</span>]
     });
-    init_task_options(config,<span class="hljs-string">"phantomizer-manifest-html"</span>,{
-        meta_dir:config.meta_dir,
-        project_dir: config.project_dir,
-        manifest_reloader:config.vendors_dir+<span class="hljs-string">'/js/manifest.reloader.js'</span>,
-        src_paths:config.build_run_paths,
-        network:[<span class="hljs-string">"*"</span>]
+    init_task_options(config,<span class="hljs-string">"phantomizer-project-manifest"</span>,{
+        target_path: config.export_dir
     });</pre></div>
         
       
@@ -1908,7 +1891,7 @@ junit, requires an reporterOutput option
     });
 
     init_task_options(config,<span class="hljs-string">"phantomizer-dir-htmlcompressor"</span>,{
-        meta_dir:config.meta_dir,
+        in_dir:config.export_dir,
         <span class="hljs-string">"preserved_html_comments"</span>: <span class="hljs-string">"(?si)&lt;!-- #preserve_(js|css) .+? #endpreserve --&gt;"</span>
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-dir-htmlcompressor"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
@@ -2031,18 +2014,14 @@ junit, requires an reporterOutput option
         meta_dir:config.meta_dir,
         run_dir:config.run_dir,
         paths:config.web_paths_no_dir,
-        html_manifest:<span class="hljs-literal">false</span>,
         inject_extras:<span class="hljs-literal">false</span>,
-        htmlcompressor:<span class="hljs-literal">false</span>,
         build_assets:<span class="hljs-literal">false</span>
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-html-project-builder"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
         <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-html-project-builder"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
-        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>,
-        <span class="hljs-string">"html_manifest"</span>: <span class="hljs-literal">false</span>,
-        <span class="hljs-string">"htmlcompressor"</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
     });</pre></div>
         
       
@@ -2160,30 +2139,6 @@ junit, requires an reporterOutput option
 
             <span class="hljs-string">"**/*.map"</span>
         ]
-    });
-    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"dev"</span>,{
-        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/dev/www/"</span>
-    });
-    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"staging"</span>,{
-        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/staging/www/"</span>,
-        <span class="hljs-string">"rm_files"</span>:[
-            config.export_dir+<span class="hljs-string">"/staging/www/README.md"</span>
-        ]
-    });
-    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"contribution"</span>,{
-        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/contribution/www/"</span>,
-        <span class="hljs-string">"rm_files"</span>:[
-            config.export_dir+<span class="hljs-string">"/contribution/www/README.md"</span>
-        ]
-    });
-    init_target_options(config,<span class="hljs-string">"phantomizer-export-build"</span>,<span class="hljs-string">"production"</span>,{
-        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/production/www/"</span>,
-        <span class="hljs-string">"rm_files"</span>:[
-            config.export_dir+<span class="hljs-string">"/production/www/README.md"</span>
-        ],
-        <span class="hljs-string">"rm_dir"</span>:[
-            config.export_dir+<span class="hljs-string">"/production/www/js/tests/"</span>
-        ]
     });</pre></div>
         
       
@@ -2222,40 +2177,84 @@ junit, requires an reporterOutput option
             config.documentation_dir
         ],
         build_target:<span class="hljs-string">"stryke-assets-min-build"</span>,
-        urls_file:config.run_dir+<span class="hljs-string">"/urls.json"</span>,
-        inject_extras:<span class="hljs-literal">false</span>
+        inject_extras:<span class="hljs-literal">false</span>,
+        htmlcompressor:<span class="hljs-literal">true</span>,
+        build_assets:<span class="hljs-literal">true</span>,
+        html_manifest:<span class="hljs-literal">true</span>,
+        sitemap:<span class="hljs-literal">true</span>,
+        <span class="hljs-string">"web_domain"</span>:config.web_domain
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"dev"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/dev/www/"</span>,
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+<span class="hljs-string">"/dev/"</span>,
             config.documentation_dir
+        ],
+        <span class="hljs-string">"rm_files"</span>:[
+            config.export_dir+<span class="hljs-string">"/dev/www/README.md"</span>
+        ],
+        <span class="hljs-string">"rm_dir"</span>:[
+            config.export_dir+<span class="hljs-string">"/dev/www/js/tests/"</span>
         ]
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"staging"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/staging/www/"</span>,
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+<span class="hljs-string">"/staging/"</span>,
             config.documentation_dir
+        ],
+        <span class="hljs-string">"rm_files"</span>:[
+            config.export_dir+<span class="hljs-string">"/staging/www/README.md"</span>
+        ],
+        <span class="hljs-string">"rm_dir"</span>:[
+            config.export_dir+<span class="hljs-string">"/staging/www/js/tests/"</span>
         ]
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"contribution"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/contribution/www/"</span>,
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+<span class="hljs-string">"/contribution/"</span>,
             config.documentation_dir
+        ],
+        <span class="hljs-string">"rm_files"</span>:[
+            config.export_dir+<span class="hljs-string">"/contribution/www/README.md"</span>
+        ],
+        <span class="hljs-string">"rm_dir"</span>:[
+            config.export_dir+<span class="hljs-string">"/contribution/www/js/tests/"</span>
         ]
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"production"</span>,{
+        <span class="hljs-string">"export_dir"</span>:config.export_dir+<span class="hljs-string">"/production/www/"</span>,
         clean_dir:[
             config.out_dir,
             config.meta_dir,
             config.export_dir+<span class="hljs-string">"/production/"</span>,
             config.documentation_dir
+        ],
+        <span class="hljs-string">"rm_files"</span>:[
+            config.export_dir+<span class="hljs-string">"/production/www/README.md"</span>
+        ],
+        <span class="hljs-string">"rm_dir"</span>:[
+            config.export_dir+<span class="hljs-string">"/production/www/js/tests/"</span>
         ]
+    });</pre></div>
+        
+      
+        
+        <h2 id="initialize-phantomizer-sitemap">initialize phantomizer-sitemap</h2>
+
+        
+      
+        
+        
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"phantomizer-sitemap"</span>,{
     });</pre></div>
         
       
