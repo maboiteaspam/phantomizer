@@ -92,6 +92,15 @@
         
       
         
+        <p>—code_review [project_folder] —target [default|junit|checkstyle]</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'code_review'</span>, <span class="hljs-string">'Review the source code'</span>)
+        .string(<span class="hljs-string">'code_review'</span>)
+        .default(<span class="hljs-string">'code_review'</span>, <span class="hljs-string">""</span>)</pre></div>
+        
+      
+        
         <p>—clean [project_folder]</p>
 
         
@@ -137,7 +146,17 @@
         
       
         
+        <p>—target [target_name]</p>
+
         
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'target'</span>, <span class="hljs-string">'The target to manipulate'</span>)
+        .string(<span class="hljs-string">'target'</span>)
+        .default(<span class="hljs-string">'target'</span>, <span class="hljs-string">""</span>)</pre></div>
+        
+      
+        
+        <p>—list_tasks [project_folder]</p>
+
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'list_tasks'</span>, <span class="hljs-string">'List available tasks'</span>)
         .string(<span class="hljs-string">'list_tasks'</span>)
@@ -181,14 +200,28 @@
         
       
         
+        <p>—[init|server|test|document|export|clean] [project_folder] —force</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'force'</span>, <span class="hljs-string">'Force'</span>)
+        .boolean(<span class="hljs-string">'force'</span>)
+        .default(<span class="hljs-string">'force'</span>, <span class="hljs-literal">false</span>)</pre></div>
+        
+      
+        
         <p>—version</p>
 
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'version'</span>, <span class="hljs-string">'Display version from package.json file'</span>)
         .boolean(<span class="hljs-string">'version'</span>)
-        .default(<span class="hljs-string">'version'</span>, <span class="hljs-literal">false</span>)
+        .default(<span class="hljs-string">'version'</span>, <span class="hljs-literal">false</span>)</pre></div>
+        
+      
+        
+        <p>—help</p>
 
-        .describe(<span class="hljs-string">'help'</span>, <span class="hljs-string">'Display help'</span>)
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'help'</span>, <span class="hljs-string">'Display help'</span>)
         .boolean(<span class="hljs-string">'help'</span>)
         .default(<span class="hljs-string">'help'</span>, <span class="hljs-literal">false</span>)</pre></div>
         
@@ -242,6 +275,7 @@
                 argv.test ||
                 argv.document ||
                 argv.export ||
+                argv.code_review ||
                 argv.clean||
                 argv.version ||
                 argv.help ||
@@ -263,8 +297,6 @@ fine tune some data</p>
 
         
           <div class='highlight'><pre><span class="hljs-keyword">var</span> verbose = argv.verbose || <span class="hljs-literal">false</span>;
-<span class="hljs-keyword">var</span> version = argv.version || <span class="hljs-literal">false</span>;
-<span class="hljs-keyword">var</span> help = argv.help || <span class="hljs-literal">false</span>;
 <span class="hljs-keyword">var</span> debug = argv.debug || <span class="hljs-literal">false</span>;
 
 <span class="hljs-keyword">var</span> known_configs = {};</pre></div>
@@ -275,7 +307,8 @@ fine tune some data</p>
 
         
           <div class='highlight'><pre>grunt.option(<span class="hljs-string">'verbose'</span>, verbose);
-grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
+grunt.option(<span class="hljs-string">'debug'</span>, debug);
+grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class="hljs-literal">false</span>);</pre></div>
         
       
         
@@ -293,7 +326,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
         
         
-          <div class='highlight'><pre><span class="hljs-keyword">if</span>( version ){
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.version || <span class="hljs-literal">false</span> ){
     <span class="hljs-keyword">var</span> pkg = fs.readFileSync(__dirname+<span class="hljs-string">"/../package.json"</span>, <span class="hljs-string">'utf-8'</span>);
     pkg = <span class="hljs-built_in">JSON</span>.parse(pkg);
     grunt.log.ok(<span class="hljs-string">"phantomizer "</span> + pkg.version)
@@ -309,7 +342,7 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
         
         
         
-          <div class='highlight'><pre><span class="hljs-keyword">if</span>( help ){
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.help || <span class="hljs-literal">false</span> ){
     optimist.showHelp()
     process.exit(<span class="hljs-number">0</span>);
 }</pre></div>
@@ -581,7 +614,55 @@ grunt.option(<span class="hljs-string">'debug'</span>, debug);</pre></div>
           <div class='highlight'><pre>    grunt.tasks(tasks, {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
         grunt.log.ok(<span class="hljs-string">"Documentation done !"</span>);
     });
+}</pre></div>
+        
+      
+        
+        <h2 id="reviews-code-of-your-project">Reviews code of your project</h2>
 
+        
+      
+        
+        <p>Analyze script files with jshint
+Analyze css files with csslint</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.code_review != <span class="hljs-string">""</span> ){</pre></div>
+        
+      
+        
+        <p>the project to clean</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> project = get_project(argv, <span class="hljs-string">"code_review"</span>);</pre></div>
+        
+      
+        
+        <p>configuration initialization, including grunt config, required call prior to grunt usage</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> config = get_config(project, <span class="hljs-literal">null</span>, argv.default_webdomain);
+
+    <span class="hljs-keyword">var</span> target = (argv.target!=<span class="hljs-string">""</span>?argv.target:<span class="hljs-string">"default"</span>);
+
+    <span class="hljs-keyword">var</span> tasks = [</pre></div>
+        
+      
+        
+        <p>invoke the task to analyze javascript files</p>
+
+        
+          <div class='highlight'><pre>        <span class="hljs-string">'jshint:'</span>+target
+    ];</pre></div>
+        
+      
+        
+        <p>invoke grunt</p>
+
+        
+          <div class='highlight'><pre>    grunt.tasks(tasks, {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        grunt.log.ok(<span class="hljs-string">"Code Review done !"</span>);
+    });
 }</pre></div>
         
       
@@ -1247,7 +1328,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
       
         
-        <p>Adjust general configuration with selected environment</p>
+        <p>Overwrite general configuration with selected environment</p>
 
         
           <div class='highlight'><pre>    <span class="hljs-keyword">if</span>( environment ){
@@ -1263,6 +1344,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
       
         
         <p>finalize routes[].urls_datasource url with config.datasource_base_url</p>
+<p>apply for credentials</p>
 
         
           <div class='highlight'><pre>    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> config.routing){
@@ -1270,7 +1352,6 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
             <span class="hljs-keyword">if</span>( ! config.routing[n].urls_datasource.match(<span class="hljs-regexp">/^http/</span>)){
                 config.routing[n].urls_datasource = config.datasource_base_url+<span class="hljs-string">""</span>+config.routing[n].urls_datasource+<span class="hljs-string">""</span>;
             }
-
             <span class="hljs-keyword">if</span>( !config.routing[n].datasource_credentials ){
                 config.routing[n].datasource_credentials = config.datasource_credentials;
             }
@@ -1580,6 +1661,101 @@ they are absolute url</p>
         <span class="hljs-string">"src_pattern"</span>:[config.src_dir+<span class="hljs-string">"**/*.css"</span>,config.wbm_dir+<span class="hljs-string">"**/*.css"</span>],
         <span class="hljs-string">"out_dir"</span>:config.documentation_dir+<span class="hljs-string">"/css/"</span>
     });</pre></div>
+        
+      
+        
+        <h2 id="initialize-phantomizer-styledocco">initialize phantomizer-styledocco</h2>
+
+        
+      
+        
+        
+        
+          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"jshint"</span>,{
+        force: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">'-W097'</span>: <span class="hljs-literal">true</span>,
+        curly: <span class="hljs-literal">true</span>,
+        eqeqeq: <span class="hljs-literal">true</span>,
+        eqnull: <span class="hljs-literal">true</span>,
+        browser: <span class="hljs-literal">true</span>,
+        globals: {
+            jQuery: <span class="hljs-literal">true</span>,
+            $: <span class="hljs-literal">true</span>,
+            _: <span class="hljs-literal">true</span>,
+            ko: <span class="hljs-literal">true</span>,
+            <span class="hljs-built_in">require</span>: <span class="hljs-literal">true</span>,
+            define: <span class="hljs-literal">true</span>,
+            asyncTest: <span class="hljs-literal">true</span>,
+            start: <span class="hljs-literal">true</span>,
+            EJS: <span class="hljs-literal">true</span>
+        }</pre></div>
+        
+      
+        
+        <p>remove reporter option to get default one
+html output ?
+, reporter:”checkstyle”
+absolute error path with row/column on one line.
+, reporter: ‘./node_modules/jshint-path-reporter’
+junit, requires an reporterOutput option
+, reporter: ‘./node_modules/jshint-junit-reporter’
+,reporterOutput: ‘some/file.xml’</p>
+
+        
+          <div class='highlight'><pre>    });
+    init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"default"</span>,{
+            reporter: <span class="hljs-string">'./node_modules/jshint-path-reporter'</span>
+        },
+        {
+            src:[
+                config.src_dir+<span class="hljs-string">"**/*.js"</span>,
+                config.wbm_dir+<span class="hljs-string">"**/*.js"</span>,
+
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.js'</span>,
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-js'</span>,
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
+
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.js'</span>,
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-js'</span>,
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
+            ]
+        });
+    init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"checkstyle"</span>,{
+            reporter: <span class="hljs-string">'checkstyle'</span>,
+            reporterOutput: config.project_dir+<span class="hljs-string">'/jshint-output.txt'</span>
+        },
+        {
+            src:[
+                config.src_dir+<span class="hljs-string">"**/*.js"</span>,
+                config.wbm_dir+<span class="hljs-string">"**/*.js"</span>,
+
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.js'</span>,
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-js'</span>,
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
+
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.js'</span>,
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-js'</span>,
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
+            ]
+        });
+    init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"junit"</span>,{
+            reporter: <span class="hljs-string">'./node_modules/jshint-junit-reporter/reporter.js'</span>,
+            reporterOutput: config.project_dir+<span class="hljs-string">'/jshint-junit-output.xml'</span>
+        },
+        {
+            src:[
+                config.src_dir+<span class="hljs-string">"**/*.js"</span>,
+                config.wbm_dir+<span class="hljs-string">"**/*.js"</span>,
+
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.js'</span>,
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-js'</span>,
+                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
+
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.js'</span>,
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-js'</span>,
+                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
+            ]
+        });</pre></div>
         
       
         
@@ -2136,10 +2312,13 @@ they are absolute url</p>
  * @param task_name
  * @param options
  */</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_task_options</span><span class="hljs-params">(config,task_name,options)</span>{</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_task_options</span><span class="hljs-params">(config,task_name,options,files)</span>{</span>
     <span class="hljs-keyword">if</span>(!config[task_name]) config[task_name] = {options:{}};
     <span class="hljs-keyword">if</span>(!config[task_name].options) config[task_name].options = {};
     underscore.defaults(config[task_name].options, options);
+    <span class="hljs-keyword">if</span>( files ){
+        config[task_name].files = files;
+    }
 }
 <span class="hljs-comment">/**
  * Init a task target option in the grunt js manner
@@ -2157,11 +2336,15 @@ they are absolute url</p>
  * @param task_name
  * @param target_name
  * @param options
+ * @param files
  */</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_target_options</span><span class="hljs-params">(config,task_name,target_name,options)</span>{</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init_target_options</span><span class="hljs-params">(config,task_name,target_name,options,files)</span>{</span>
     <span class="hljs-keyword">if</span>(!config[task_name][target_name]) config[task_name][target_name] = {options:{}};
     <span class="hljs-keyword">if</span>(!config[task_name][target_name].options) config[task_name][target_name].options = {};
     underscore.defaults(config[task_name][target_name].options,options);
+    <span class="hljs-keyword">if</span>( files ){
+        config[task_name][target_name].files = files;
+    }
 }
 
 <span class="hljs-comment">/**
