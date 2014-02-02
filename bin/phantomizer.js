@@ -6,6 +6,8 @@ var optimist = require("optimist");
 var grunt = require("grunt");
 var ph_libutil = require("phantomizer-libutil");
 var underscore = require("underscore");
+var express = require("express");
+var http = require("http");
 
 var file_utils = ph_libutil.file_utils;
 
@@ -123,6 +125,11 @@ var argv = optimist.usage('Phantomizer command line')
         .string('confess')
         .default('confess', "")
 
+        // --browse_export [project_folder] --environment [environment]
+        .describe('browse_export', 'Starts an express webserver to browse the exported project')
+        .string('browse_export')
+        .default('browse_export', "")
+
         .check(function(argv){
             // if describe_env is provided, then environment is required
             if( argv.describe_env!="" && argv.environment=="" )
@@ -137,6 +144,7 @@ var argv = optimist.usage('Phantomizer command line')
             // requires one of those switch
             return argv.init ||
                 argv.server ||
+                argv.browse_export ||
                 argv.test ||
                 argv.document ||
                 argv.export ||
@@ -513,6 +521,48 @@ if( argv.confess != "" ){
 
     grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
         grunt.log.ok("Measure done !");
+    });
+}
+
+// Starts an express web server to browse the exported project
+// ----------
+// it is useful for many purposes to e bale to browse the built version, such,
+// manual debug
+// automated testing
+// performance analysis
+if( argv.browse_export != "" ){
+
+    var project     = get_project(argv, "browse_export");
+    var environment = get_environment(argv);
+    // configuration initialization, including grunt config, required call prior ro grunt usage
+    config = get_config(project, environment);
+
+    var directory = config.export_dir+"/"+environment;
+    if( grunt.file.exists(directory) ){
+        if( grunt.file.exists(directory+"/www/") ){
+            directory += "/www/";
+            grunt.log.error("patched Webroot to "+directory);
+        }
+    }else{
+        grunt.fail.fatal(directory+" does not exists, you should build the project first\nphantomizer --export "+project);
+    }
+
+    var http_clear;
+    var app = express();
+    app.use(express.logger());
+    app.use(express.json());
+    app.use(express.urlencoded());
+    app.use(express.directory(directory));
+    app.use(express.static(directory));
+
+    http_clear = http.createServer(app).listen(config.web_port);
+
+    grunt.log.ok("Webserver started on http://"+config.web_domain+":"+config.web_port);
+    grunt.log.writeln("Webroot is "+directory);
+
+    readline_toquit(function(){
+        if( http_clear != null ) http_clear.close();
+        process.exit(code=1)
     });
 }
 
