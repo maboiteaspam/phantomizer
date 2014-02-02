@@ -652,7 +652,8 @@ Analyze css files with csslint</p>
         <p>invoke the task to analyze javascript files</p>
 
         
-          <div class='highlight'><pre>        <span class="hljs-string">'jshint:'</span>+target
+          <div class='highlight'><pre>        <span class="hljs-string">'jshint:'</span>+target,
+        <span class="hljs-string">'csslint:'</span>+target
     ];</pre></div>
         
       
@@ -1664,14 +1665,28 @@ they are absolute url</p>
         
       
         
-        <h2 id="initialize-phantomizer-styledocco">initialize phantomizer-styledocco</h2>
+        <h2 id="initialize-grunt-contrib-jshint">initialize grunt-contrib-jshint</h2>
 
         
       
         
         
         
-          <div class='highlight'><pre>    init_task_options(config,<span class="hljs-string">"jshint"</span>,{
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> jshint_src = {
+        src:[
+            config.src_dir+<span class="hljs-string">"**/*.js"</span>,
+            config.wbm_dir+<span class="hljs-string">"**/*.js"</span>,
+
+            <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.js'</span>,
+            <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-js'</span>,
+            <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
+
+            <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.js'</span>,
+            <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-js'</span>,
+            <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
+        ]
+    };
+    init_task_options(config,<span class="hljs-string">"jshint"</span>,{
         force: <span class="hljs-literal">true</span>,
         <span class="hljs-string">'-W097'</span>: <span class="hljs-literal">true</span>,
         curly: <span class="hljs-literal">true</span>,
@@ -1705,57 +1720,53 @@ junit, requires an reporterOutput option
           <div class='highlight'><pre>    });
     init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"default"</span>,{
             reporter: <span class="hljs-string">'./node_modules/jshint-path-reporter'</span>
-        },
-        {
-            src:[
-                config.src_dir+<span class="hljs-string">"**/*.js"</span>,
-                config.wbm_dir+<span class="hljs-string">"**/*.js"</span>,
-
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.js'</span>,
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-js'</span>,
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
-
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.js'</span>,
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-js'</span>,
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
-            ]
-        });
+    },jshint_src);
     init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"checkstyle"</span>,{
             reporter: <span class="hljs-string">'checkstyle'</span>,
-            reporterOutput: config.project_dir+<span class="hljs-string">'/jshint-output.txt'</span>
-        },
-        {
-            src:[
-                config.src_dir+<span class="hljs-string">"**/*.js"</span>,
-                config.wbm_dir+<span class="hljs-string">"**/*.js"</span>,
-
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.js'</span>,
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-js'</span>,
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
-
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.js'</span>,
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-js'</span>,
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
-            ]
-        });
+            reporterOutput: config.project_dir+<span class="hljs-string">'/jshint_checkstyle.xml'</span>
+    },jshint_src);
     init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"junit"</span>,{
             reporter: <span class="hljs-string">'./node_modules/jshint-junit-reporter/reporter.js'</span>,
-            reporterOutput: config.project_dir+<span class="hljs-string">'/jshint-junit-output.xml'</span>
-        },
-        {
-            src:[
-                config.src_dir+<span class="hljs-string">"**/*.js"</span>,
-                config.wbm_dir+<span class="hljs-string">"**/*.js"</span>,
+            reporterOutput: config.project_dir+<span class="hljs-string">'/jshint_junit.xml'</span>
+    },jshint_src);</pre></div>
+        
+      
+        
+        <h2 id="initialize-grunt-contrib-jshint">initialize grunt-contrib-jshint</h2>
 
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.js'</span>,
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-js'</span>,
-                <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
+        
+      
+        
+        
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> csslint_src = {
+        src:[
+            config.src_dir+<span class="hljs-string">"**/*.css"</span>,
+            config.wbm_dir+<span class="hljs-string">"**/*.css"</span>,
 
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.js'</span>,
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-js'</span>,
-                <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
-            ]
-        });</pre></div>
+            <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min.css'</span>,
+            <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/*.min-css'</span>,
+            <span class="hljs-string">'!'</span>+config.src_dir+<span class="hljs-string">'**/vendors/**'</span>,
+
+            <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min.css'</span>,
+            <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/*.min-css'</span>,
+            <span class="hljs-string">'!'</span>+config.wbm_dir+<span class="hljs-string">'**/vendors/**'</span>
+        ]
+    };
+    init_task_options(config,<span class="hljs-string">"csslint"</span>,{
+    });
+    init_target_options(config,<span class="hljs-string">"csslint"</span>,<span class="hljs-string">"default"</span>,{
+    },csslint_src);
+    init_target_options(config,<span class="hljs-string">"csslint"</span>,<span class="hljs-string">"checkstyle"</span>,{
+        formatters: [
+            {id: <span class="hljs-string">'checkstyle-xml'</span>, dest: config.project_dir+<span class="hljs-string">'/csslint_checkstyle.xml'</span>}
+        ]
+    },csslint_src);
+    init_target_options(config,<span class="hljs-string">"csslint"</span>,<span class="hljs-string">"junit"</span>,{
+        formatters: [
+            {id: <span class="hljs-string">'junit-xml'</span>, dest: config.project_dir+<span class="hljs-string">'/csslint_junit.xml'</span>}
+        ]
+    },csslint_src);</pre></div>
         
       
         
