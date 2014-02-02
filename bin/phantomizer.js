@@ -612,6 +612,14 @@ function init_config(project,environment,default_webdomain){
         debug: !!debug,
         log: !!verbose,
 
+        //stryke-build | stryke-assets-build | stryke-assets-min-build
+        build_target:"stryke-assets-min-build",
+        inject_extras:false,
+        htmlcompressor:true,
+        build_assets:true,
+        html_manifest:false,
+        sitemap:true,
+
 // datasource urls
         datasource_base_url:"http://localhost/",
         datasource_credentials:{
@@ -649,7 +657,13 @@ function init_config(project,environment,default_webdomain){
         test_web_port:8052,
         test_web_ssl_port:8053,
         phantom_web_port:8054,
-        phantom_web_ssl_port:8055
+        phantom_web_ssl_port:8055,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });
 
     config.environment.contribution = underscore.defaults(config.environment.contribution,{
@@ -661,7 +675,13 @@ function init_config(project,environment,default_webdomain){
         test_web_port:8062,
         test_web_ssl_port:8063,
         phantom_web_port:8064,
-        phantom_web_ssl_port:8065
+        phantom_web_ssl_port:8065,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });
 
     config.environment.staging = underscore.defaults(config.environment.staging,{
@@ -673,7 +693,13 @@ function init_config(project,environment,default_webdomain){
         test_web_port:8072,
         test_web_ssl_port:8073,
         phantom_web_port:8074,
-        phantom_web_ssl_port:8075
+        phantom_web_ssl_port:8075,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });
 
     config.environment.dev = underscore.defaults(config.environment.dev,{
@@ -685,7 +711,13 @@ function init_config(project,environment,default_webdomain){
         test_web_port:8082,
         test_web_ssl_port:8083,
         phantom_web_port:8084,
-        phantom_web_ssl_port:8085
+        phantom_web_ssl_port:8085,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });
 
     // Overwrite general configuration with selected environment
@@ -1241,12 +1273,12 @@ function init_config(project,environment,default_webdomain){
             config.export_dir,
             config.documentation_dir
         ],
-        build_target:"stryke-assets-min-build",
-        inject_extras:false,
-        htmlcompressor:true,
-        build_assets:true,
-        html_manifest:true,
-        sitemap:true,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap,
         "web_domain":config.web_domain
     });
     init_target_options(config,"phantomizer-project-builder","dev",{
