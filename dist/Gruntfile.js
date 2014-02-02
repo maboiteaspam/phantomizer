@@ -34,6 +34,8 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('phantomizer-websupport');
 
+    grunt.loadNpmTasks('phantomizer-sitemap');
+
     // code review
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-csslint');
