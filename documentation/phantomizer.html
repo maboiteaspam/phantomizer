@@ -31,6 +31,8 @@
 <span class="hljs-keyword">var</span> grunt = <span class="hljs-built_in">require</span>(<span class="hljs-string">"grunt"</span>);
 <span class="hljs-keyword">var</span> ph_libutil = <span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-libutil"</span>);
 <span class="hljs-keyword">var</span> underscore = <span class="hljs-built_in">require</span>(<span class="hljs-string">"underscore"</span>);
+<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">"express"</span>);
+<span class="hljs-keyword">var</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">"http"</span>);
 
 <span class="hljs-keyword">var</span> file_utils = ph_libutil.file_utils;</pre></div>
         
@@ -241,7 +243,16 @@
         
           <div class='highlight'><pre>        .describe(<span class="hljs-string">'confess'</span>, <span class="hljs-string">'Measure loading times of an url'</span>)
         .string(<span class="hljs-string">'confess'</span>)
-        .default(<span class="hljs-string">'confess'</span>, <span class="hljs-string">""</span>)
+        .default(<span class="hljs-string">'confess'</span>, <span class="hljs-string">""</span>)</pre></div>
+        
+      
+        
+        <p>—browse_export [project_folder] —environment [environment]</p>
+
+        
+          <div class='highlight'><pre>        .describe(<span class="hljs-string">'browse_export'</span>, <span class="hljs-string">'Starts an express webserver to browse the exported project'</span>)
+        .string(<span class="hljs-string">'browse_export'</span>)
+        .default(<span class="hljs-string">'browse_export'</span>, <span class="hljs-string">""</span>)
 
         .check(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(argv)</span>{</span></pre></div>
         
@@ -272,6 +283,7 @@
         
           <div class='highlight'><pre>            <span class="hljs-keyword">return</span> argv.init ||
                 argv.server ||
+                argv.browse_export ||
                 argv.test ||
                 argv.document ||
                 argv.export ||
@@ -1070,6 +1082,60 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
       
         
+        <h2 id="starts-an-express-web-server-to-browse-the-exported-project">Starts an express web server to browse the exported project</h2>
+
+        
+      
+        
+        <p>it is useful for many purposes to e bale to browse the built version, such,
+manual debug
+automated testing
+performance analysis</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.browse_export != <span class="hljs-string">""</span> ){
+
+    <span class="hljs-keyword">var</span> project     = get_project(argv, <span class="hljs-string">"browse_export"</span>);
+    <span class="hljs-keyword">var</span> environment = get_environment(argv);</pre></div>
+        
+      
+        
+        <p>configuration initialization, including grunt config, required call prior ro grunt usage</p>
+
+        
+          <div class='highlight'><pre>    config = get_config(project, environment);
+
+    <span class="hljs-keyword">var</span> directory = config.export_dir+<span class="hljs-string">"/"</span>+environment;
+    <span class="hljs-keyword">if</span>( grunt.file.exists(directory) ){
+        <span class="hljs-keyword">if</span>( grunt.file.exists(directory+<span class="hljs-string">"/www/"</span>) ){
+            directory += <span class="hljs-string">"/www/"</span>;
+            grunt.log.error(<span class="hljs-string">"patched Webroot to "</span>+directory);
+        }
+    }<span class="hljs-keyword">else</span>{
+        grunt.fail.fatal(directory+<span class="hljs-string">" does not exists, you should build the project first\nphantomizer --export "</span>+project);
+    }
+
+    <span class="hljs-keyword">var</span> http_clear;
+    <span class="hljs-keyword">var</span> app = express();
+    app.use(express.logger());
+    app.use(express.json());
+    app.use(express.urlencoded());
+    app.use(express.directory(directory));
+    app.use(express.static(directory));
+
+    http_clear = http.createServer(app).listen(config.web_port);
+
+    grunt.log.ok(<span class="hljs-string">"Webserver started on http://"</span>+config.web_domain+<span class="hljs-string">":"</span>+config.web_port);
+    grunt.log.writeln(<span class="hljs-string">"Webroot is "</span>+directory);
+
+    readline_toquit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">if</span>( http_clear != <span class="hljs-literal">null</span> ) http_clear.close();
+        process.exit(code=<span class="hljs-number">1</span>)
+    });
+}</pre></div>
+        
+      
+        
         <h2 id="helper-functions">Helper functions</h2>
 
         
@@ -1197,6 +1263,18 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
       
         
+        <p>stryke-build | stryke-assets-build | stryke-assets-min-build</p>
+
+        
+          <div class='highlight'><pre>        build_target:<span class="hljs-string">"stryke-assets-min-build"</span>,
+        inject_extras:<span class="hljs-literal">false</span>,
+        htmlcompressor:<span class="hljs-literal">true</span>,
+        build_assets:<span class="hljs-literal">true</span>,
+        html_manifest:<span class="hljs-literal">false</span>,
+        sitemap:<span class="hljs-literal">true</span>,</pre></div>
+        
+      
+        
         <p>datasource urls</p>
 
         
@@ -1275,7 +1353,13 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         test_web_port:<span class="hljs-number">8052</span>,
         test_web_ssl_port:<span class="hljs-number">8053</span>,
         phantom_web_port:<span class="hljs-number">8054</span>,
-        phantom_web_ssl_port:<span class="hljs-number">8055</span>
+        phantom_web_ssl_port:<span class="hljs-number">8055</span>,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });
 
     config.environment.contribution = underscore.defaults(config.environment.contribution,{
@@ -1287,7 +1371,13 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         test_web_port:<span class="hljs-number">8062</span>,
         test_web_ssl_port:<span class="hljs-number">8063</span>,
         phantom_web_port:<span class="hljs-number">8064</span>,
-        phantom_web_ssl_port:<span class="hljs-number">8065</span>
+        phantom_web_ssl_port:<span class="hljs-number">8065</span>,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });
 
     config.environment.staging = underscore.defaults(config.environment.staging,{
@@ -1299,7 +1389,13 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         test_web_port:<span class="hljs-number">8072</span>,
         test_web_ssl_port:<span class="hljs-number">8073</span>,
         phantom_web_port:<span class="hljs-number">8074</span>,
-        phantom_web_ssl_port:<span class="hljs-number">8075</span>
+        phantom_web_ssl_port:<span class="hljs-number">8075</span>,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });
 
     config.environment.dev = underscore.defaults(config.environment.dev,{
@@ -1311,7 +1407,13 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         test_web_port:<span class="hljs-number">8082</span>,
         test_web_ssl_port:<span class="hljs-number">8083</span>,
         phantom_web_port:<span class="hljs-number">8084</span>,
-        phantom_web_ssl_port:<span class="hljs-number">8085</span>
+        phantom_web_ssl_port:<span class="hljs-number">8085</span>,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap
     });</pre></div>
         
       
@@ -2176,12 +2278,12 @@ junit, requires an reporterOutput option
             config.export_dir,
             config.documentation_dir
         ],
-        build_target:<span class="hljs-string">"stryke-assets-min-build"</span>,
-        inject_extras:<span class="hljs-literal">false</span>,
-        htmlcompressor:<span class="hljs-literal">true</span>,
-        build_assets:<span class="hljs-literal">true</span>,
-        html_manifest:<span class="hljs-literal">true</span>,
-        sitemap:<span class="hljs-literal">true</span>,
+        build_target:config.build_target,
+        inject_extras:config.inject_extras,
+        htmlcompressor:config.htmlcompressor,
+        build_assets:config.build_assets,
+        html_manifest:config.html_manifest,
+        sitemap:config.sitemap,
         <span class="hljs-string">"web_domain"</span>:config.web_domain
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"dev"</span>,{
