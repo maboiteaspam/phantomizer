@@ -38,6 +38,11 @@ var argv = optimist.usage('Phantomizer command line')
         .string('export')
         .default('export', "")
 
+        // --code_review [project_folder] --target [default|junit|checkstyle]
+        .describe('code_review', 'Review the source code')
+        .string('code_review')
+        .default('code_review', "")
+
         // --clean [project_folder]
         .describe('clean', 'Cleanup tmp files')
         .string('clean')
@@ -63,7 +68,12 @@ var argv = optimist.usage('Phantomizer command line')
         .string('task')
         .default('task', "")
 
-        //
+        // --target [target_name]
+        .describe('target', 'The target to manipulate')
+        .string('target')
+        .default('target', "")
+
+        // --list_tasks [project_folder]
         .describe('list_tasks', 'List available tasks')
         .string('list_tasks')
         .default('list_tasks', false)
@@ -88,11 +98,17 @@ var argv = optimist.usage('Phantomizer command line')
         .boolean('debug')
         .default('debug', false)
 
+        // --[init|server|test|document|export|clean] [project_folder] --force
+        .describe('force', 'Force')
+        .boolean('force')
+        .default('force', false)
+
         // --version
         .describe('version', 'Display version from package.json file')
         .boolean('version')
         .default('version', false)
 
+        // --help
         .describe('help', 'Display help')
         .boolean('help')
         .default('help', false)
@@ -124,6 +140,7 @@ var argv = optimist.usage('Phantomizer command line')
                 argv.test ||
                 argv.document ||
                 argv.export ||
+                argv.code_review ||
                 argv.clean||
                 argv.version ||
                 argv.help ||
@@ -142,23 +159,21 @@ var argv = optimist.usage('Phantomizer command line')
 // declare variables and
 // fine tune some data
 var verbose = argv.verbose || false;
-var version = argv.version || false;
-var help = argv.help || false;
 var debug = argv.debug || false;
 
 var known_configs = {};
 
-
 // set grunt js log verbosity
 grunt.option('verbose', verbose);
 grunt.option('debug', debug);
+grunt.option('force', argv.force || false);
 
 // Welcome user
 grunt.log.subhead("Welcome to phantomizer !")
 
 // display version number
 // ----------
-if( version ){
+if( argv.version || false ){
     var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
     pkg = JSON.parse(pkg);
     grunt.log.ok("phantomizer " + pkg.version)
@@ -167,7 +182,7 @@ if( version ){
 
 // display help
 // ----------
-if( help ){
+if( argv.help || false ){
     optimist.showHelp()
     process.exit(0);
 }
@@ -281,7 +296,30 @@ if( argv.document != "" ){
     grunt.tasks(tasks, {}, function(){
         grunt.log.ok("Documentation done !");
     });
+}
 
+// Reviews code of your project
+// ----------
+// Analyze script files with jshint
+// Analyze css files with csslint
+if( argv.code_review != "" ){
+
+    // the project to clean
+    var project = get_project(argv, "code_review");
+    // configuration initialization, including grunt config, required call prior to grunt usage
+    var config = get_config(project, null, argv.default_webdomain);
+
+    var target = (argv.target!=""?argv.target:"default");
+
+    var tasks = [
+        // invoke the task to analyze javascript files
+        'jshint:'+target
+    ];
+
+    // invoke grunt
+    grunt.tasks(tasks, {}, function(){
+        grunt.log.ok("Code Review done !");
+    });
 }
 
 // Clean the project
@@ -652,7 +690,7 @@ function init_config(project,environment,default_webdomain){
         phantom_web_ssl_port:8085
     });
 
-    // Adjust general configuration with selected environment
+    // Overwrite general configuration with selected environment
     if( environment ){
         if( !config.environment[environment] ){
             grunt.fail.fatal("Unknown environment "+environment+" in the configuration file");
@@ -664,12 +702,13 @@ function init_config(project,environment,default_webdomain){
     }
 
     // finalize routes[].urls_datasource url with config.datasource_base_url
+    //
+    // apply for credentials
     for( var n in config.routing){
         if( config.routing[n].urls_datasource ){
             if( ! config.routing[n].urls_datasource.match(/^http/)){
                 config.routing[n].urls_datasource = config.datasource_base_url+""+config.routing[n].urls_datasource+"";
             }
-
             if( !config.routing[n].datasource_credentials ){
                 config.routing[n].datasource_credentials = config.datasource_credentials;
             }
@@ -815,7 +854,6 @@ function init_config(project,environment,default_webdomain){
         layout:'linear'
     });
 
-
 // initialize phantomizer-styledocco
 // ----------
     init_task_options(config,"phantomizer-styledocco",{
@@ -823,6 +861,89 @@ function init_config(project,environment,default_webdomain){
         "src_pattern":[config.src_dir+"**/*.css",config.wbm_dir+"**/*.css"],
         "out_dir":config.documentation_dir+"/css/"
     });
+
+// initialize phantomizer-styledocco
+// ----------
+    init_task_options(config,"jshint",{
+        force: true,
+        '-W097': true,
+        curly: true,
+        eqeqeq: true,
+        eqnull: true,
+        browser: true,
+        globals: {
+            jQuery: true,
+            $: true,
+            _: true,
+            ko: true,
+            require: true,
+            define: true,
+            asyncTest: true,
+            start: true,
+            EJS: true
+        }
+        // remove reporter option to get default one
+        // html output ?
+        //, reporter:"checkstyle"
+        // absolute error path with row/column on one line.
+        //, reporter: './node_modules/jshint-path-reporter'
+        // junit, requires an reporterOutput option
+        //, reporter: './node_modules/jshint-junit-reporter'
+        // ,reporterOutput: 'some/file.xml'
+    });
+    init_target_options(config,"jshint","default",{
+            reporter: './node_modules/jshint-path-reporter'
+        },
+        {
+            src:[
+                config.src_dir+"**/*.js",
+                config.wbm_dir+"**/*.js",
+
+                '!'+config.src_dir+'**/*.min.js',
+                '!'+config.src_dir+'**/*.min-js',
+                '!'+config.src_dir+'**/vendors/**',
+
+                '!'+config.wbm_dir+'**/*.min.js',
+                '!'+config.wbm_dir+'**/*.min-js',
+                '!'+config.wbm_dir+'**/vendors/**'
+            ]
+        });
+    init_target_options(config,"jshint","checkstyle",{
+            reporter: 'checkstyle',
+            reporterOutput: config.project_dir+'/jshint-output.txt'
+        },
+        {
+            src:[
+                config.src_dir+"**/*.js",
+                config.wbm_dir+"**/*.js",
+
+                '!'+config.src_dir+'**/*.min.js',
+                '!'+config.src_dir+'**/*.min-js',
+                '!'+config.src_dir+'**/vendors/**',
+
+                '!'+config.wbm_dir+'**/*.min.js',
+                '!'+config.wbm_dir+'**/*.min-js',
+                '!'+config.wbm_dir+'**/vendors/**'
+            ]
+        });
+    init_target_options(config,"jshint","junit",{
+            reporter: './node_modules/jshint-junit-reporter/reporter.js',
+            reporterOutput: config.project_dir+'/jshint-junit-output.xml'
+        },
+        {
+            src:[
+                config.src_dir+"**/*.js",
+                config.wbm_dir+"**/*.js",
+
+                '!'+config.src_dir+'**/*.min.js',
+                '!'+config.src_dir+'**/*.min-js',
+                '!'+config.src_dir+'**/vendors/**',
+
+                '!'+config.wbm_dir+'**/*.min.js',
+                '!'+config.wbm_dir+'**/*.min-js',
+                '!'+config.wbm_dir+'**/vendors/**'
+            ]
+        });
 
 // initialize phantomizer-confess
 // ----------
@@ -1233,10 +1354,13 @@ function init_config(project,environment,default_webdomain){
  * @param task_name
  * @param options
  */
-function init_task_options(config,task_name,options){
+function init_task_options(config,task_name,options,files){
     if(!config[task_name]) config[task_name] = {options:{}};
     if(!config[task_name].options) config[task_name].options = {};
     underscore.defaults(config[task_name].options, options);
+    if( files ){
+        config[task_name].files = files;
+    }
 }
 /**
  * Init a task target option in the grunt js manner
@@ -1254,11 +1378,15 @@ function init_task_options(config,task_name,options){
  * @param task_name
  * @param target_name
  * @param options
+ * @param files
  */
-function init_target_options(config,task_name,target_name,options){
+function init_target_options(config,task_name,target_name,options,files){
     if(!config[task_name][target_name]) config[task_name][target_name] = {options:{}};
     if(!config[task_name][target_name].options) config[task_name][target_name].options = {};
     underscore.defaults(config[task_name][target_name].options,options);
+    if( files ){
+        config[task_name][target_name].files = files;
+    }
 }
 
 /**

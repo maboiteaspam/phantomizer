@@ -34,4 +34,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('phantomizer-websupport');
 
+    // code review
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+
 };

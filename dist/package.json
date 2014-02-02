@@ -26,7 +26,9 @@
         ,"phantomizer-html-assets": "maboiteaspam/phantomizer-html-assets"
         ,"phantomizer-export-build": "maboiteaspam/phantomizer-export-build"
         ,"phantomizer-qunit-runner": "maboiteaspam/phantomizer-qunit-runner"
-        ,"phantomizer-slim": "maboiteaspam/phantomizer-slim"
+        ,"grunt-contrib-jshint": "gruntjs/grunt-contrib-jshint"
+        ,"jshint-junit-reporter": "git://github.com/xjamundx/jshint-junit-reporter"
+        ,"jshint-path-reporter": "git://github.com/Bartvds/jshint-path-reporter"
 
 
     }

@@ -82,6 +82,9 @@ phantomizer --server <project_dir> [ --environment <environment> ]
 phantomizer --test <project_dir> [ --environment <environment> ]
 phantomizer --export <project_dir> [ --environment <environment> ]
 phantomizer --document <project_dir>
+phantomizer --code_review <project_dir>
+phantomizer --code_review <project_dir> --target junit
+phantomizer --code_review <project_dir> --target checkstyle
 phantomizer --clean <project_dir>
 
 phantomizer --list_tasks <project_dir> [ --environment <environment> ]
