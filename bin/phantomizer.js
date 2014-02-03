@@ -30,6 +30,11 @@ var argv = optimist.usage('Phantomizer command line')
     .string('test')
     .default('test', "")
 
+    // --test [project_folder] --format [junit]
+    .describe('format', 'Formatter output')
+    .string('format')
+    .default('format', "")
+
     // --document [project_folder]
     .describe('document', 'Document projects javascripts and css files')
     .string('document')
@@ -254,7 +259,15 @@ if( argv.test != "" ){
   // configuration initialization, including grunt config, required call prior to grunt usage
   init_config(project, environment);
 
-  grunt.tasks(['phantomizer-qunit-runner:'+environment], {}, function(){
+  var target = environment;
+  if( argv.format != "" ){
+    target = argv.format;
+    if( environment != "" ){
+      target = argv.format+"-"+environment;
+    }
+  }
+
+  grunt.tasks(['phantomizer-qunit-runner:'+target], {}, function(){
     grunt.log.ok("Test done !");
   });
 }
@@ -314,7 +327,7 @@ if( argv.code_review != "" ){
   // configuration initialization, including grunt config, required call prior to grunt usage
   var config = get_config(project, null, argv.default_webdomain);
 
-  var target = (argv.target!=""?argv.target:"default");
+  var target = (argv.format!=""?argv.format:"default");
 
   var tasks = [
     // invoke the task to analyze javascript files
@@ -1254,6 +1267,33 @@ function init_config(project,environment,default_webdomain){
     "inject_assets":false
   });
   init_target_options(config,"phantomizer-qunit-runner","production",{
+    "paths":[
+      "<%= export_dir %>/production/www/"
+    ],
+    "inject_assets":false
+  });
+  init_target_options(config,"phantomizer-qunit-runner","junit",{
+    junitDir:config.project_dir+"/qunit"
+  });
+  init_target_options(config,"phantomizer-qunit-runner","junit-dev",{
+    junitDir:config.project_dir+"/qunit/dev"
+  });
+  init_target_options(config,"phantomizer-qunit-runner","junit-staging",{
+    junitDir:config.project_dir+"/qunit/staging",
+    "paths":[
+      "<%= export_dir %>/staging/www/"
+    ],
+    "inject_assets":false
+  });
+  init_target_options(config,"phantomizer-qunit-runner","junit-contribution",{
+    junitDir:config.project_dir+"/qunit/contribution",
+    "paths":[
+      "<%= export_dir %>/contribution/www/"
+    ],
+    "inject_assets":false
+  });
+  init_target_options(config,"phantomizer-qunit-runner","junit-production",{
+    junitDir:config.project_dir+"/qunit/production",
     "paths":[
       "<%= export_dir %>/production/www/"
     ],
