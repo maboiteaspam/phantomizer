@@ -994,7 +994,7 @@ function init_config(project,environment,default_webdomain){
     },jshint_src);
     init_target_options(config,"jshint","junit",{
             reporter: './node_modules/jshint-junit-reporter/reporter.js',
-            reporterOutput: config.project_dir+'/jshint_junit.xml'
+            reporterOutput: config.project_dir+'/code_review/jshint_junit.xml'
     },jshint_src);
 
 // initialize grunt-contrib-jshint
@@ -1024,7 +1024,7 @@ function init_config(project,environment,default_webdomain){
     },csslint_src);
     init_target_options(config,"csslint","junit",{
         formatters: [
-            {id: 'junit-xml', dest: config.project_dir+'/csslint_junit.xml'}
+            {id: 'junit-xml', dest: config.project_dir+'/code_review/csslint_junit.xml'}
         ]
     },csslint_src);
 
