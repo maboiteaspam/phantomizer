@@ -1487,17 +1487,13 @@ function init_target_options(config,task_name,target_name,options,files){
  */
 function readline_toquit( end_handler ){
 
-    var readline = require('readline')
-    var rl = readline.createInterface(process.stdin, process.stdout);
+  var readline = require('readline')
+  var rl = readline.createInterface(process.stdin, process.stdout);
 
-    rl.question('Press enter to leave...\n', function(answer) {
-        grunt.log.subhead('See you soon !');
-        if( end_handler != null ){
-            end_handler()
-        }
-    });
-
+  rl.question('Press enter to leave...\n', function(answer) {
+    grunt.log.subhead('See you soon !');
+    if( end_handler != null ){
+      end_handler()
+    }
+  });
 }
-
-
-
