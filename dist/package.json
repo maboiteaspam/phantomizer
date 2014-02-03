@@ -5,7 +5,7 @@
     "dependencies": {
         "grunt": "0.4.x"
         ,"grunt-cli": "0.1.x"
-        ,"grunt-contrib-imagemin": "0.3.x"
+        ,"grunt-contrib-imagemin": "0.5.x"
         ,"grunt-contrib-qunit": "maboiteaspam/grunt-contrib-qunit"
 
         ,"phantomjs": "1.9.x"
