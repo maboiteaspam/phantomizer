@@ -230,7 +230,7 @@ if( argv.server != "" ){
   // load routes, eventually from a remote webserver
   router.load(function(){
     // create a new local webserver with found route urls
-    webserver = new webserver_factory(router,optimizer,meta_manager,process.cwd(), config, grunt);
+    webserver = new webserver_factory(router,optimizer,meta_manager,grunt, config.web_paths);
     // try to listen both clear text and ssl
     var h = "http://"+config.web_domain+(config.web_port?":"+config.web_port:"");
     var hs = "https://"+config.web_domain+(config.web_domain?":"+config.web_ssl_port:"");
@@ -560,22 +560,42 @@ if( argv.browse_export != "" ){
     grunt.fail.fatal(directory+" does not exists, you should build the project first\nphantomizer --export "+project);
   }
 
-  var http_clear;
-  var app = express();
-  app.use(express.logger('dev'));
-  app.use(express.json());
-  app.use(express.urlencoded());
-  app.use(express.directory(directory));
-  app.use(express.static(directory));
+  // initialize some helpers
+  var router_factory = ph_libutil.router;
+  var optimizer_factory = ph_libutil.optimizer;
+  var meta_factory = ph_libutil.meta;
+  var webserver_factory = ph_libutil.webserver;
 
-  http_clear = http.createServer(app).listen(config.web_port);
+  // hols meta of all built files
+  var meta_manager = new meta_factory(process.cwd(), config.meta_dir);
+  // knows how to proceed optimization
+  var optimizer = new optimizer_factory(meta_manager, config, grunt);
+  // provides a catalog of route url
+  var router = new router_factory(config.routing);
+  // a specifically designed webserver for JIT optimization
+  var webserver = null;
 
-  grunt.log.ok("Webserver started on http://"+config.web_domain+":"+config.web_port);
-  grunt.log.writeln("Webroot is "+directory);
+  // load routes, eventually from a remote webserver
+  router.load(function(){
+    // create a new local webserver with found route urls
+    webserver = new webserver_factory(router,optimizer,meta_manager,grunt, [directory]);
+    webserver.enable_build(false);
+    webserver.enable_assets_inject(false);
+    // try to listen both clear text and ssl
+    var h = "http://"+config.web_domain+(config.web_port?":"+config.web_port:"");
+    var hs = "https://"+config.web_domain+(config.web_domain?":"+config.web_ssl_port:"");
+    grunt.log.ok("Webserver started on "+h+" "+(hs?hs:""));
+    grunt.log.writeln("Webroot is "+directory);
+    // starts local webserver
+    webserver.start(config.web_port,config.web_ssl_port,config.web_domain);
 
-  readline_toquit(function(){
-    if( http_clear != null ) http_clear.close();
-    process.exit(code=1)
+    // quit on enter touch pressed
+    readline_toquit(function(){
+      // stops remaining web server
+      if( webserver != null ) webserver.stop();
+      // exit program
+      process.exit(code=1)
+    });
   });
 }
 
