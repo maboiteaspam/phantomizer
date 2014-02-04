@@ -31,7 +31,6 @@
 <span class="hljs-keyword">var</span> grunt = <span class="hljs-built_in">require</span>(<span class="hljs-string">"grunt"</span>);
 <span class="hljs-keyword">var</span> ph_libutil = <span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-libutil"</span>);
 <span class="hljs-keyword">var</span> underscore = <span class="hljs-built_in">require</span>(<span class="hljs-string">"underscore"</span>);
-<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">"express"</span>);
 <span class="hljs-keyword">var</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">"http"</span>);
 
 <span class="hljs-keyword">var</span> file_utils = ph_libutil.file_utils;</pre></div>
@@ -247,12 +246,21 @@
         
       
         
-        <p>@dot not use</p>
+        <p>—confess [project_folder] —url [url,]</p>
 
         
           <div class='highlight'><pre>    .describe(<span class="hljs-string">'confess'</span>, <span class="hljs-string">'Measure loading times of an url'</span>)
     .string(<span class="hljs-string">'confess'</span>)
     .default(<span class="hljs-string">'confess'</span>, <span class="hljs-string">""</span>)</pre></div>
+        
+      
+        
+        <p>—url [url]</p>
+
+        
+          <div class='highlight'><pre>    .describe(<span class="hljs-string">'url'</span>, <span class="hljs-string">'The target url to load'</span>)
+    .string(<span class="hljs-string">'url'</span>)
+    .default(<span class="hljs-string">'url'</span>, <span class="hljs-string">""</span>)</pre></div>
         
       
         
@@ -279,6 +287,14 @@
 
         
           <div class='highlight'><pre>      <span class="hljs-keyword">if</span>( argv.describe_task!=<span class="hljs-string">""</span> &amp;&amp; argv.task==<span class="hljs-string">""</span> )
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;</pre></div>
+        
+      
+        
+        <p>if confess, then url is required</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span>( argv.confess!=<span class="hljs-string">""</span> &amp;&amp; argv.url==<span class="hljs-string">""</span> )
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
       <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
     })
@@ -440,7 +456,7 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
         <p>create a new local webserver with found route urls</p>
 
         
-          <div class='highlight'><pre>    webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,process.cwd(), config, grunt);</pre></div>
+          <div class='highlight'><pre>    webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,grunt, config.web_paths);</pre></div>
         
       
         
@@ -1090,7 +1106,14 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         <p>configuration initialization, including grunt config, required call prior ro grunt usage</p>
 
         
-          <div class='highlight'><pre>  init_config(project, environment);
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> config = get_config(project, environment);
+
+  <span class="hljs-keyword">if</span>( config[<span class="hljs-string">"phantomizer-confess"</span>]
+    &amp;&amp; config[<span class="hljs-string">"phantomizer-confess"</span>][environment] ){
+    <span class="hljs-keyword">var</span> opts = config[<span class="hljs-string">"phantomizer-confess"</span>];
+    opts[environment].options.in_request = argv.url;
+    grunt.config(<span class="hljs-string">"phantomizer-confess"</span>,opts);
+  }
 
   grunt.tasks([<span class="hljs-string">'phantomizer-confess:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
     grunt.log.ok(<span class="hljs-string">"Measure done !"</span>);
@@ -1130,24 +1153,100 @@ performance analysis</p>
     }
   }<span class="hljs-keyword">else</span>{
     grunt.fail.fatal(directory+<span class="hljs-string">" does not exists, you should build the project first\nphantomizer --export "</span>+project);
-  }
+  }</pre></div>
+        
+      
+        
+        <p>initialize some helpers</p>
 
-  <span class="hljs-keyword">var</span> http_clear;
-  <span class="hljs-keyword">var</span> app = express();
-  app.use(express.logger(<span class="hljs-string">'dev'</span>));
-  app.use(express.json());
-  app.use(express.urlencoded());
-  app.use(express.directory(directory));
-  app.use(express.static(directory));
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> router_factory = ph_libutil.router;
+  <span class="hljs-keyword">var</span> optimizer_factory = ph_libutil.optimizer;
+  <span class="hljs-keyword">var</span> meta_factory = ph_libutil.meta;
+  <span class="hljs-keyword">var</span> webserver_factory = ph_libutil.webserver;</pre></div>
+        
+      
+        
+        <p>hols meta of all built files</p>
 
-  http_clear = http.createServer(app).listen(config.web_port);
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> meta_manager = <span class="hljs-keyword">new</span> meta_factory(process.cwd(), config.meta_dir);</pre></div>
+        
+      
+        
+        <p>knows how to proceed optimization</p>
 
-  grunt.log.ok(<span class="hljs-string">"Webserver started on http://"</span>+config.web_domain+<span class="hljs-string">":"</span>+config.web_port);
-  grunt.log.writeln(<span class="hljs-string">"Webroot is "</span>+directory);
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> optimizer = <span class="hljs-keyword">new</span> optimizer_factory(meta_manager, config, grunt);</pre></div>
+        
+      
+        
+        <p>provides a catalog of route url</p>
 
-  readline_toquit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
-    <span class="hljs-keyword">if</span>( http_clear != <span class="hljs-literal">null</span> ) http_clear.close();
-    process.exit(code=<span class="hljs-number">1</span>)
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> router = <span class="hljs-keyword">new</span> router_factory(config.routing);</pre></div>
+        
+      
+        
+        <p>a specifically designed webserver for JIT optimization</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> webserver = <span class="hljs-literal">null</span>;</pre></div>
+        
+      
+        
+        <p>load routes, eventually from a remote webserver</p>
+
+        
+          <div class='highlight'><pre>  router.load(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span></pre></div>
+        
+      
+        
+        <p>create a new local webserver with found route urls</p>
+
+        
+          <div class='highlight'><pre>    webserver = <span class="hljs-keyword">new</span> webserver_factory(router,optimizer,meta_manager,grunt, [directory]);
+    webserver.enable_build(<span class="hljs-literal">false</span>);
+    webserver.enable_assets_inject(<span class="hljs-literal">false</span>);</pre></div>
+        
+      
+        
+        <p>try to listen both clear text and ssl</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> h = <span class="hljs-string">"http://"</span>+config.web_domain+(config.web_port?<span class="hljs-string">":"</span>+config.web_port:<span class="hljs-string">""</span>);
+    <span class="hljs-keyword">var</span> hs = <span class="hljs-string">"https://"</span>+config.web_domain+(config.web_domain?<span class="hljs-string">":"</span>+config.web_ssl_port:<span class="hljs-string">""</span>);
+    grunt.log.ok(<span class="hljs-string">"Webserver started on "</span>+h+<span class="hljs-string">" "</span>+(hs?hs:<span class="hljs-string">""</span>));
+    grunt.log.writeln(<span class="hljs-string">"Webroot is "</span>+directory);</pre></div>
+        
+      
+        
+        <p>starts local webserver</p>
+
+        
+          <div class='highlight'><pre>    webserver.start(config.web_port,config.web_ssl_port,config.web_domain);</pre></div>
+        
+      
+        
+        <p>quit on enter touch pressed</p>
+
+        
+          <div class='highlight'><pre>    readline_toquit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span></pre></div>
+        
+      
+        
+        <p>stops remaining web server</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ) webserver.stop();</pre></div>
+        
+      
+        
+        <p>exit program</p>
+
+        
+          <div class='highlight'><pre>      process.exit(code=<span class="hljs-number">1</span>)
+    });
   });
 }</pre></div>
         
@@ -1829,11 +1928,11 @@ junit, requires an reporterOutput option
   },jshint_src);
   init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"checkstyle"</span>,{
     reporter: <span class="hljs-string">'checkstyle'</span>,
-    reporterOutput: config.project_dir+<span class="hljs-string">'/jshint_checkstyle.xml'</span>
+    reporterOutput: config.project_dir+<span class="hljs-string">'/../code_review/jshint_checkstyle.xml'</span>
   },jshint_src);
   init_target_options(config,<span class="hljs-string">"jshint"</span>,<span class="hljs-string">"junit"</span>,{
     reporter: <span class="hljs-string">'./node_modules/jshint-junit-reporter/reporter.js'</span>,
-    reporterOutput: config.project_dir+<span class="hljs-string">'/code_review/jshint_junit.xml'</span>
+    reporterOutput: config.project_dir+<span class="hljs-string">'/../code_review/jshint_junit.xml'</span>
   },jshint_src);</pre></div>
         
       
@@ -1865,12 +1964,12 @@ junit, requires an reporterOutput option
   },csslint_src);
   init_target_options(config,<span class="hljs-string">"csslint"</span>,<span class="hljs-string">"checkstyle"</span>,{
     formatters: [
-      {id: <span class="hljs-string">'checkstyle-xml'</span>, dest: config.project_dir+<span class="hljs-string">'/csslint_checkstyle.xml'</span>}
+      {id: <span class="hljs-string">'checkstyle-xml'</span>, dest: config.project_dir+<span class="hljs-string">'/../code_review/csslint_checkstyle.xml'</span>}
     ]
   },csslint_src);
   init_target_options(config,<span class="hljs-string">"csslint"</span>,<span class="hljs-string">"junit"</span>,{
     formatters: [
-      {id: <span class="hljs-string">'junit-xml'</span>, dest: config.project_dir+<span class="hljs-string">'/code_review/csslint_junit.xml'</span>}
+      {id: <span class="hljs-string">'junit-xml'</span>, dest: config.project_dir+<span class="hljs-string">'/../code_review/csslint_junit.xml'</span>}
     ]
   },csslint_src);</pre></div>
         
@@ -1889,6 +1988,26 @@ junit, requires an reporterOutput option
     host:config.web_domain,
     port:config.test_web_port,
     ssl_port:config.test_web_ssl_port
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-confess"</span>,<span class="hljs-string">"dev"</span>,{
+    <span class="hljs-string">"web_server_paths"</span>:[
+      <span class="hljs-string">"&lt;%= export_dir %&gt;/dev/www/"</span>
+    ]
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-confess"</span>,<span class="hljs-string">"staging"</span>,{
+    <span class="hljs-string">"paths"</span>:[
+      <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
+    ]
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-confess"</span>,<span class="hljs-string">"contribution"</span>,{
+    <span class="hljs-string">"paths"</span>:[
+      <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
+    ]
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-confess"</span>,<span class="hljs-string">"production"</span>,{
+    <span class="hljs-string">"paths"</span>:[
+      <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
+    ]
   });</pre></div>
         
       
@@ -2204,27 +2323,27 @@ junit, requires an reporterOutput option
     <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/qunit"</span>
+    junitDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-dev"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/qunit/dev"</span>
+    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-staging"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/qunit/staging"</span>,
+    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
     <span class="hljs-string">"paths"</span>:[
       <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
     ],
     <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-contribution"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/qunit/contribution"</span>,
+    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
     <span class="hljs-string">"paths"</span>:[
       <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
     ],
     <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-production"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/qunit/production"</span>,
+    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
     <span class="hljs-string">"paths"</span>:[
       <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
     ],
