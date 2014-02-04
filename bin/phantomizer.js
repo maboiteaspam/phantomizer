@@ -6,7 +6,6 @@ var optimist = require("optimist");
 var grunt = require("grunt");
 var ph_libutil = require("phantomizer-libutil");
 var underscore = require("underscore");
-var express = require("express");
 var http = require("http");
 
 var file_utils = ph_libutil.file_utils;
@@ -125,10 +124,15 @@ var argv = optimist.usage('Phantomizer command line')
     .string('default_webdomain')
     .default('default_webdomain', "")
 
-    // @dot not use
+    // --confess [project_folder] --url [url,]
     .describe('confess', 'Measure loading times of an url')
     .string('confess')
     .default('confess', "")
+
+    // --url [url]
+    .describe('url', 'The target url to load')
+    .string('url')
+    .default('url', "")
 
     // --browse_export [project_folder] --environment [environment]
     .describe('browse_export', 'Starts an express webserver to browse the exported project')
@@ -141,6 +145,9 @@ var argv = optimist.usage('Phantomizer command line')
         return false;
       // if describe_task is provided, then task is required
       if( argv.describe_task!="" && argv.task=="" )
+        return false;
+      // if confess, then url is required
+      if( argv.confess!="" && argv.url=="" )
         return false;
       return true;
     })
@@ -530,7 +537,14 @@ if( argv.confess != "" ){
   var project     = get_project(argv, "confess");
   var environment = get_environment(argv);
   // configuration initialization, including grunt config, required call prior ro grunt usage
-  init_config(project, environment);
+  var config = get_config(project, environment);
+
+  if( config["phantomizer-confess"]
+    && config["phantomizer-confess"][environment] ){
+    var opts = config["phantomizer-confess"];
+    opts[environment].options.in_request = argv.url;
+    grunt.config("phantomizer-confess",opts);
+  }
 
   grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
     grunt.log.ok("Measure done !");
@@ -1069,6 +1083,26 @@ function init_config(project,environment,default_webdomain){
     host:config.web_domain,
     port:config.test_web_port,
     ssl_port:config.test_web_ssl_port
+  });
+  init_target_options(config,"phantomizer-confess","dev",{
+    "web_server_paths":[
+      "<%= export_dir %>/dev/www/"
+    ]
+  });
+  init_target_options(config,"phantomizer-confess","staging",{
+    "paths":[
+      "<%= export_dir %>/staging/www/"
+    ]
+  });
+  init_target_options(config,"phantomizer-confess","contribution",{
+    "paths":[
+      "<%= export_dir %>/contribution/www/"
+    ]
+  });
+  init_target_options(config,"phantomizer-confess","production",{
+    "paths":[
+      "<%= export_dir %>/production/www/"
+    ]
   });
 
 // initialize phantomizer-requirejs
