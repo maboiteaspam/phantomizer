@@ -370,6 +370,8 @@ if( argv.clean != "" ){
   delete_dir(config.documentation_dir)
   delete_dir(config.export_dir)
   delete_dir(config.run_dir)
+  delete_dir(project+"/code_review/")
+  delete_dir(project+"/qunit/")
 
   grunt.log.ok("Clean done !");
   process.exit(code=0);
@@ -1354,32 +1356,71 @@ function init_config(project,environment,default_webdomain){
     ],
     "inject_assets":false
   });
+  // junit-qunit reporting
   init_target_options(config,"phantomizer-qunit-runner","junit",{
-    junitDir:config.project_dir+"/../qunit"
+    outputDir:config.project_dir+"/../qunit",
+    'format':'junit'
   });
   init_target_options(config,"phantomizer-qunit-runner","junit-dev",{
-    junitDir:config.project_dir+"/../qunit/dev"
+    outputDir:config.project_dir+"/../qunit/dev",
+    'format':'junit'
   });
   init_target_options(config,"phantomizer-qunit-runner","junit-staging",{
-    junitDir:config.project_dir+"/../qunit/staging",
+    outputDir:config.project_dir+"/../qunit/staging",
     "paths":[
       "<%= export_dir %>/staging/www/"
     ],
-    "inject_assets":false
+    "inject_assets":false,
+    'format':'junit'
   });
   init_target_options(config,"phantomizer-qunit-runner","junit-contribution",{
-    junitDir:config.project_dir+"/../qunit/contribution",
+    outputDir:config.project_dir+"/../qunit/contribution",
     "paths":[
       "<%= export_dir %>/contribution/www/"
     ],
-    "inject_assets":false
+    "inject_assets":false,
+    'format':'junit'
   });
   init_target_options(config,"phantomizer-qunit-runner","junit-production",{
-    junitDir:config.project_dir+"/../qunit/production",
+    outputDir:config.project_dir+"/../qunit/production",
     "paths":[
       "<%= export_dir %>/production/www/"
     ],
-    "inject_assets":false
+    "inject_assets":false,
+    'format':'junit'
+  });
+  // tap-qunit reporting
+  init_target_options(config,"phantomizer-qunit-runner","tap",{
+    outputDir:config.project_dir+"/../qunit",
+    'format':'tap'
+  });
+  init_target_options(config,"phantomizer-qunit-runner","tap-dev",{
+    outputDir:config.project_dir+"/../qunit/dev",
+    'format':'tap'
+  });
+  init_target_options(config,"phantomizer-qunit-runner","tap-staging",{
+    outputDir:config.project_dir+"/../qunit/staging",
+    "paths":[
+      "<%= export_dir %>/staging/www/"
+    ],
+    "inject_assets":false,
+    'format':'tap'
+  });
+  init_target_options(config,"phantomizer-qunit-runner","tap-contribution",{
+    outputDir:config.project_dir+"/../qunit/contribution",
+    "paths":[
+      "<%= export_dir %>/contribution/www/"
+    ],
+    "inject_assets":false,
+    'format':'tap'
+  });
+  init_target_options(config,"phantomizer-qunit-runner","tap-production",{
+    outputDir:config.project_dir+"/../qunit/production",
+    "paths":[
+      "<%= export_dir %>/production/www/"
+    ],
+    "inject_assets":false,
+    'format':'tap'
   });
 
 // initialize phantomizer-gm-merge
