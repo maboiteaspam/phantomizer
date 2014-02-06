@@ -248,9 +248,13 @@ if( argv.server != "" ){
     // quit on enter touch pressed
     readline_toquit(function(){
       // stops remaining web server
-      if( webserver != null ) webserver.stop();
-      // exit program
-      process.exit(code=0);
+      if( webserver != null ){
+        webserver.stop(function(){
+          grunt.log.subhead('See you soon !');
+          // exit program
+          process.exit(code=0);
+        });
+      }
     });
   });
 }
@@ -635,9 +639,13 @@ if( argv.browse_export != "" ){
     // quit on enter touch pressed
     readline_toquit(function(){
       // stops remaining web server
-      if( webserver != null ) webserver.stop();
-      // exit program
-      process.exit(code=0);
+      if( webserver != null ){
+        webserver.stop(function(){
+          grunt.log.subhead('See you soon !');
+          // exit program
+          process.exit(code=0);
+        });
+      }
     });
   });
 }
@@ -1648,7 +1656,6 @@ function readline_toquit( end_handler ){
   var rl = readline.createInterface(process.stdin, process.stdout);
 
   rl.question('Press enter to leave...\n', function(answer) {
-    grunt.log.subhead('See you soon !');
     if( end_handler != null ){
       end_handler()
     }
