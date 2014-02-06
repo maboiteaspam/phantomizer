@@ -1505,10 +1505,8 @@ function init_config(project,environment,default_webdomain){
       config.documentation_dir
     ],
     "rm_files":[
-      config.export_dir+"/dev/www/README.md"
     ],
     "rm_dir":[
-      config.export_dir+"/dev/www/js/tests/"
     ]
   });
   init_target_options(config,"phantomizer-project-builder","staging",{
@@ -1520,10 +1518,8 @@ function init_config(project,environment,default_webdomain){
       config.documentation_dir
     ],
     "rm_files":[
-      config.export_dir+"/staging/www/README.md"
     ],
     "rm_dir":[
-      config.export_dir+"/staging/www/js/tests/"
     ]
   });
   init_target_options(config,"phantomizer-project-builder","contribution",{
@@ -1535,10 +1531,8 @@ function init_config(project,environment,default_webdomain){
       config.documentation_dir
     ],
     "rm_files":[
-      config.export_dir+"/contribution/www/README.md"
     ],
     "rm_dir":[
-      config.export_dir+"/contribution/www/js/tests/"
     ]
   });
   init_target_options(config,"phantomizer-project-builder","production",{
@@ -1553,7 +1547,6 @@ function init_config(project,environment,default_webdomain){
       config.export_dir+"/production/www/README.md"
     ],
     "rm_dir":[
-      config.export_dir+"/production/www/js/tests/"
     ]
   });
 
