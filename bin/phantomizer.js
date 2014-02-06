@@ -519,10 +519,27 @@ if( argv.init != "" ){
   if( grunt.file.exists(project+"/project/www-core/playground.html") == false ){
     grunt.file.copy(dist+'/www-core/playground.html', project+"/project/www-core/playground.html");
   }
+  if( grunt.file.exists(project+"/project/www-core/favicon.ico") == false ){
+    grunt.file.copy(dist+'/www-core/favicon.ico', project+"/project/www-core/favicon.ico");
+  }
   if( grunt.file.exists(project+"/project/www-core/js/playground.js") == false ){
     grunt.file.mkdir(project+"/project/www-core/js/");
     grunt.file.copy(dist+'/www-core/js/playground.js', project+"/project/www-core/js/playground.js");
   }
+  grunt.file.mkdir(project+"/project/www-core/css/");
+
+  // adjust .gitignore file
+  var gitignore = grunt.file.read(".gitignore");
+  var gitignoreRegExp = new RegExp("^"+project+"([/].*)?$","img");
+  if( ! gitignore.match(gitignoreRegExp) ){
+    gitignore += "\n\n";
+    gitignore += project+"/run\n";
+    gitignore += project+"/export\n";
+    gitignore += project+"/documentation\n";
+    gitignore += project+"/code_review\n";
+    gitignore += project+"/qunit\n";
+  }
+  grunt.file.write(".gitignore",gitignore);
 
   grunt.log.ok("Init done !");
 }
