@@ -14,7 +14,8 @@
     {
       "template":"/playground.html",
       "tests":[
-      ]
+      ],
+      "export":false
     }
   ],
 
