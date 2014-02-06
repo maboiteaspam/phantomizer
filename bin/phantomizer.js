@@ -1315,14 +1315,15 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-imgopt",{
     optimizationLevel: 0,
-    "progressive":false,
+    cache:false,
+    progressive:false,
     out_path:config.out_dir,
     meta_dir:config.meta_dir,
     paths:config.build_run_paths
   });
   init_target_options(config,"phantomizer-imgopt","stryke-assets-min-build",{
-    "optimizationLevel": 1,
-    "progressive":true
+    optimizationLevel: 1,
+    progressive:true
   });
 
 // initialize phantomizer-qunit-runner
