@@ -486,14 +486,14 @@ if( argv.init != "" ){
   var dist = path.join(path.dirname(fs.realpathSync(__filename)), '../dist');
 
   // if user Grunt file does not exists
-  if( fs.existsSync('Gruntfile.js') == false ){
+  if( grunt.file.exists('Gruntfile.js') == false ){
     // set it up
     grunt.file.copy(dist+'/Gruntfile.js', 'Gruntfile.js');
   }
 
   // if user Project config file does not exists
   var project_config_file = project+'/config.json';
-  if( fs.existsSync(project_config_file) == false ){
+  if( grunt.file.exists(project_config_file) == false ){
     // loads dist version
     file_utils.copyFile(dist+'/config.json', project_config_file);
     var c = file_utils.readJSON(project_config_file);
@@ -501,7 +501,7 @@ if( argv.init != "" ){
     c.project_dir = project+"/project/";
     c.src_dir = project+"/project/www-core/";
     c.wbm_dir = project+"/project/www-wbm/";
-    // c.vendors_dir = project+"/project/www-vendors/"; // disabled to let JIT assignation in get_config
+    /* c.vendors_dir = project+"/project/www-vendors/"; // disabled to let JIT assignation in get_config */
     c.out_dir = project+"/run/build/";
     c.meta_dir = project+"/run/meta/";
     c.export_dir = project+"/export/";
@@ -515,17 +515,13 @@ if( argv.init != "" ){
     // set it up
     grunt.file.copy(dist+'/package.json', pckg_config_file);
   }
-  // if project HTML index file does not exist
-  if( fs.existsSync(project+"/project/www-core/index.html") == false
-    && fs.existsSync(project+"/project/www-core/index.htm") == false ){
-    // set it up
-    file_utils.copyFile(dist+'/www-core/index.html', project+"/project/www-core/index.html");
+  // setup playground files
+  if( grunt.file.exists(project+"/project/www-core/playground.html") == false ){
+    grunt.file.copy(dist+'/www-core/playground.html', project+"/project/www-core/playground.html");
   }
-  // if project JS index file does not exist
-  if( fs.existsSync(project+"/project/www-core/js/index.js") == false ){
-    fs.mkdirSync(project+"/project/www-core/js/");
-    // set it up
-    file_utils.copyFile(dist+'/www-core/js/index.js', project+"/project/www-core/js/index.js");
+  if( grunt.file.exists(project+"/project/www-core/js/playground.js") == false ){
+    grunt.file.mkdir(project+"/project/www-core/js/");
+    grunt.file.copy(dist+'/www-core/js/playground.js', project+"/project/www-core/js/playground.js");
   }
 
   grunt.log.ok("Init done !");
