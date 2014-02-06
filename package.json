@@ -1,6 +1,6 @@
 {
   "name": "phantomizer",
-  "version": "0.1.61",
+  "version": "0.1.62",
   "private": true,
   "preferGlobal": true,
   "description": "Embedded web development environment, helps to build better HTML ui",
