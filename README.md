@@ -70,36 +70,81 @@ You will be able to run this
 phantomizer --version
 ```
 
-# Usage
-```bash
+Usage
+====
 
-phantomizer --version
-phantomizer --help
+    phantomizer --[switch] [project]
+    phantomizer --verbose --[switch] [project] --target [target]
+    phantomizer --version
 
-phantomizer --init <project_dir>
+    --version
+    Provide current version of phantomizer
 
-phantomizer --server <project_dir> [ --environment <environment> ]
+    --verbose
+    Gives you more information during execution, affects GruntJS
 
-phantomizer --test <project_dir> [ --environment <environment> ]
-phantomizer --test <project_dir> --format junit
-phantomizer --test <project_dir> --format tap
+    --debug
+    Gives even you more information during execution, affects GruntJS
 
-phantomizer --export <project_dir> [ --environment <environment> ]
-phantomizer --browse_export <project_dir> [ --environment <environment> ]
+    --force
+    Particularly for GruntJS
 
-phantomizer --document <project_dir>
+    --help
+    Displays command line help
 
-phantomizer --code_review <project_dir>
-phantomizer --code_review <project_dir> --format junit
-phantomizer --code_review <project_dir> --format checkstyle
 
-phantomizer --clean <project_dir>
+    --init [project]
+    Initialize directory and file required fo a project.
 
-phantomizer --list_tasks <project_dir> [ --environment <environment> ]
-phantomizer --describe_task <project_dir> --task <task_name> [ --environment <environment> ]
 
-phantomizer --list_envs <project_dir> [ --environment <environment> ]
-phantomizer --describe_env <project_dir> --task <task_name> [ --environment <environment> ]
+    --server [project]
+    Starts a new web sever for the given project.
+
+
+    --document [project]
+    Document Javascript and Css files of your project.
+
+
+    --code_review [project] [ --format [junit|checkstyle] ]
+    Review Javascript and CSS source code with jshint / csslint
+
+    --code_review [project] --format junit
+    Review Javascript and CSS source code with jshint / csslint into a junit formated output file.
+
+    --code_review [project] --format checkstyle
+    Review Javascript and CSS source code with jshint / csslint into a checkstyle formated output file.
+
+
+    --test [project_dir] [ --environment [environment] ] [ --format [junit|tap] ]
+    Test your project with qunit
+
+    --test [project_dir] --format junit
+    Test your project with qunit and produces jUnit compatible format
+
+    --test [project_dir] --format tap
+    Test your project with qunit and produces TAP compatible format
+
+
+    --export [project] --target [target]
+    Builds and exports your project for delivery.
+
+    --browse_export [project] --target [target]
+    Browse and test your project once it is exported.
+
+
+    --list_tasks [project]
+    List available GruntJS tasks for configuration.
+
+    --describe_task [project] --task [task]
+    Describe task options after auto config has occurred.
+
+
+    --list_envs [project]
+    List available environments for configuration adjustments.
+
+    --describe_env[project] --environment [env]
+    Describe env options used for auto-config.
+
 ```
 
 # Start
