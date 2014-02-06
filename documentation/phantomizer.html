@@ -367,7 +367,7 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
   <span class="hljs-keyword">var</span> pkg = fs.readFileSync(__dirname+<span class="hljs-string">"/../package.json"</span>, <span class="hljs-string">'utf-8'</span>);
   pkg = <span class="hljs-built_in">JSON</span>.parse(pkg);
   grunt.log.ok(<span class="hljs-string">"phantomizer "</span> + pkg.version)
-  process.exit(<span class="hljs-number">0</span>);
+  process.exit(code=<span class="hljs-number">0</span>);
 }</pre></div>
         
       
@@ -381,7 +381,7 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
         
           <div class='highlight'><pre><span class="hljs-keyword">if</span>( argv.help || <span class="hljs-literal">false</span> ){
   optimist.showHelp()
-  process.exit(<span class="hljs-number">0</span>);
+  process.exit(code=<span class="hljs-number">0</span>);
 }</pre></div>
         
       
@@ -493,7 +493,7 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
         <p>exit program</p>
 
         
-          <div class='highlight'><pre>      process.exit(code=<span class="hljs-number">1</span>)
+          <div class='highlight'><pre>      process.exit(code=<span class="hljs-number">0</span>);
     });
   });
 }</pre></div>
@@ -540,6 +540,7 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
 
   grunt.tasks([<span class="hljs-string">'phantomizer-qunit-runner:'</span>+target], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
     grunt.log.ok(<span class="hljs-string">"Test done !"</span>);
+    process.exit(code=<span class="hljs-number">0</span>);
   });
 }</pre></div>
         
@@ -592,6 +593,7 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
         
           <div class='highlight'><pre>  grunt.tasks(tasks, {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
     grunt.log.ok(<span class="hljs-string">"Export done !"</span>);
+    process.exit(code=<span class="hljs-number">0</span>);
   });
 }</pre></div>
         
@@ -645,6 +647,7 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
         
           <div class='highlight'><pre>  grunt.tasks(tasks, {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
     grunt.log.ok(<span class="hljs-string">"Documentation done !"</span>);
+    process.exit(code=<span class="hljs-number">0</span>);
   });
 }</pre></div>
         
@@ -695,6 +698,7 @@ Analyze css files with csslint</p>
         
           <div class='highlight'><pre>  grunt.tasks(tasks, {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
     grunt.log.ok(<span class="hljs-string">"Code Review done !"</span>);
+    process.exit(code=<span class="hljs-number">0</span>);
   });
 }</pre></div>
         
@@ -732,8 +736,11 @@ build, export, documentation files and folders</p>
   delete_dir(config.documentation_dir)
   delete_dir(config.export_dir)
   delete_dir(config.run_dir)
+  delete_dir(project+<span class="hljs-string">"/code_review/"</span>)
+  delete_dir(project+<span class="hljs-string">"/qunit/"</span>)
 
   grunt.log.ok(<span class="hljs-string">"Clean done !"</span>);
+  process.exit(code=<span class="hljs-number">0</span>);
 }</pre></div>
         
       
@@ -786,6 +793,7 @@ the configuration used during any operation</p>
         
           <div class='highlight'><pre>    <span class="hljs-keyword">if</span>( n.match(<span class="hljs-regexp">/^phantomizer-/</span>) ) grunt.log.writeln(n);
   }
+  process.exit(code=<span class="hljs-number">0</span>);
 }</pre></div>
         
       
@@ -836,8 +844,10 @@ the configuration used during any operation</p>
         
           <div class='highlight'><pre>    grunt.log.ok( task_name+<span class="hljs-string">"="</span> );
     grunt.log.writeln( <span class="hljs-built_in">JSON</span>.stringify(config[task_name],<span class="hljs-literal">null</span>,<span class="hljs-number">4</span>) );
+    process.exit(code=<span class="hljs-number">0</span>);
   }<span class="hljs-keyword">else</span>{
     grunt.log.warn(<span class="hljs-string">"No such task '"</span>+task_name+<span class="hljs-string">"' found for the project '"</span>+project+<span class="hljs-string">"'"</span>);
+    process.exit(code=<span class="hljs-number">1</span>);
   }
 }</pre></div>
         
@@ -877,6 +887,7 @@ the configuration used during any operation</p>
         
           <div class='highlight'><pre>    grunt.log.writeln(n);
   }
+  process.exit(code=<span class="hljs-number">0</span>);
 }</pre></div>
         
       
@@ -926,8 +937,10 @@ the configuration used during any operation</p>
         
           <div class='highlight'><pre>    grunt.log.ok( environment+<span class="hljs-string">"="</span> );
     grunt.log.writeln( <span class="hljs-built_in">JSON</span>.stringify(config.environment[environment],<span class="hljs-literal">null</span>,<span class="hljs-number">4</span>) );
+    process.exit(code=<span class="hljs-number">0</span>);
   }<span class="hljs-keyword">else</span>{
     grunt.log.warn(<span class="hljs-string">"No such environment '"</span>+environment+<span class="hljs-string">"' found for the project '"</span>+project+<span class="hljs-string">"'"</span>);
+    process.exit(code=<span class="hljs-number">1</span>);
   }
 }</pre></div>
         
@@ -987,7 +1000,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         <p>if user Grunt file does not exists</p>
 
         
-          <div class='highlight'><pre>  <span class="hljs-keyword">if</span>( fs.existsSync(<span class="hljs-string">'Gruntfile.js'</span>) == <span class="hljs-literal">false</span> ){</pre></div>
+          <div class='highlight'><pre>  <span class="hljs-keyword">if</span>( grunt.file.exists(<span class="hljs-string">'Gruntfile.js'</span>) == <span class="hljs-literal">false</span> ){</pre></div>
         
       
         
@@ -1003,7 +1016,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
 
         
           <div class='highlight'><pre>  <span class="hljs-keyword">var</span> project_config_file = project+<span class="hljs-string">'/config.json'</span>;
-  <span class="hljs-keyword">if</span>( fs.existsSync(project_config_file) == <span class="hljs-literal">false</span> ){</pre></div>
+  <span class="hljs-keyword">if</span>( grunt.file.exists(project_config_file) == <span class="hljs-literal">false</span> ){</pre></div>
         
       
         
@@ -1020,14 +1033,9 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
           <div class='highlight'><pre>    c.project_dir = project+<span class="hljs-string">"/project/"</span>;
     c.src_dir = project+<span class="hljs-string">"/project/www-core/"</span>;
-    c.wbm_dir = project+<span class="hljs-string">"/project/www-wbm/"</span>;</pre></div>
-        
-      
-        
-        <p>c.vendors_dir = project+”/project/www-vendors/“; // disabled to let JIT assignation in get_config</p>
-
-        
-          <div class='highlight'><pre>    c.out_dir = project+<span class="hljs-string">"/run/build/"</span>;
+    c.wbm_dir = project+<span class="hljs-string">"/project/www-wbm/"</span>;
+    <span class="hljs-comment">/* c.vendors_dir = project+"/project/www-vendors/"; // disabled to let JIT assignation in get_config */</span>
+    c.out_dir = project+<span class="hljs-string">"/run/build/"</span>;
     c.meta_dir = project+<span class="hljs-string">"/run/meta/"</span>;
     c.export_dir = project+<span class="hljs-string">"/export/"</span>;
     c.documentation_dir = project+<span class="hljs-string">"/documentation/"</span>;</pre></div>
@@ -1058,37 +1066,40 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
         
       
         
-        <p>if project HTML index file does not exist</p>
+        <p>setup playground files</p>
 
         
-          <div class='highlight'><pre>  <span class="hljs-keyword">if</span>( fs.existsSync(project+<span class="hljs-string">"/project/www-core/index.html"</span>) == <span class="hljs-literal">false</span>
-    &amp;&amp; fs.existsSync(project+<span class="hljs-string">"/project/www-core/index.htm"</span>) == <span class="hljs-literal">false</span> ){</pre></div>
-        
-      
-        
-        <p>set it up</p>
-
-        
-          <div class='highlight'><pre>    file_utils.copyFile(dist+<span class="hljs-string">'/www-core/index.html'</span>, project+<span class="hljs-string">"/project/www-core/index.html"</span>);
-  }</pre></div>
-        
-      
-        
-        <p>if project JS index file does not exist</p>
-
-        
-          <div class='highlight'><pre>  <span class="hljs-keyword">if</span>( fs.existsSync(project+<span class="hljs-string">"/project/www-core/js/index.js"</span>) == <span class="hljs-literal">false</span> ){
-    fs.mkdirSync(project+<span class="hljs-string">"/project/www-core/js/"</span>);</pre></div>
-        
-      
-        
-        <p>set it up</p>
-
-        
-          <div class='highlight'><pre>    file_utils.copyFile(dist+<span class="hljs-string">'/www-core/js/index.js'</span>, project+<span class="hljs-string">"/project/www-core/js/index.js"</span>);
+          <div class='highlight'><pre>  <span class="hljs-keyword">if</span>( grunt.file.exists(project+<span class="hljs-string">"/project/www-core/playground.html"</span>) == <span class="hljs-literal">false</span> ){
+    grunt.file.copy(dist+<span class="hljs-string">'/www-core/playground.html'</span>, project+<span class="hljs-string">"/project/www-core/playground.html"</span>);
   }
+  <span class="hljs-keyword">if</span>( grunt.file.exists(project+<span class="hljs-string">"/project/www-core/favicon.ico"</span>) == <span class="hljs-literal">false</span> ){
+    grunt.file.copy(dist+<span class="hljs-string">'/www-core/favicon.ico'</span>, project+<span class="hljs-string">"/project/www-core/favicon.ico"</span>);
+  }
+  <span class="hljs-keyword">if</span>( grunt.file.exists(project+<span class="hljs-string">"/project/www-core/js/playground.js"</span>) == <span class="hljs-literal">false</span> ){
+    grunt.file.mkdir(project+<span class="hljs-string">"/project/www-core/js/"</span>);
+    grunt.file.copy(dist+<span class="hljs-string">'/www-core/js/playground.js'</span>, project+<span class="hljs-string">"/project/www-core/js/playground.js"</span>);
+  }
+  grunt.file.mkdir(project+<span class="hljs-string">"/project/www-core/css/"</span>);</pre></div>
+        
+      
+        
+        <p>adjust .gitignore file</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> gitignore = grunt.file.read(<span class="hljs-string">".gitignore"</span>);
+  <span class="hljs-keyword">var</span> gitignoreRegExp = <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">"^"</span>+project+<span class="hljs-string">"([/].*)?$"</span>,<span class="hljs-string">"img"</span>);
+  <span class="hljs-keyword">if</span>( ! gitignore.match(gitignoreRegExp) ){
+    gitignore += <span class="hljs-string">"\n\n"</span>;
+    gitignore += project+<span class="hljs-string">"/run\n"</span>;
+    gitignore += project+<span class="hljs-string">"/export\n"</span>;
+    gitignore += project+<span class="hljs-string">"/documentation\n"</span>;
+    gitignore += project+<span class="hljs-string">"/code_review\n"</span>;
+    gitignore += project+<span class="hljs-string">"/qunit\n"</span>;
+  }
+  grunt.file.write(<span class="hljs-string">".gitignore"</span>,gitignore);
 
   grunt.log.ok(<span class="hljs-string">"Init done !"</span>);
+  process.exit(code=<span class="hljs-number">0</span>);
 }</pre></div>
         
       
@@ -1117,6 +1128,7 @@ package.json Gruntfile.js, config.json, index.htm, index.js</p>
 
   grunt.tasks([<span class="hljs-string">'phantomizer-confess:'</span>+environment], {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
     grunt.log.ok(<span class="hljs-string">"Measure done !"</span>);
+    process.exit(code=<span class="hljs-number">0</span>);
   });
 }</pre></div>
         
@@ -1153,6 +1165,7 @@ performance analysis</p>
     }
   }<span class="hljs-keyword">else</span>{
     grunt.fail.fatal(directory+<span class="hljs-string">" does not exists, you should build the project first\nphantomizer --export "</span>+project);
+    process.exit(code=<span class="hljs-number">1</span>);
   }</pre></div>
         
       
@@ -1245,7 +1258,7 @@ performance analysis</p>
         <p>exit program</p>
 
         
-          <div class='highlight'><pre>      process.exit(code=<span class="hljs-number">1</span>)
+          <div class='highlight'><pre>      process.exit(code=<span class="hljs-number">0</span>);
     });
   });
 }</pre></div>
@@ -1268,7 +1281,7 @@ performance analysis</p>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get_project</span><span class="hljs-params">(argv, cmd)</span>{</span>
   <span class="hljs-keyword">if</span>( argv[cmd] === <span class="hljs-literal">true</span> || argv[cmd] == <span class="hljs-string">""</span> ){
     grunt.fail.fatal(<span class="hljs-string">"Please input the project name such : phantomizer --"</span>+cmd+<span class="hljs-string">" [project]\n"</span>);
-    process.exit(code=<span class="hljs-number">0</span>)
+    process.exit(code=<span class="hljs-number">1</span>);
   }
   <span class="hljs-keyword">return</span> argv[cmd];
 }
@@ -1337,6 +1350,7 @@ performance analysis</p>
           <div class='highlight'><pre>  <span class="hljs-keyword">var</span> file = project+<span class="hljs-string">'/config.json'</span>;
   <span class="hljs-keyword">if</span>( grunt.file.exists(file) == <span class="hljs-literal">false</span> ){
     grunt.fail.fatal(<span class="hljs-string">"Project configuration file does not exists at "</span>+file);
+    process.exit(code=<span class="hljs-number">1</span>);
   }
 
   <span class="hljs-keyword">var</span> config = grunt.file.readJSON( file );</pre></div>
@@ -2274,14 +2288,15 @@ junit, requires an reporterOutput option
         
           <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-imgopt"</span>,{
     optimizationLevel: <span class="hljs-number">0</span>,
-    <span class="hljs-string">"progressive"</span>:<span class="hljs-literal">false</span>,
+    cache:<span class="hljs-literal">false</span>,
+    progressive:<span class="hljs-literal">false</span>,
     out_path:config.out_dir,
     meta_dir:config.meta_dir,
     paths:config.build_run_paths
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-imgopt"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
-    <span class="hljs-string">"optimizationLevel"</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-string">"progressive"</span>:<span class="hljs-literal">true</span>
+    optimizationLevel: <span class="hljs-number">1</span>,
+    progressive:<span class="hljs-literal">true</span>
   });</pre></div>
         
       
@@ -2321,33 +2336,82 @@ junit, requires an reporterOutput option
       <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
     ],
     <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>
+  });</pre></div>
+        
+      
+        
+        <p>junit-qunit reporting</p>
+
+        
+          <div class='highlight'><pre>  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit"</span>,{
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-dev"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-staging"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
     <span class="hljs-string">"paths"</span>:[
       <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
     ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-contribution"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
     <span class="hljs-string">"paths"</span>:[
       <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
     ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-production"</span>,{
-    junitDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
     <span class="hljs-string">"paths"</span>:[
       <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
     ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
+  });</pre></div>
+        
+      
+        
+        <p>tap-qunit reporting</p>
+
+        
+          <div class='highlight'><pre>  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap"</span>,{
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-dev"</span>,{
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-staging"</span>,{
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
+    <span class="hljs-string">"paths"</span>:[
+      <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
+    ],
+    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-contribution"</span>,{
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
+    <span class="hljs-string">"paths"</span>:[
+      <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
+    ],
+    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-production"</span>,{
+    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
+    <span class="hljs-string">"paths"</span>:[
+      <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
+    ],
+    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
   });</pre></div>
         
       
