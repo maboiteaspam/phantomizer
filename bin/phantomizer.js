@@ -197,14 +197,14 @@ if( argv.version || false ){
   var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
   pkg = JSON.parse(pkg);
   grunt.log.ok("phantomizer " + pkg.version)
-  process.exit(0);
+  process.exit(code=0);
 }
 
 // display help
 // ----------
 if( argv.help || false ){
   optimist.showHelp()
-  process.exit(0);
+  process.exit(code=0);
 }
 
 
@@ -250,7 +250,7 @@ if( argv.server != "" ){
       // stops remaining web server
       if( webserver != null ) webserver.stop();
       // exit program
-      process.exit(code=1)
+      process.exit(code=0);
     });
   });
 }
@@ -276,6 +276,7 @@ if( argv.test != "" ){
 
   grunt.tasks(['phantomizer-qunit-runner:'+target], {}, function(){
     grunt.log.ok("Test done !");
+    process.exit(code=0);
   });
 }
 
@@ -298,6 +299,7 @@ if( argv.export != "" ){
   // invoke grunt
   grunt.tasks(tasks, {}, function(){
     grunt.log.ok("Export done !");
+    process.exit(code=0);
   });
 }
 
@@ -320,6 +322,7 @@ if( argv.document != "" ){
   // invoke grunt
   grunt.tasks(tasks, {}, function(){
     grunt.log.ok("Documentation done !");
+    process.exit(code=0);
   });
 }
 
@@ -345,6 +348,7 @@ if( argv.code_review != "" ){
   // invoke grunt
   grunt.tasks(tasks, {}, function(){
     grunt.log.ok("Code Review done !");
+    process.exit(code=0);
   });
 }
 
@@ -368,6 +372,7 @@ if( argv.clean != "" ){
   delete_dir(config.run_dir)
 
   grunt.log.ok("Clean done !");
+  process.exit(code=0);
 }
 
 // List tasks
@@ -389,6 +394,7 @@ if( argv.list_tasks != "" ){
     // print its name if it starts by phantomizer-
     if( n.match(/^phantomizer-/) ) grunt.log.writeln(n);
   }
+  process.exit(code=0);
 }
 
 // Describe task
@@ -409,8 +415,10 @@ if( argv.describe_task != "" ){
     // pretty prints it
     grunt.log.ok( task_name+"=" );
     grunt.log.writeln( JSON.stringify(config[task_name],null,4) );
+    process.exit(code=0);
   }else{
     grunt.log.warn("No such task '"+task_name+"' found for the project '"+project+"'");
+    process.exit(code=1);
   }
 }
 
@@ -429,6 +437,7 @@ if( argv.list_envs != "" ){
     // prints its name
     grunt.log.writeln(n);
   }
+  process.exit(code=0);
 }
 
 // Describe environment
@@ -448,8 +457,10 @@ if( argv.describe_env != "" ){
     // pretty prints it
     grunt.log.ok( environment+"=" );
     grunt.log.writeln( JSON.stringify(config.environment[environment],null,4) );
+    process.exit(code=0);
   }else{
     grunt.log.warn("No such environment '"+environment+"' found for the project '"+project+"'");
+    process.exit(code=1);
   }
 }
 
@@ -542,6 +553,7 @@ if( argv.init != "" ){
   grunt.file.write(".gitignore",gitignore);
 
   grunt.log.ok("Init done !");
+  process.exit(code=0);
 }
 
 // hmm, this needs improvements to let us select a target, or better an url from command line
@@ -561,6 +573,7 @@ if( argv.confess != "" ){
 
   grunt.tasks(['phantomizer-confess:'+environment], {}, function(){
     grunt.log.ok("Measure done !");
+    process.exit(code=0);
   });
 }
 
@@ -585,6 +598,7 @@ if( argv.browse_export != "" ){
     }
   }else{
     grunt.fail.fatal(directory+" does not exists, you should build the project first\nphantomizer --export "+project);
+    process.exit(code=1);
   }
 
   // initialize some helpers
@@ -621,7 +635,7 @@ if( argv.browse_export != "" ){
       // stops remaining web server
       if( webserver != null ) webserver.stop();
       // exit program
-      process.exit(code=1)
+      process.exit(code=0);
     });
   });
 }
@@ -638,7 +652,7 @@ if( argv.browse_export != "" ){
 function get_project(argv, cmd){
   if( argv[cmd] === true || argv[cmd] == "" ){
     grunt.fail.fatal("Please input the project name such : phantomizer --"+cmd+" [project]\n");
-    process.exit(code=0)
+    process.exit(code=1);
   }
   return argv[cmd];
 }
@@ -697,6 +711,7 @@ function init_config(project,environment,default_webdomain){
   var file = project+'/config.json';
   if( grunt.file.exists(file) == false ){
     grunt.fail.fatal("Project configuration file does not exists at "+file);
+    process.exit(code=1);
   }
 
   var config = grunt.file.readJSON( file );
