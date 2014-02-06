@@ -44,6 +44,11 @@ var argv = optimist.usage('Phantomizer command line')
     .string('export')
     .default('export', "")
 
+    // --browse_export [project_folder] --environment [environment]
+    .describe('browse_export', 'Starts an express webserver to browse the exported project')
+    .string('browse_export')
+    .default('browse_export', "")
+
     // --code_review [project_folder] --target [default|junit|checkstyle]
     .describe('code_review', 'Review the source code')
     .string('code_review')
@@ -133,11 +138,6 @@ var argv = optimist.usage('Phantomizer command line')
     .describe('url', 'The target url to load')
     .string('url')
     .default('url', "")
-
-    // --browse_export [project_folder] --environment [environment]
-    .describe('browse_export', 'Starts an express webserver to browse the exported project')
-    .string('browse_export')
-    .default('browse_export', "")
 
     .check(function(argv){
       // if describe_env is provided, then environment is required
