@@ -79,14 +79,20 @@ phantomizer --help
 phantomizer --init <project_dir>
 
 phantomizer --server <project_dir> [ --environment <environment> ]
+
 phantomizer --test <project_dir> [ --environment <environment> ]
 phantomizer --test <project_dir> --format junit
+phantomizer --test <project_dir> --format tap
+
 phantomizer --export <project_dir> [ --environment <environment> ]
 phantomizer --browse_export <project_dir> [ --environment <environment> ]
+
 phantomizer --document <project_dir>
+
 phantomizer --code_review <project_dir>
 phantomizer --code_review <project_dir> --format junit
 phantomizer --code_review <project_dir> --format checkstyle
+
 phantomizer --clean <project_dir>
 
 phantomizer --list_tasks <project_dir> [ --environment <environment> ]
