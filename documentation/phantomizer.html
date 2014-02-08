@@ -102,6 +102,15 @@
         
       
         
+        <p>—browse_export [project_folder] —environment [environment]</p>
+
+        
+          <div class='highlight'><pre>    .describe(<span class="hljs-string">'browse_export'</span>, <span class="hljs-string">'Starts an express webserver to browse the exported project'</span>)
+    .string(<span class="hljs-string">'browse_export'</span>)
+    .default(<span class="hljs-string">'browse_export'</span>, <span class="hljs-string">""</span>)</pre></div>
+        
+      
+        
         <p>—code_review [project_folder] —target [default|junit|checkstyle]</p>
 
         
@@ -260,16 +269,7 @@
         
           <div class='highlight'><pre>    .describe(<span class="hljs-string">'url'</span>, <span class="hljs-string">'The target url to load'</span>)
     .string(<span class="hljs-string">'url'</span>)
-    .default(<span class="hljs-string">'url'</span>, <span class="hljs-string">""</span>)</pre></div>
-        
-      
-        
-        <p>—browse_export [project_folder] —environment [environment]</p>
-
-        
-          <div class='highlight'><pre>    .describe(<span class="hljs-string">'browse_export'</span>, <span class="hljs-string">'Starts an express webserver to browse the exported project'</span>)
-    .string(<span class="hljs-string">'browse_export'</span>)
-    .default(<span class="hljs-string">'browse_export'</span>, <span class="hljs-string">""</span>)
+    .default(<span class="hljs-string">'url'</span>, <span class="hljs-string">""</span>)
 
     .check(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(argv)</span>{</span></pre></div>
         
@@ -486,14 +486,18 @@ grunt.option(<span class="hljs-string">'force'</span>, argv.force || <span class
         <p>stops remaining web server</p>
 
         
-          <div class='highlight'><pre>      <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ) webserver.stop();</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ){
+        webserver.stop(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+          grunt.log.subhead(<span class="hljs-string">'See you soon !'</span>);</pre></div>
         
       
         
         <p>exit program</p>
 
         
-          <div class='highlight'><pre>      process.exit(code=<span class="hljs-number">0</span>);
+          <div class='highlight'><pre>          process.exit(code=<span class="hljs-number">0</span>);
+        });
+      }
     });
   });
 }</pre></div>
@@ -1251,14 +1255,18 @@ performance analysis</p>
         <p>stops remaining web server</p>
 
         
-          <div class='highlight'><pre>      <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ) webserver.stop();</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span>( webserver != <span class="hljs-literal">null</span> ){
+        webserver.stop(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+          grunt.log.subhead(<span class="hljs-string">'See you soon !'</span>);</pre></div>
         
       
         
         <p>exit program</p>
 
         
-          <div class='highlight'><pre>      process.exit(code=<span class="hljs-number">0</span>);
+          <div class='highlight'><pre>          process.exit(code=<span class="hljs-number">0</span>);
+        });
+      }
     });
   });
 }</pre></div>
@@ -2127,6 +2135,37 @@ junit, requires an reporterOutput option
         
       
         
+        <h2 id="initialize-phantomizer-html-project-assets">initialize phantomizer-html-project-assets</h2>
+
+        
+      
+        
+        
+        
+          <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-html-project-assets"</span>,{
+    meta_dir:config.meta_dir,
+    out_path:config.out_dir,
+    requirejs_src:config.scripts.requirejs.src || <span class="hljs-literal">null</span>,
+    requirejs_baseUrl:config.scripts.requirejs.baseUrl || <span class="hljs-literal">null</span>,
+    requirejs_paths:config.scripts.requirejs.paths || {},
+    paths:config.build_run_paths
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-html-project-assets"</span>,<span class="hljs-string">"stryke-build"</span>,{
+    <span class="hljs-string">"file_suffix"</span>:<span class="hljs-string">"-b"</span>,
+    <span class="hljs-string">"requirejs_src"</span>:<span class="hljs-literal">null</span>
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-html-project-assets"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
+    <span class="hljs-string">"file_suffix"</span>:<span class="hljs-string">"-ba"</span>,
+    <span class="hljs-string">"requirejs"</span>: <span class="hljs-literal">true</span>
+  });
+  init_target_options(config,<span class="hljs-string">"phantomizer-html-project-assets"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+    <span class="hljs-string">"file_suffix"</span>:<span class="hljs-string">"-mba"</span>,
+    <span class="hljs-string">"requirejs"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"uglify_js"</span>: <span class="hljs-literal">true</span>
+  });</pre></div>
+        
+      
+        
         <h2 id="initialize-phantomizer-htmlcompressor">initialize phantomizer-htmlcompressor</h2>
 
         
@@ -2523,10 +2562,8 @@ junit, requires an reporterOutput option
       config.documentation_dir
     ],
     <span class="hljs-string">"rm_files"</span>:[
-      config.export_dir+<span class="hljs-string">"/dev/www/README.md"</span>
     ],
     <span class="hljs-string">"rm_dir"</span>:[
-      config.export_dir+<span class="hljs-string">"/dev/www/js/tests/"</span>
     ]
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"staging"</span>,{
@@ -2538,10 +2575,8 @@ junit, requires an reporterOutput option
       config.documentation_dir
     ],
     <span class="hljs-string">"rm_files"</span>:[
-      config.export_dir+<span class="hljs-string">"/staging/www/README.md"</span>
     ],
     <span class="hljs-string">"rm_dir"</span>:[
-      config.export_dir+<span class="hljs-string">"/staging/www/js/tests/"</span>
     ]
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"contribution"</span>,{
@@ -2553,10 +2588,8 @@ junit, requires an reporterOutput option
       config.documentation_dir
     ],
     <span class="hljs-string">"rm_files"</span>:[
-      config.export_dir+<span class="hljs-string">"/contribution/www/README.md"</span>
     ],
     <span class="hljs-string">"rm_dir"</span>:[
-      config.export_dir+<span class="hljs-string">"/contribution/www/js/tests/"</span>
     ]
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-project-builder"</span>,<span class="hljs-string">"production"</span>,{
@@ -2571,7 +2604,6 @@ junit, requires an reporterOutput option
       config.export_dir+<span class="hljs-string">"/production/www/README.md"</span>
     ],
     <span class="hljs-string">"rm_dir"</span>:[
-      config.export_dir+<span class="hljs-string">"/production/www/js/tests/"</span>
     ]
   });</pre></div>
         
@@ -2696,13 +2728,13 @@ junit, requires an reporterOutput option
  */</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readline_toquit</span><span class="hljs-params">( end_handler )</span>{</span>
 
-  <span class="hljs-keyword">var</span> readline = <span class="hljs-built_in">require</span>(<span class="hljs-string">'readline'</span>)
+  <span class="hljs-keyword">var</span> readline = <span class="hljs-built_in">require</span>(<span class="hljs-string">'readline'</span>);
   <span class="hljs-keyword">var</span> rl = readline.createInterface(process.stdin, process.stdout);
 
   rl.question(<span class="hljs-string">'Press enter to leave...\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(answer)</span> {</span>
-    grunt.log.subhead(<span class="hljs-string">'See you soon !'</span>);
+    rl.close();
     <span class="hljs-keyword">if</span>( end_handler != <span class="hljs-literal">null</span> ){
-      end_handler()
+      end_handler();
     }
   });
 }</pre></div>
