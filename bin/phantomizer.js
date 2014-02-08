@@ -1216,6 +1216,30 @@ function init_config(project,environment,default_webdomain){
     "uglify_js": true
   });
 
+// initialize phantomizer-html-project-assets
+// ----------
+  init_task_options(config,"phantomizer-html-project-assets",{
+    meta_dir:config.meta_dir,
+    out_path:config.out_dir,
+    requirejs_src:config.scripts.requirejs.src || null,
+    requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
+    requirejs_paths:config.scripts.requirejs.paths || {},
+    paths:config.build_run_paths
+  });
+  init_target_options(config,"phantomizer-html-project-assets","stryke-build",{
+    "file_suffix":"-b",
+    "requirejs_src":null
+  });
+  init_target_options(config,"phantomizer-html-project-assets","stryke-assets-build",{
+    "file_suffix":"-ba",
+    "requirejs": true
+  });
+  init_target_options(config,"phantomizer-html-project-assets","stryke-assets-min-build",{
+    "file_suffix":"-mba",
+    "requirejs": true,
+    "uglify_js": true
+  });
+
 // initialize phantomizer-htmlcompressor
 // ----------
   init_task_options(config,"phantomizer-htmlcompressor",{
