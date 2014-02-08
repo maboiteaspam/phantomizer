@@ -1,43 +1,45 @@
 
 module.exports = function(grunt) {
 
-    grunt.loadNpmTasks('grunt-contrib-imagemin');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
+  // Phantomizer modules
+  // --------------
+  //
+  grunt.loadNpmTasks('grunt-contrib-imagemin');
+  grunt.loadNpmTasks('grunt-contrib-qunit');
 
+  // phantomizer webserver
+  grunt.loadNpmTasks('phantomizer-grunt');
 
-    // phantomizer webserver
-    grunt.loadNpmTasks('phantomizer-grunt');
+  // specific optimizer tasks
+  grunt.loadNpmTasks('phantomizer-manifest');
+  grunt.loadNpmTasks('phantomizer-html-builder');
+  grunt.loadNpmTasks('phantomizer-html-assets');
+  grunt.loadNpmTasks('phantomizer-requirejs');
+  grunt.loadNpmTasks('phantomizer-uglifyjs');
+  grunt.loadNpmTasks('phantomizer-strykejs');
+  grunt.loadNpmTasks('phantomizer-htmlcompressor');
+  grunt.loadNpmTasks('phantomizer-imgopt');
+  grunt.loadNpmTasks('phantomizer-manifest');
+  grunt.loadNpmTasks('phantomizer-gm');
 
-    // specific optimizer tasks
-    grunt.loadNpmTasks('phantomizer-manifest');
-    grunt.loadNpmTasks('phantomizer-html-builder');
-    grunt.loadNpmTasks('phantomizer-html-assets');
-    grunt.loadNpmTasks('phantomizer-requirejs');
-    grunt.loadNpmTasks('phantomizer-uglifyjs');
-    grunt.loadNpmTasks('phantomizer-strykejs');
-    grunt.loadNpmTasks('phantomizer-htmlcompressor');
-    grunt.loadNpmTasks('phantomizer-imgopt');
-    grunt.loadNpmTasks('phantomizer-manifest');
-    grunt.loadNpmTasks('phantomizer-gm');
+  // document tasks
+  grunt.loadNpmTasks('phantomizer-styledocco');
+  grunt.loadNpmTasks('phantomizer-docco');
 
-    // document tasks
-    grunt.loadNpmTasks('phantomizer-styledocco');
-    grunt.loadNpmTasks('phantomizer-docco');
+  // test tasks
+  grunt.loadNpmTasks('phantomizer-qunit-runner');
 
-    // test tasks
-    grunt.loadNpmTasks('phantomizer-qunit-runner');
+  // project export tasks
+  grunt.loadNpmTasks('phantomizer-export-build');
 
-    // project export tasks
-    grunt.loadNpmTasks('phantomizer-export-build');
+  grunt.loadNpmTasks('phantomizer-confess');
 
-    grunt.loadNpmTasks('phantomizer-confess');
+  grunt.loadNpmTasks('phantomizer-websupport');
 
-    grunt.loadNpmTasks('phantomizer-websupport');
+  grunt.loadNpmTasks('phantomizer-sitemap');
 
-    grunt.loadNpmTasks('phantomizer-sitemap');
-
-    // code review
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-csslint');
+  // code review
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-csslint');
 
 };
