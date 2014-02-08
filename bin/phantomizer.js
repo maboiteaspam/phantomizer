@@ -1676,13 +1676,13 @@ function init_target_options(config,task_name,target_name,options,files){
  */
 function readline_toquit( end_handler ){
 
-  var readline = require('readline')
+  var readline = require('readline');
   var rl = readline.createInterface(process.stdin, process.stdout);
 
   rl.question('Press enter to leave...\n', function(answer) {
     rl.close();
     if( end_handler != null ){
-      end_handler()
+      end_handler();
     }
   });
 }
