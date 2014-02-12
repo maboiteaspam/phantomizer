@@ -1464,6 +1464,13 @@ performance analysis</p>
         
       
         
+        <p>deployed dns</p>
+
+        
+          <div class='highlight'><pre>    deployed_dns: <span class="hljs-string">"localhost"</span>,</pre></div>
+        
+      
+        
         <p>environment specifics</p>
 
         
@@ -1483,75 +1490,43 @@ performance analysis</p>
   });
 
   config.environment.production = underscore.defaults(config.environment.production,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
     web_port:<span class="hljs-number">8050</span>,
     web_ssl_port:<span class="hljs-number">8051</span>,
     test_web_port:<span class="hljs-number">8052</span>,
     test_web_ssl_port:<span class="hljs-number">8053</span>,
     phantom_web_port:<span class="hljs-number">8054</span>,
-    phantom_web_ssl_port:<span class="hljs-number">8055</span>,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:<span class="hljs-number">8055</span>
   });
 
   config.environment.contribution = underscore.defaults(config.environment.contribution,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
     web_port:<span class="hljs-number">8060</span>,
     web_ssl_port:<span class="hljs-number">8061</span>,
     test_web_port:<span class="hljs-number">8062</span>,
     test_web_ssl_port:<span class="hljs-number">8063</span>,
     phantom_web_port:<span class="hljs-number">8064</span>,
-    phantom_web_ssl_port:<span class="hljs-number">8065</span>,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:<span class="hljs-number">8065</span>
   });
 
   config.environment.staging = underscore.defaults(config.environment.staging,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
     web_port:<span class="hljs-number">8070</span>,
     web_ssl_port:<span class="hljs-number">8071</span>,
     test_web_port:<span class="hljs-number">8072</span>,
     test_web_ssl_port:<span class="hljs-number">8073</span>,
     phantom_web_port:<span class="hljs-number">8074</span>,
-    phantom_web_ssl_port:<span class="hljs-number">8075</span>,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:<span class="hljs-number">8075</span>
   });
 
   config.environment.dev = underscore.defaults(config.environment.dev,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:<span class="hljs-string">"&lt;%= default_webdomain %&gt;"</span>,
     web_port:<span class="hljs-number">8080</span>,
     web_ssl_port:<span class="hljs-number">8081</span>,
     test_web_port:<span class="hljs-number">8082</span>,
     test_web_ssl_port:<span class="hljs-number">8083</span>,
     phantom_web_port:<span class="hljs-number">8084</span>,
-    phantom_web_ssl_port:<span class="hljs-number">8085</span>,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:<span class="hljs-number">8085</span>
   });</pre></div>
         
       
@@ -2617,6 +2592,7 @@ junit, requires an reporterOutput option
         
         
           <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-sitemap"</span>,{
+    <span class="hljs-string">"base_location"</span>:<span class="hljs-string">"&lt;%= deployed_dns %&gt;"</span>
   });</pre></div>
         
       
