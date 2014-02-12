@@ -771,6 +771,8 @@ function init_config(project,environment,default_webdomain){
     },
 // client side dns
     default_webdomain: default_webdomain || "localhost",
+// deployed dns
+    deployed_dns: "localhost",
 // environment specifics
     environment:{}
   });
@@ -1585,6 +1587,7 @@ function init_config(project,environment,default_webdomain){
 // initialize phantomizer-sitemap
 // ----------
   init_task_options(config,"phantomizer-sitemap",{
+    "base_location":"<%= deployed_dns %>"
   });
 
 // initialize phantomizer-export-slim
