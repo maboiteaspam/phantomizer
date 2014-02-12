@@ -786,75 +786,43 @@ function init_config(project,environment,default_webdomain){
   });
 
   config.environment.production = underscore.defaults(config.environment.production,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:"<%= default_webdomain %>",
     web_port:8050,
     web_ssl_port:8051,
     test_web_port:8052,
     test_web_ssl_port:8053,
     phantom_web_port:8054,
-    phantom_web_ssl_port:8055,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:8055
   });
 
   config.environment.contribution = underscore.defaults(config.environment.contribution,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:"<%= default_webdomain %>",
     web_port:8060,
     web_ssl_port:8061,
     test_web_port:8062,
     test_web_ssl_port:8063,
     phantom_web_port:8064,
-    phantom_web_ssl_port:8065,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:8065
   });
 
   config.environment.staging = underscore.defaults(config.environment.staging,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:"<%= default_webdomain %>",
     web_port:8070,
     web_ssl_port:8071,
     test_web_port:8072,
     test_web_ssl_port:8073,
     phantom_web_port:8074,
-    phantom_web_ssl_port:8075,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:8075
   });
 
   config.environment.dev = underscore.defaults(config.environment.dev,{
-    datasource_base_url: config.datasource_base_url,
-    datasource_credentials: config.datasource_credentials,
     web_domain:"<%= default_webdomain %>",
     web_port:8080,
     web_ssl_port:8081,
     test_web_port:8082,
     test_web_ssl_port:8083,
     phantom_web_port:8084,
-    phantom_web_ssl_port:8085,
-    build_target:config.build_target,
-    inject_extras:config.inject_extras,
-    htmlcompressor:config.htmlcompressor,
-    build_assets:config.build_assets,
-    html_manifest:config.html_manifest,
-    sitemap:config.sitemap
+    phantom_web_ssl_port:8085
   });
 
   // Overwrite general configuration with selected environment
