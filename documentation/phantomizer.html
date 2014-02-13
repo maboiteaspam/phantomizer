@@ -1413,6 +1413,16 @@ performance analysis</p>
         
       
         
+        <p>test framework</p>
+
+        
+          <div class='highlight'><pre>    test_framework:{
+      name:<span class="hljs-string">"qunit"</span>, <span class="hljs-comment">// hope mocha could come there too</span>
+      version:<span class="hljs-string">"1.13.0"</span>
+    },</pre></div>
+        
+      
+        
         <p>datasource urls</p>
 
         
@@ -2322,111 +2332,113 @@ junit, requires an reporterOutput option
         
         
         
-          <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,{
-    <span class="hljs-string">"port"</span>:config.test_web_port,
-    <span class="hljs-string">"ssl_port"</span>:config.test_web_ssl_port,
-    <span class="hljs-string">"paths"</span>:config.web_paths,
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">true</span>,
-    <span class="hljs-string">"base_url"</span>:<span class="hljs-string">"http://"</span>+config.web_domain+<span class="hljs-string">":"</span>+config.test_web_port+<span class="hljs-string">"/"</span>,
-    <span class="hljs-string">"test_scripts_base_url"</span>:<span class="hljs-string">"/js/tests/"</span>,
-    <span class="hljs-string">"requirejs_src"</span>: config.scripts.requirejs.src,
-    <span class="hljs-string">"requirejs_baseUrl"</span>: config.scripts.requirejs.baseUrl
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"dev"</span>,{});
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"staging"</span>,{
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"contribution"</span>,{
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"production"</span>,{
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
-  });</pre></div>
+          <div class='highlight'><pre>  <span class="hljs-keyword">if</span>( config.test_framework.name.match(<span class="hljs-regexp">/qunit/</span>) ){
+    init_task_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,{
+      <span class="hljs-string">"port"</span>:config.test_web_port,
+      <span class="hljs-string">"ssl_port"</span>:config.test_web_ssl_port,
+      <span class="hljs-string">"paths"</span>:config.web_paths,
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">true</span>,
+      <span class="hljs-string">"base_url"</span>:<span class="hljs-string">"http://"</span>+config.web_domain+<span class="hljs-string">":"</span>+config.test_web_port+<span class="hljs-string">"/"</span>,
+      <span class="hljs-string">"test_scripts_base_url"</span>:<span class="hljs-string">"/js/tests/"</span>,
+      <span class="hljs-string">"requirejs_src"</span>: config.scripts.requirejs.src,
+      <span class="hljs-string">"requirejs_baseUrl"</span>: config.scripts.requirejs.baseUrl
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"dev"</span>,{});
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"staging"</span>,{
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"contribution"</span>,{
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"production"</span>,{
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>
+    });</pre></div>
         
       
         
         <p>junit-qunit reporting</p>
 
         
-          <div class='highlight'><pre>  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-dev"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-staging"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-contribution"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-production"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
-  });</pre></div>
+          <div class='highlight'><pre>    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-dev"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-staging"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-contribution"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"junit-production"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'junit'</span>
+    });</pre></div>
         
       
         
         <p>tap-qunit reporting</p>
 
         
-          <div class='highlight'><pre>  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-dev"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-staging"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-contribution"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-production"</span>,{
-    outputDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
-    <span class="hljs-string">"paths"</span>:[
-      <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
-    ],
-    <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
-    <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
-  });</pre></div>
+          <div class='highlight'><pre>    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit"</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-dev"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/dev"</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-staging"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/staging"</span>,
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/staging/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-contribution"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/contribution"</span>,
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/contribution/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"tap-production"</span>,{
+      outputDir:config.project_dir+<span class="hljs-string">"/../qunit/production"</span>,
+      <span class="hljs-string">"paths"</span>:[
+        <span class="hljs-string">"&lt;%= export_dir %&gt;/production/www/"</span>
+      ],
+      <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-string">'format'</span>:<span class="hljs-string">'tap'</span>
+    });
+  }</pre></div>
         
       
         
