@@ -546,7 +546,10 @@ if( argv.init != "" ){
   grunt.file.mkdir(project+"/project/www-core/css/");
 
   // adjust .gitignore file
-  var gitignore = grunt.file.read(".gitignore");
+  var gitignore = "";
+  if( grunt.file.exists(".gitignore") ){
+    gitignore = grunt.file.read(".gitignore");
+  }
   var gitignoreRegExp = new RegExp("^"+project+"([/].*)?$","img");
   if( ! gitignore.match(gitignoreRegExp) ){
     gitignore += "\n\n";
