@@ -176,7 +176,8 @@ var argv = optimist.usage('Phantomizer command line')
   ;
 
 // initialize phantomizer main instance
-var phantomizer = ph_libutil.register("main",process.cwd(),grunt);
+var Phantomizer = ph_libutil.Phantomizer;
+var phantomizer = new Phantomizer(process.cwd(),grunt);
 
 // declare variables and
 // fine tune some data
