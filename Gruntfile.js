@@ -27,9 +27,9 @@ module.exports = function(grunt) {
         bump: true, //default: true
         //file: 'component.json', //default: package.json
         // it is actually git add command
-        add: false, //default: true
+        add: true, //default: true
         // it is actually git commit command
-        commit: false, //default: true
+        commit: true, //default: true
         // git tag  command
         // tag: false, //default: true
         // git push  command
