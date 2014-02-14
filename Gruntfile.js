@@ -23,25 +23,10 @@ module.exports = function(grunt) {
     },
     release: {
       options: {
-        // update the package json file version number or not
-        bump: true, //default: true
-        //file: 'component.json', //default: package.json
-        // it is actually git add command
-        add: true, //default: true
-        // it is actually git commit command
-        commit: true, //default: true
-        // git tag  command
-        // tag: false, //default: true
-        // git push  command
-        // push: false, //default: true
-        // pushTags: false, //default: true
         npm: false, //default: true
         // true will apply the version number as the tag
         npmtag: true, //default: no tag
-        // folder: 'folder/to/publish/to/npm', //default project root
         tagName: '<%= version %>', //default: '<%= version %>'
-        // commitMessage: 'release <%= version %>', //default: 'release <%= version %>'
-        //tagMessage: 'tagging version <%= version %>', //default: 'Version <%= version %>',
         github: {
           repo: 'maboiteaspam/phantomizer', //put your user/repo here
           usernameVar: 'GITHUB_USERNAME', //ENVIRONMENT VARIABLE that contains Github username
