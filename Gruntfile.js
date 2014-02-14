@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     docco: {
       debug: {
         src: [
-          'bin/phantomizer.js'
+          'bin/phantomizer-cli.js'
         ],
         options: {
           layout:'linear',
