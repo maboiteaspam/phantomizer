@@ -4,9 +4,9 @@ var fs = require("fs");
 var path = require("path");
 var optimist = require("optimist");
 var grunt = require("grunt");
-var ph_libutil = require("phantomizer-libutil");
 var underscore = require("underscore");
 var http = require("http");
+var ph_libutil = require("phantomizer-libutil");
 
 var file_utils = ph_libutil.file_utils;
 
@@ -175,6 +175,8 @@ var argv = optimist.usage('Phantomizer command line')
     .argv
   ;
 
+// initialize phantomizer main instance
+var phantomizer = ph_libutil.register("main",process.cwd(),grunt);
 
 // declare variables and
 // fine tune some data
@@ -189,21 +191,19 @@ grunt.option('debug', debug);
 grunt.option('force', argv.force || false);
 
 // Welcome user
-grunt.log.subhead("Welcome to phantomizer !")
-
-// display version number
-// ----------
-if( argv.version || false ){
-  var pkg = fs.readFileSync(__dirname+"/../package.json", 'utf-8');
-  pkg = JSON.parse(pkg);
-  grunt.log.ok("phantomizer " + pkg.version)
-  process.exit(code=0);
-}
+grunt.log.subhead("Welcome to phantomizer !");
 
 // display help
 // ----------
 if( argv.help || false ){
-  optimist.showHelp()
+  optimist.showHelp();
+  process.exit(code=0);
+}
+
+// display version number
+// ----------
+if( argv.version || false ){
+  grunt.log.ok("phantomizer " + phantomizer.get_version());
   process.exit(code=0);
 }
 
@@ -219,25 +219,7 @@ if( argv.server != "" ){
   // configuration initialization, including grunt config, required call prior to grunt usage
   var config = get_config(project, environment, argv.default_webdomain);
 
-  // initialize some helpers
-  var router_factory = ph_libutil.router;
-  var optimizer_factory = ph_libutil.optimizer;
-  var meta_factory = ph_libutil.meta;
-  var webserver_factory = ph_libutil.webserver;
-
-  // hols meta of all built files
-  var meta_manager = new meta_factory(process.cwd(), config.meta_dir);
-  // knows how to proceed optimization
-  var optimizer = new optimizer_factory(meta_manager, config, grunt);
-  // provides a catalog of route url
-  var router = new router_factory(config.routing);
-  // a specifically designed webserver for JIT optimization
-  var webserver = null;
-
-  // load routes, eventually from a remote webserver
-  router.load(function(){
-    // create a new local webserver with found route urls
-    webserver = new webserver_factory(router,optimizer,meta_manager,grunt, config.web_paths);
+  phantomizer.create_webserver(config.web_paths,function(webserver){
     // try to listen both clear text and ssl
     var h = "http://"+config.web_domain+(config.web_port?":"+config.web_port:"");
     var hs = "https://"+config.web_domain+(config.web_domain?":"+config.web_ssl_port:"");
@@ -249,6 +231,7 @@ if( argv.server != "" ){
     readline_toquit(function(){
       // stops remaining web server
       if( webserver != null ){
+        grunt.log.writeln('Stopping webserver...');
         webserver.stop(function(){
           grunt.log.subhead('See you soon !');
           // exit program
@@ -257,6 +240,7 @@ if( argv.server != "" ){
       }
     });
   });
+
 }
 
 // Run project tests
@@ -610,25 +594,7 @@ if( argv.browse_export != "" ){
     process.exit(code=1);
   }
 
-  // initialize some helpers
-  var router_factory = ph_libutil.router;
-  var optimizer_factory = ph_libutil.optimizer;
-  var meta_factory = ph_libutil.meta;
-  var webserver_factory = ph_libutil.webserver;
-
-  // hols meta of all built files
-  var meta_manager = new meta_factory(process.cwd(), config.meta_dir);
-  // knows how to proceed optimization
-  var optimizer = new optimizer_factory(meta_manager, config, grunt);
-  // provides a catalog of route url
-  var router = new router_factory(config.routing);
-  // a specifically designed webserver for JIT optimization
-  var webserver = null;
-
-  // load routes, eventually from a remote webserver
-  router.load(function(){
-    // create a new local webserver with found route urls
-    webserver = new webserver_factory(router,optimizer,meta_manager,grunt, [directory]);
+  phantomizer.create_webserver([directory],function(webserver){
     webserver.enable_build(false);
     webserver.enable_assets_inject(false);
     // try to listen both clear text and ssl
@@ -1095,7 +1061,6 @@ function init_config(project,environment,default_webdomain){
 // initialize phantomizer-confess
 // ----------
   init_task_options(config,"phantomizer-confess",{
-    meta_dir:config.meta_dir,
     web_server_paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
     host:config.web_domain,
     port:config.test_web_port,
@@ -1127,7 +1092,6 @@ function init_config(project,environment,default_webdomain){
   init_task_options(config,"phantomizer-requirejs",{
     src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
     project_dir: config.project_dir,
-    meta_dir: config.meta_dir,
     "baseUrl": config.src_dir+""+config.scripts.requirejs.baseUrl,
     "optimize": "none",
     "wrap": true,
@@ -1146,7 +1110,6 @@ function init_config(project,environment,default_webdomain){
   init_task_options(config,"phantomizer-requirecss",{
     src_paths: config.build_run_paths,
     project_dir: config.project_dir,
-    meta_dir: config.meta_dir,
     "optimizeCss": "standard.keepComments.keepLines"
   });
   init_target_options(config,"phantomizer-requirecss","stryke-assets-min-build",{
@@ -1156,7 +1119,6 @@ function init_config(project,environment,default_webdomain){
 // initialize phantomizer-manifest
 // ----------
   init_task_options(config,"phantomizer-manifest-html",{
-    meta_dir:config.meta_dir,
     project_dir: config.project_dir,
     manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
     src_paths:config.build_run_paths,
@@ -1170,7 +1132,6 @@ function init_config(project,environment,default_webdomain){
 // initialize phantomizer-html-assets
 // ----------
   init_task_options(config,"phantomizer-html-assets",{
-    meta_dir:config.meta_dir,
     out_path:config.out_dir,
     requirejs_src:config.scripts.requirejs.src || null,
     requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
@@ -1198,7 +1159,6 @@ function init_config(project,environment,default_webdomain){
 // initialize phantomizer-html-project-assets
 // ----------
   init_task_options(config,"phantomizer-html-project-assets",{
-    meta_dir:config.meta_dir,
     out_path:config.out_dir,
     requirejs_src:config.scripts.requirejs.src || null,
     requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
@@ -1222,7 +1182,6 @@ function init_config(project,environment,default_webdomain){
 // initialize phantomizer-htmlcompressor
 // ----------
   init_task_options(config,"phantomizer-htmlcompressor",{
-    meta_dir:config.meta_dir,
     "preserved_html_comments": "(?si)<!-- #preserve_(js|css) .+? #endpreserve -->"
   });
   init_target_options(config,"phantomizer-htmlcompressor","stryke-assets-min-build",{
@@ -1242,7 +1201,6 @@ function init_config(project,environment,default_webdomain){
 // initialize phantomizer-uglifyjs
 // ----------
   init_task_options(config,"phantomizer-uglifyjs",{
-    meta_dir:config.meta_dir
   });
 
 // initialize phantomizer-dir-inject-html-extras
@@ -1257,13 +1215,11 @@ function init_config(project,environment,default_webdomain){
     port:config.phantom_web_port,
     ssl_port:config.phantom_web_ssl_port,
     paths:config.build_run_paths,
-    meta_dir:config.meta_dir,
     scripts:config.scripts,
     css:config.css
   });
   init_task_options(config,"phantomizer-strykejs-project-builder",{
     run_dir:config.run_dir,
-    meta_dir:config.meta_dir,
     port:config.phantom_web_port,
     ssl_port:config.phantom_web_ssl_port,
     paths:config.build_run_paths,
@@ -1275,7 +1231,6 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-html-builder",{
     out_path:config.out_dir,
-    meta_dir:config.meta_dir,
     paths:config.web_paths_no_dir,
     htmlcompressor:false,
     build_assets:false
@@ -1292,7 +1247,6 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-html-jitbuild",{
     out_path:config.out_dir,
-    meta_dir:config.meta_dir,
     paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
     htmlcompressor:false,
     build_assets:false
@@ -1309,7 +1263,6 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-html-project-builder",{
     out_path:config.out_dir,
-    meta_dir:config.meta_dir,
     run_dir:config.run_dir,
     paths:config.web_paths_no_dir,
     inject_extras:false,
@@ -1329,7 +1282,6 @@ function init_config(project,environment,default_webdomain){
     cache:false,
     progressive:false,
     out_path:config.out_dir,
-    meta_dir:config.meta_dir,
     paths:config.build_run_paths
   });
   init_target_options(config,"phantomizer-imgopt","stryke-assets-min-build",{
@@ -1441,7 +1393,6 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-gm-merge",{
     out_dir:config.out_dir,
-    meta_dir:config.meta_dir,
     "paths": config.build_run_paths
   });
 

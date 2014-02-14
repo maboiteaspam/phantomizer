@@ -16,7 +16,6 @@
     "type": "git",
     "url": "http://github.com/maboiteaspam/phantomizer.git"
   },
-  "main":"lib/phantomizer.js",
   "bin": {
     "phantomizer": "./bin/phantomizer-cli.js"
   },
@@ -27,8 +26,8 @@
     "grunt": "0.4.x",
     "optimist": "0.4.x",
     "underscore": "1.5.x",
-    "phantomizer-websupport": "git://github.com/maboiteaspam/phantomizer-websupport.git",
     "phantomizer-libutil": "git://github.com/maboiteaspam/phantomizer-libutil.git",
+    "phantomizer-websupport": "git://github.com/maboiteaspam/phantomizer-websupport.git",
     "phantomizer-html-dirlisting": "git://github.com/maboiteaspam/phantomizer-html-dirlisting.git"
   },
   "devDependencies": {
