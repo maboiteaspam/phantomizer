@@ -17,7 +17,7 @@
     "url": "http://github.com/maboiteaspam/phantomizer.git"
   },
   "bin": {
-    "phantomizer": "./bin/phantomizer.js"
+    "phantomizer": "./bin/phantomizer-cli.js"
   },
   "scripts": {
     "test": "mocha --reporter dot"
