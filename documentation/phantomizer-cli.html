@@ -332,7 +332,8 @@
         <p>initialize phantomizer main instance</p>
 
         
-          <div class='highlight'><pre><span class="hljs-keyword">var</span> phantomizer = ph_libutil.register(<span class="hljs-string">"main"</span>,process.cwd(),grunt);</pre></div>
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> Phantomizer = ph_libutil.Phantomizer;
+<span class="hljs-keyword">var</span> phantomizer = <span class="hljs-keyword">new</span> Phantomizer(process.cwd(),grunt);</pre></div>
         
       
         
@@ -2148,29 +2149,6 @@ junit, requires an reporterOutput option
     <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-html-builder"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
-    <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>,
-    <span class="hljs-string">"htmlcompressor"</span>: <span class="hljs-literal">true</span>
-  });</pre></div>
-        
-      
-        
-        <h2 id="initialize-phantomizer-html-jitbuild">initialize phantomizer-html-jitbuild</h2>
-
-        
-      
-        
-        
-        
-          <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-html-jitbuild"</span>,{
-    out_path:config.out_dir,
-    paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
-    htmlcompressor:<span class="hljs-literal">false</span>,
-    build_assets:<span class="hljs-literal">false</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-html-jitbuild"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
-    <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-html-jitbuild"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
     <span class="hljs-string">"build_assets"</span>: <span class="hljs-literal">true</span>,
     <span class="hljs-string">"htmlcompressor"</span>: <span class="hljs-literal">true</span>
   });</pre></div>
