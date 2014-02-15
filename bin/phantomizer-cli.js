@@ -1244,21 +1244,6 @@ function init_config(project,environment,default_webdomain){
     "htmlcompressor": true
   });
 
-// initialize phantomizer-html-jitbuild
-// ----------
-  init_task_options(config,"phantomizer-html-jitbuild",{
-    out_path:config.out_dir,
-    paths:[config.src_dir,config.wbm_dir,config.vendors_dir],
-    htmlcompressor:false,
-    build_assets:false
-  });
-  init_target_options(config,"phantomizer-html-jitbuild","stryke-assets-build",{
-    "build_assets": true
-  });
-  init_target_options(config,"phantomizer-html-jitbuild","stryke-assets-min-build",{
-    "build_assets": true,
-    "htmlcompressor": true
-  });
 
 // initialize phantomizer-html-builder2
 // ----------
