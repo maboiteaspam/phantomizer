@@ -719,7 +719,6 @@ function init_config(project,environment,default_webdomain){
 
     //stryke-build | stryke-assets-build | stryke-assets-min-build
     build_target:"stryke-assets-min-build",
-    inject_extras:false,
     htmlcompressor:true,
     build_assets:true,
     html_manifest:false,
@@ -894,36 +893,39 @@ function init_config(project,environment,default_webdomain){
       }
     })
   }
-  // requirejs default options
-  config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{
-    // list absolute urls to requirejs version that could be encountered
-    "src": [
-      /*
-       "require-2.1.10.min.js",
-       "require-2.1.9.min.js",
-       "require-2.1.8.min.js",
-       */
-    ],
-    // the project base url for requirejs optimization, loading ect
-    "baseUrl": "/js/",
-    // the project paths for requirejs optimization, loading ect
-    "paths":{
-      /*
-       "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
-       "vendors": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
-       "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
-       */
-    }
-  });
-  // predefine some requirejs paths
-  config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{
-    // reference almond for better built files
-    "almond": config.scripts.requirejs.baseUrl+"almond-0.2.5",
-    // the phantomizer-websupport preselected libraries
-    "vendors": config.scripts.requirejs.baseUrl+"vendors/",
-    // the wbm additional project folder
-    "wbm": config.scripts.requirejs.baseUrl+"wbm/"
-  })
+
+  if( config.scripts.requirejs ){
+    // requirejs default options
+    config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{
+      // list absolute urls to requirejs version that could be encountered
+      "src": [
+        /*
+         "require-2.1.10.min.js",
+         "require-2.1.9.min.js",
+         "require-2.1.8.min.js",
+         */
+      ],
+      // the project base url for requirejs optimization, loading ect
+      "baseUrl": "/js/",
+      // the project paths for requirejs optimization, loading ect
+      "paths":{
+        /*
+         "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
+         "vendors": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
+         "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
+         */
+      }
+    });
+    // predefine some requirejs paths
+    config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{
+      // reference almond for better built files
+      "almond": config.scripts.requirejs.baseUrl+"almond-0.2.5",
+      // the phantomizer-websupport preselected libraries
+      "vendors": config.scripts.requirejs.baseUrl+"vendors/",
+      // the wbm additional project folder
+      "wbm": config.scripts.requirejs.baseUrl+"wbm/"
+    })
+  }
 // css manipulation
   if(!config.css){
     config.css = underscore.defaults(config.css || {},{
@@ -955,6 +957,16 @@ function init_config(project,environment,default_webdomain){
          */
       }
     })
+  }
+
+  if( config.html_manifest != false ){
+    config.html_manifest = underscore.defaults(config.html_manifest,{
+      manifest_reloader:'<%= vendors_dir %>/js/manifest.reloader.min.js',
+      network:['*'],
+      cache:[],
+      fallback:{}
+    });
+
   }
 
 // initialize phantomizer-docco
@@ -1090,21 +1102,23 @@ function init_config(project,environment,default_webdomain){
 
 // initialize phantomizer-requirejs
 // ----------
-  init_task_options(config,"phantomizer-requirejs",{
-    src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
-    project_dir: config.project_dir,
-    "baseUrl": config.src_dir+""+config.scripts.requirejs.baseUrl,
-    "optimize": "none",
-    "wrap": true,
-    "name": "almond",
-    "paths": config.scripts.requirejs.paths,
-    "almond_path": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
-    "vendors_path": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
-    "wbm_path": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
-  });
-  init_target_options(config,"phantomizer-requirejs","stryke-assets-min-build",{
-    "optimize": "uglify"
-  });
+  if( config.scripts.requirejs ){
+    init_task_options(config,"phantomizer-requirejs",{
+      src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+      project_dir: config.project_dir,
+      "baseUrl": config.src_dir+""+config.scripts.requirejs.baseUrl,
+      "optimize": "none",
+      "wrap": true,
+      "name": "almond",
+      "paths": config.scripts.requirejs.paths,
+      "almond_path": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
+      "vendors_path": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
+      "wbm_path": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
+    });
+    init_target_options(config,"phantomizer-requirejs","stryke-assets-min-build",{
+      "optimize": "uglify"
+    });
+  }
 
 // initialize phantomizer-requirecss
 // ----------
@@ -1121,22 +1135,35 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-manifest-html",{
     project_dir: config.project_dir,
-    manifest_reloader:config.vendors_dir+'/js/manifest.reloader.js',
     src_paths:config.build_run_paths,
-    network:["*"]
+    manifest_reloader:'<%= html_manifest.manifest_reloader %>',
+    network:'<%= html_manifest.network %>',
+    cache:'<%= html_manifest.cache %>',
+    fallback:'<%= html_manifest.fallback %>'
   });
   init_task_options(config,"phantomizer-project-manifest",{
     target_path: config.export_dir,
-    network:["*"]
+    manifest_reloader:'<%= html_manifest.manifest_reloader %>',
+    network:'<%= html_manifest.network %>',
+    cache:'<%= html_manifest.cache %>',
+    fallback:'<%= html_manifest.fallback %>'
   });
 
 // initialize phantomizer-html-assets
 // ----------
+  var requirejs_src = null;
+  var requirejs_baseUrl = null;
+  var requirejs_paths = null;
+  if( config.scripts.requirejs ){
+    requirejs_src = config.scripts.requirejs.src || null;
+    requirejs_baseUrl = config.scripts.requirejs.baseUrl || null;
+    requirejs_paths = config.scripts.requirejs.paths || null;
+  }
   init_task_options(config,"phantomizer-html-assets",{
     out_path:config.out_dir,
-    requirejs_src:config.scripts.requirejs.src || null,
-    requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
-    requirejs_paths:config.scripts.requirejs.paths || {},
+    requirejs_src:requirejs_src,
+    requirejs_baseUrl:requirejs_baseUrl,
+    requirejs_paths:requirejs_paths,
     "manifest": false,
     paths:config.build_run_paths
   });
@@ -1161,9 +1188,9 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-html-project-assets",{
     out_path:config.out_dir,
-    requirejs_src:config.scripts.requirejs.src || null,
-    requirejs_baseUrl:config.scripts.requirejs.baseUrl || null,
-    requirejs_paths:config.scripts.requirejs.paths || {},
+    requirejs_src:requirejs_src,
+    requirejs_baseUrl:requirejs_baseUrl,
+    requirejs_paths:requirejs_paths,
     paths:config.build_run_paths
   });
   init_target_options(config,"phantomizer-html-project-assets","stryke-build",{
@@ -1251,7 +1278,6 @@ function init_config(project,environment,default_webdomain){
     out_path:config.out_dir,
     run_dir:config.run_dir,
     paths:config.web_paths_no_dir,
-    inject_extras:false,
     build_assets:false
   });
   init_target_options(config,"phantomizer-html-project-builder","stryke-assets-build",{
@@ -1284,9 +1310,7 @@ function init_config(project,environment,default_webdomain){
       "paths":config.web_paths,
       "inject_assets":true,
       "base_url":"http://"+config.web_domain+":"+config.test_web_port+"/",
-      "test_scripts_base_url":"/js/tests/",
-      "requirejs_src": config.scripts.requirejs.src,
-      "requirejs_baseUrl": config.scripts.requirejs.baseUrl
+      "test_scripts_base_url":"/js/tests/"
     });
     init_target_options(config,"phantomizer-qunit-runner","dev",{});
     init_target_options(config,"phantomizer-qunit-runner","staging",{
@@ -1439,7 +1463,6 @@ function init_config(project,environment,default_webdomain){
       config.documentation_dir
     ],
     build_target:config.build_target,
-    inject_extras:config.inject_extras,
     htmlcompressor:config.htmlcompressor,
     build_assets:config.build_assets,
     html_manifest:config.html_manifest,

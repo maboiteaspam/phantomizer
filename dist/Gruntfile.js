@@ -34,8 +34,6 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('phantomizer-confess');
 
-  grunt.loadNpmTasks('phantomizer-websupport');
-
   grunt.loadNpmTasks('phantomizer-sitemap');
 
   // code review
