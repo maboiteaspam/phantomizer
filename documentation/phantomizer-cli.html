@@ -1316,7 +1316,6 @@ performance analysis</p>
 
         
           <div class='highlight'><pre>    build_target:<span class="hljs-string">"stryke-assets-min-build"</span>,
-    inject_extras:<span class="hljs-literal">false</span>,
     htmlcompressor:<span class="hljs-literal">true</span>,
     build_assets:<span class="hljs-literal">true</span>,
     html_manifest:<span class="hljs-literal">false</span>,
@@ -1622,77 +1621,80 @@ they are absolute url</p>
          */</span>
       }
     })
-  }</pre></div>
+  }
+
+  <span class="hljs-keyword">if</span>( config.scripts.requirejs ){</pre></div>
         
       
         
         <p>requirejs default options</p>
 
         
-          <div class='highlight'><pre>  config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{</pre></div>
+          <div class='highlight'><pre>    config.scripts.requirejs = underscore.defaults(config.scripts.requirejs,{</pre></div>
         
       
         
         <p>list absolute urls to requirejs version that could be encountered</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-string">"src"</span>: [
-      <span class="hljs-comment">/*
-       "require-2.1.10.min.js",
-       "require-2.1.9.min.js",
-       "require-2.1.8.min.js",
-       */</span>
-    ],</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-string">"src"</span>: [
+        <span class="hljs-comment">/*
+         "require-2.1.10.min.js",
+         "require-2.1.9.min.js",
+         "require-2.1.8.min.js",
+         */</span>
+      ],</pre></div>
         
       
         
         <p>the project base url for requirejs optimization, loading ect</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-string">"baseUrl"</span>: <span class="hljs-string">"/js/"</span>,</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-string">"baseUrl"</span>: <span class="hljs-string">"/js/"</span>,</pre></div>
         
       
         
         <p>the project paths for requirejs optimization, loading ect</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-string">"paths"</span>:{
-      <span class="hljs-comment">/*
-       "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
-       "vendors": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
-       "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
-       */</span>
-    }
-  });</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-string">"paths"</span>:{
+        <span class="hljs-comment">/*
+         "almond": config.vendors_dir+config.scripts.requirejs.baseUrl+"/almond-0.2.5",
+         "vendors": config.vendors_dir+config.scripts.requirejs.baseUrl+"/vendors",
+         "wbm": config.wbm_dir+config.scripts.requirejs.baseUrl+"/wbm"
+         */</span>
+      }
+    });</pre></div>
         
       
         
         <p>predefine some requirejs paths</p>
 
         
-          <div class='highlight'><pre>  config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{</pre></div>
+          <div class='highlight'><pre>    config.scripts.requirejs.paths = underscore.defaults(config.scripts.requirejs.paths,{</pre></div>
         
       
         
         <p>reference almond for better built files</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-string">"almond"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"almond-0.2.5"</span>,</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-string">"almond"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"almond-0.2.5"</span>,</pre></div>
         
       
         
         <p>the phantomizer-websupport preselected libraries</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-string">"vendors"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"vendors/"</span>,</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-string">"vendors"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"vendors/"</span>,</pre></div>
         
       
         
         <p>the wbm additional project folder</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-string">"wbm"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"wbm/"</span>
-  })</pre></div>
+          <div class='highlight'><pre>      <span class="hljs-string">"wbm"</span>: config.scripts.requirejs.baseUrl+<span class="hljs-string">"wbm/"</span>
+    })
+  }</pre></div>
         
       
         
@@ -1754,6 +1756,16 @@ they are absolute url</p>
          */</span>
       }
     })
+  }
+
+  <span class="hljs-keyword">if</span>( config.html_manifest != <span class="hljs-literal">false</span> ){
+    config.html_manifest = underscore.defaults(config.html_manifest,{
+      manifest_reloader:<span class="hljs-string">'&lt;%= vendors_dir %&gt;/js/manifest.reloader.min.js'</span>,
+      network:[<span class="hljs-string">'*'</span>],
+      cache:[],
+      fallback:{}
+    });
+
   }</pre></div>
         
       
@@ -1936,21 +1948,23 @@ junit, requires an reporterOutput option
         
         
         
-          <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-requirejs"</span>,{
-    src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
-    project_dir: config.project_dir,
-    <span class="hljs-string">"baseUrl"</span>: config.src_dir+<span class="hljs-string">""</span>+config.scripts.requirejs.baseUrl,
-    <span class="hljs-string">"optimize"</span>: <span class="hljs-string">"none"</span>,
-    <span class="hljs-string">"wrap"</span>: <span class="hljs-literal">true</span>,
-    <span class="hljs-string">"name"</span>: <span class="hljs-string">"almond"</span>,
-    <span class="hljs-string">"paths"</span>: config.scripts.requirejs.paths,
-    <span class="hljs-string">"almond_path"</span>: config.vendors_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/almond-0.2.5"</span>,
-    <span class="hljs-string">"vendors_path"</span>: config.vendors_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/vendors"</span>,
-    <span class="hljs-string">"wbm_path"</span>: config.wbm_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/wbm"</span>
-  });
-  init_target_options(config,<span class="hljs-string">"phantomizer-requirejs"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
-    <span class="hljs-string">"optimize"</span>: <span class="hljs-string">"uglify"</span>
-  });</pre></div>
+          <div class='highlight'><pre>  <span class="hljs-keyword">if</span>( config.scripts.requirejs ){
+    init_task_options(config,<span class="hljs-string">"phantomizer-requirejs"</span>,{
+      src_paths: [config.src_dir,config.wbm_dir,config.vendors_dir,config.out_dir],
+      project_dir: config.project_dir,
+      <span class="hljs-string">"baseUrl"</span>: config.src_dir+<span class="hljs-string">""</span>+config.scripts.requirejs.baseUrl,
+      <span class="hljs-string">"optimize"</span>: <span class="hljs-string">"none"</span>,
+      <span class="hljs-string">"wrap"</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-string">"name"</span>: <span class="hljs-string">"almond"</span>,
+      <span class="hljs-string">"paths"</span>: config.scripts.requirejs.paths,
+      <span class="hljs-string">"almond_path"</span>: config.vendors_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/almond-0.2.5"</span>,
+      <span class="hljs-string">"vendors_path"</span>: config.vendors_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/vendors"</span>,
+      <span class="hljs-string">"wbm_path"</span>: config.wbm_dir+config.scripts.requirejs.baseUrl+<span class="hljs-string">"/wbm"</span>
+    });
+    init_target_options(config,<span class="hljs-string">"phantomizer-requirejs"</span>,<span class="hljs-string">"stryke-assets-min-build"</span>,{
+      <span class="hljs-string">"optimize"</span>: <span class="hljs-string">"uglify"</span>
+    });
+  }</pre></div>
         
       
         
@@ -1981,13 +1995,18 @@ junit, requires an reporterOutput option
         
           <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-manifest-html"</span>,{
     project_dir: config.project_dir,
-    manifest_reloader:config.vendors_dir+<span class="hljs-string">'/js/manifest.reloader.js'</span>,
     src_paths:config.build_run_paths,
-    network:[<span class="hljs-string">"*"</span>]
+    manifest_reloader:<span class="hljs-string">'&lt;%= html_manifest.manifest_reloader %&gt;'</span>,
+    network:<span class="hljs-string">'&lt;%= html_manifest.network %&gt;'</span>,
+    cache:<span class="hljs-string">'&lt;%= html_manifest.cache %&gt;'</span>,
+    fallback:<span class="hljs-string">'&lt;%= html_manifest.fallback %&gt;'</span>
   });
   init_task_options(config,<span class="hljs-string">"phantomizer-project-manifest"</span>,{
     target_path: config.export_dir,
-    network:[<span class="hljs-string">"*"</span>]
+    manifest_reloader:<span class="hljs-string">'&lt;%= html_manifest.manifest_reloader %&gt;'</span>,
+    network:<span class="hljs-string">'&lt;%= html_manifest.network %&gt;'</span>,
+    cache:<span class="hljs-string">'&lt;%= html_manifest.cache %&gt;'</span>,
+    fallback:<span class="hljs-string">'&lt;%= html_manifest.fallback %&gt;'</span>
   });</pre></div>
         
       
@@ -1999,11 +2018,19 @@ junit, requires an reporterOutput option
         
         
         
-          <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-html-assets"</span>,{
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> requirejs_src = <span class="hljs-literal">null</span>;
+  <span class="hljs-keyword">var</span> requirejs_baseUrl = <span class="hljs-literal">null</span>;
+  <span class="hljs-keyword">var</span> requirejs_paths = <span class="hljs-literal">null</span>;
+  <span class="hljs-keyword">if</span>( config.scripts.requirejs ){
+    requirejs_src = config.scripts.requirejs.src || <span class="hljs-literal">null</span>;
+    requirejs_baseUrl = config.scripts.requirejs.baseUrl || <span class="hljs-literal">null</span>;
+    requirejs_paths = config.scripts.requirejs.paths || <span class="hljs-literal">null</span>;
+  }
+  init_task_options(config,<span class="hljs-string">"phantomizer-html-assets"</span>,{
     out_path:config.out_dir,
-    requirejs_src:config.scripts.requirejs.src || <span class="hljs-literal">null</span>,
-    requirejs_baseUrl:config.scripts.requirejs.baseUrl || <span class="hljs-literal">null</span>,
-    requirejs_paths:config.scripts.requirejs.paths || {},
+    requirejs_src:requirejs_src,
+    requirejs_baseUrl:requirejs_baseUrl,
+    requirejs_paths:requirejs_paths,
     <span class="hljs-string">"manifest"</span>: <span class="hljs-literal">false</span>,
     paths:config.build_run_paths
   });
@@ -2035,9 +2062,9 @@ junit, requires an reporterOutput option
         
           <div class='highlight'><pre>  init_task_options(config,<span class="hljs-string">"phantomizer-html-project-assets"</span>,{
     out_path:config.out_dir,
-    requirejs_src:config.scripts.requirejs.src || <span class="hljs-literal">null</span>,
-    requirejs_baseUrl:config.scripts.requirejs.baseUrl || <span class="hljs-literal">null</span>,
-    requirejs_paths:config.scripts.requirejs.paths || {},
+    requirejs_src:requirejs_src,
+    requirejs_baseUrl:requirejs_baseUrl,
+    requirejs_paths:requirejs_paths,
     paths:config.build_run_paths
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-html-project-assets"</span>,<span class="hljs-string">"stryke-build"</span>,{
@@ -2166,7 +2193,6 @@ junit, requires an reporterOutput option
     out_path:config.out_dir,
     run_dir:config.run_dir,
     paths:config.web_paths_no_dir,
-    inject_extras:<span class="hljs-literal">false</span>,
     build_assets:<span class="hljs-literal">false</span>
   });
   init_target_options(config,<span class="hljs-string">"phantomizer-html-project-builder"</span>,<span class="hljs-string">"stryke-assets-build"</span>,{
@@ -2213,9 +2239,7 @@ junit, requires an reporterOutput option
       <span class="hljs-string">"paths"</span>:config.web_paths,
       <span class="hljs-string">"inject_assets"</span>:<span class="hljs-literal">true</span>,
       <span class="hljs-string">"base_url"</span>:<span class="hljs-string">"http://"</span>+config.web_domain+<span class="hljs-string">":"</span>+config.test_web_port+<span class="hljs-string">"/"</span>,
-      <span class="hljs-string">"test_scripts_base_url"</span>:<span class="hljs-string">"/js/tests/"</span>,
-      <span class="hljs-string">"requirejs_src"</span>: config.scripts.requirejs.src,
-      <span class="hljs-string">"requirejs_baseUrl"</span>: config.scripts.requirejs.baseUrl
+      <span class="hljs-string">"test_scripts_base_url"</span>:<span class="hljs-string">"/js/tests/"</span>
     });
     init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"dev"</span>,{});
     init_target_options(config,<span class="hljs-string">"phantomizer-qunit-runner"</span>,<span class="hljs-string">"staging"</span>,{
@@ -2406,7 +2430,6 @@ junit, requires an reporterOutput option
       config.documentation_dir
     ],
     build_target:config.build_target,
-    inject_extras:config.inject_extras,
     htmlcompressor:config.htmlcompressor,
     build_assets:config.build_assets,
     html_manifest:config.html_manifest,
