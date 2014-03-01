@@ -966,7 +966,6 @@ function init_config(project,environment,default_webdomain){
       cache:[],
       fallback:{}
     });
-
   }
 
 // initialize phantomizer-docco
@@ -1133,21 +1132,13 @@ function init_config(project,environment,default_webdomain){
 
 // initialize phantomizer-manifest
 // ----------
-  init_task_options(config,"phantomizer-manifest-html",{
+  init_task_options(config,"phantomizer-manifest-html",underscore.defaults(config.html_manifest,{
     project_dir: config.project_dir,
     src_paths:config.build_run_paths,
-    manifest_reloader:'<%= html_manifest.manifest_reloader %>',
-    network:'<%= html_manifest.network %>',
-    cache:'<%= html_manifest.cache %>',
-    fallback:'<%= html_manifest.fallback %>'
-  });
-  init_task_options(config,"phantomizer-project-manifest",{
-    target_path: config.export_dir,
-    manifest_reloader:'<%= html_manifest.manifest_reloader %>',
-    network:'<%= html_manifest.network %>',
-    cache:'<%= html_manifest.cache %>',
-    fallback:'<%= html_manifest.fallback %>'
-  });
+  }));
+  init_task_options(config,"phantomizer-project-manifest",underscore.defaults(config.html_manifest,{
+    target_path: config.export_dir
+  }));
 
 // initialize phantomizer-html-assets
 // ----------
