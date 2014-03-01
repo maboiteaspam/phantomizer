@@ -1134,7 +1134,7 @@ function init_config(project,environment,default_webdomain){
 // ----------
   init_task_options(config,"phantomizer-manifest-html",underscore.defaults(config.html_manifest,{
     project_dir: config.project_dir,
-    src_paths:config.build_run_paths,
+    src_paths:config.build_run_paths
   }));
   init_task_options(config,"phantomizer-project-manifest",underscore.defaults(config.html_manifest,{
     target_path: config.export_dir
