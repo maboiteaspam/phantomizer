@@ -233,11 +233,10 @@ if( argv.server != "" ){
       // stops remaining web server
       if( webserver != null ){
         grunt.log.writeln('Stopping webserver...');
-        webserver.stop(function(){
-          grunt.log.subhead('See you soon !');
-          // exit program
-          process.exit(code=0);
-        });
+        webserver.stop();
+        grunt.log.subhead('See you soon !');
+        // exit program
+        process.exit(code=0);
       }
     });
   });
@@ -610,11 +609,10 @@ if( argv.browse_export != "" ){
     readline_toquit(function(){
       // stops remaining web server
       if( webserver != null ){
-        webserver.stop(function(){
-          grunt.log.subhead('See you soon !');
-          // exit program
-          process.exit(code=0);
-        });
+        webserver.stop();
+        grunt.log.subhead('See you soon !');
+        // exit program
+        process.exit(code=0);
       }
     });
   });
